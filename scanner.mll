@@ -31,10 +31,21 @@ rule token = parse
 | "while"  { WHILE }
 | "return" { RETURN }
 | "int"    { INT }
+| "float"  { FLOAT }
 | "bool"   { BOOL }
+| "string" { STRING }
+| "list"   { LIST }
+| "set"    { SET }
+| "node"   { NODE }
+| "map"    { MAP }
+| "graph"  { GRAPH }
+| "continue" { CONTINUE }
+| "break"  { BREAK }
+| "NULL"   { NULL }
 | "void"   { VOID }
-| "true"   { TRUE }
-| "false"  { FALSE }
+| "print"  { PRINT }
+| "TRUE"   { TRUE }
+| "FALSE"  { FALSE }
 | ['0'-'9']+ as lxm { LITERAL(int_of_string lxm) }
 | ['a'-'z' 'A'-'Z']['a'-'z' 'A'-'Z' '0'-'9' '_']* as lxm { ID(lxm) }
 | eof { EOF }
