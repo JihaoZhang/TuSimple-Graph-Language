@@ -1,11 +1,13 @@
 (* Abstract Syntax Tree and functions for printing it *)
 
 type op = Add | Sub | Mult | Div | Equal | Neq | Less | Leq | Greater | Geq |
-          And | Or  | Arrow
+          And | Or
+
+type node_op = Arrow
 
 type uop = Neg | Not
 
-type typ = Int | Bool | Void | Node
+type typ = Int | Bool | Void | Node | 
 
 type bind = typ * string
 
@@ -13,6 +15,7 @@ type expr =
     Literal of int
   | BoolLit of bool
   | Id of string
+  | Id_edge of Id * node_op * Id
   | Binop of expr * op * expr
   | Unop of uop * expr
   | Assign of string * expr
@@ -52,6 +55,7 @@ let string_of_op = function
   | Geq -> ">="
   | And -> "&&"
   | Or -> "||"
+
 
 let string_of_uop = function
     Neg -> "-"

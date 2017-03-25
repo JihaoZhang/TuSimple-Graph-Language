@@ -100,7 +100,6 @@ let translate (globals, functions) =
           | A.Div     -> L.build_sdiv
 	  | A.And     -> L.build_and
 	  | A.Or      -> L.build_or
-      | A.Arrow   -> L.build_add
 	  | A.Equal   -> L.build_icmp L.Icmp.Eq
 	  | A.Neq     -> L.build_icmp L.Icmp.Ne
 	  | A.Less    -> L.build_icmp L.Icmp.Slt
@@ -113,6 +112,7 @@ let translate (globals, functions) =
 	  (match op with
 	    A.Neg     -> L.build_neg
           | A.Not     -> L.build_not) e' "tmp" builder
+      | A.Assign_Edge (a, b, v) -> 
       | A.Assign (s, e) -> let e' = expr builder e in
 	                   ignore (L.build_store e' (lookup s) builder); e'
       | A.Call ("print", [e]) | A.Call ("printb", [e]) ->

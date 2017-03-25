@@ -31,14 +31,9 @@ rule token = parse
 | "while"  { WHILE }
 | "return" { RETURN }
 | "int"    { INT }
-| "float"  { FLOAT }
 | "bool"   { BOOL }
 | "string" { STRING }
-| "list"   { LIST }
-| "set"    { SET }
 | "node"   { NODE }
-| "map"    { MAP }
-| "graph"  { GRAPH }
 | "continue" { CONTINUE }
 | "break"  { BREAK }
 | "NULL"   { NULL }
