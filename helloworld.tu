@@ -1,6 +1,4 @@
-map distant(node, int);
-node a, b, c, d;
+node a;
+node b;
 a -> b = 7;
-b -> c = 5;
-c -> d = 4;
-d -> a = 1;
+print(a -> b);
