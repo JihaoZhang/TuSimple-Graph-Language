@@ -1,4 +1,3 @@
-node a;
-node b;
-a -> b = 7;
+int a = 1;
+int b = 2;
 print(a -> b);

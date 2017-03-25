@@ -100,6 +100,7 @@ let translate (globals, functions) =
           | A.Div     -> L.build_sdiv
 	  | A.And     -> L.build_and
 	  | A.Or      -> L.build_or
+      | A.Arrow   -> L.build_add
 	  | A.Equal   -> L.build_icmp L.Icmp.Eq
 	  | A.Neq     -> L.build_icmp L.Icmp.Ne
 	  | A.Less    -> L.build_icmp L.Icmp.Slt
