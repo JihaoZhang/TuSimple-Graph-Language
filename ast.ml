@@ -1,11 +1,11 @@
 (* Abstract Syntax Tree and functions for printing it *)
 
 type op = Add | Sub | Mult | Div | Equal | Neq | Less | Leq | Greater | Geq |
-          And | Or
+          And | Or  | Arrow
 
 type uop = Neg | Not
 
-type typ = Int | Bool | Void
+type typ = Int | Bool | Void | Node
 
 type bind = typ * string
 
