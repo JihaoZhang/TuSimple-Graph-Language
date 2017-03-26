@@ -114,8 +114,7 @@ let translate (globals, functions) =
 	  (match op with
 	    A.Neg     -> L.build_neg
       | A.Not     -> L.build_not) e' "tmp" builder
-      | A.Assign_Edge (a, b, v) -> let v' = expr builder v
-                                   in ignore(L.build_store v' (lookup (A.string_of_expr a ^ "->" ^ A.string_of_expr b)) builder); v'
+      | A.Assign_Edge (a, b, v) -> expr builder v
       | A.Assign (s, e) -> let e' = expr builder e in
 	                   ignore (L.build_store e' (lookup s) builder); e'
       | A.Call ("print", [e]) | A.Call ("printb", [e]) ->

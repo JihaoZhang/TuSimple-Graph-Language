@@ -1,21 +1,19 @@
 (* Abstract Syntax Tree and functions for printing it *)
 
 type op = Add | Sub | Mult | Div | Equal | Neq | Less | Leq | Greater | Geq |
-          And | Or
-
-type node_op = Arrow
+          And | Or  | Arrow
 
 type uop = Neg | Not
 
-type typ = Int | Bool | Void | Nodey
+type typ = Int | Bool | Void | Node
 
 type bind = typ * string
 
 type expr =
     Literal of int
   | BoolLit of bool
+  | NodeLit of string
   | Id of string
-  | Id_edge of string * node_op * string
   | Binop of expr * op * expr
   | Unop of uop * expr
   | Assign_Edge of string * string * expr
@@ -67,6 +65,7 @@ let rec string_of_expr = function
   | BoolLit(true) -> "true"
   | BoolLit(false) -> "false"
   | Id(s) -> s
+  | NodeLit(s) -> s
   | Binop(e1, o, e2) ->
       string_of_expr e1 ^ " " ^ string_of_op o ^ " " ^ string_of_expr e2
   | Unop(o, e) -> string_of_uop o ^ string_of_expr e
