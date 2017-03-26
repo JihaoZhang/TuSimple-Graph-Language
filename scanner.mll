@@ -32,13 +32,8 @@ rule token = parse
 | "return" { RETURN }
 | "int"    { INT }
 | "bool"   { BOOL }
-| "string" { STRING }
 | "node"   { NODE }
-| "continue" { CONTINUE }
-| "break"  { BREAK }
-| "NULL"   { NULL }
 | "void"   { VOID }
-| "print"  { PRINT }
 | "TRUE"   { TRUE }
 | "FALSE"  { FALSE }
 | ['0'-'9']+ as lxm { LITERAL(int_of_string lxm) }

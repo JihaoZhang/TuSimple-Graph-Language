@@ -1,0 +1,6 @@
+"Resource: /home/plt/Tu/TuSimple-Graph-Language/codegen.ml": "j9\151\012Mm\234\159\028m\1913\155\184\004\130"
+"Resource: /home/plt/Tu/TuSimple-Graph-Language/ast.ml": "\183\030\140\239@;\nX\196V\249\194V?\203\141"
+"Rule: ocaml dependencies ml (%=microc )": "\242e\1438\216\030m\015m\198)\242\025go\002"
+"Rule: ocaml dependencies ml (%=ast )": "\n\007\219fA\210d{&/\153\1835\217\147\215"
+"Resource: /home/plt/Tu/TuSimple-Graph-Language/microc.ml": "(\229(9|\2147e\228\179_\158v\tx\164"
+"Rule: ocaml dependencies ml (%=codegen )": "\212K\209\220\218wT2\029!\254\223tk\168\208"

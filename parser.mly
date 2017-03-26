@@ -7,7 +7,7 @@ open Ast
 %token SEMI LPAREN RPAREN LBRACE RBRACE COMMA
 %token PLUS MINUS TIMES DIVIDE ASSIGN NOT ARROW
 %token EQ NEQ LT LEQ GT GEQ TRUE FALSE AND OR
-%token RETURN IF ELSE FOR WHILE INT BOOL VOID
+%token RETURN IF ELSE FOR WHILE INT BOOL VOID NODE
 %token <int> LITERAL
 %token <string> ID
 %token EOF
@@ -89,6 +89,7 @@ expr:
     LITERAL          { Literal($1) }
   | TRUE             { BoolLit(true) }
   | FALSE            { BoolLit(false) }
+  | NODE ID          { NodeLit($2) }
   | ID               { Id($1) }
   | expr PLUS   expr { Binop($1, Add,   $3) }
   | expr MINUS  expr { Binop($1, Sub,   $3) }

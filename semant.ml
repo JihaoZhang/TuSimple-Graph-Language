@@ -94,6 +94,7 @@ let check (globals, functions) =
     let rec expr = function
 	Literal _ -> Int
       | BoolLit _ -> Bool
+      | NodeLit _ -> Node
       | Id s -> type_of_identifier s
       | Binop(e1, op, e2) as e -> let t1 = expr e1 and t2 = expr e2 in
 	(match op with
@@ -112,6 +113,7 @@ let check (globals, functions) =
          | _ -> raise (Failure ("illegal unary operator " ^ string_of_uop op ^
 	  		   string_of_typ t ^ " in " ^ string_of_expr ex)))
       | Noexpr -> Void
+      | Assign_Edge(a, b, v) -> type_of_identifier a
       | Assign(var, e) as ex -> let lt = type_of_identifier var
                                 and rt = expr e in
         check_assign lt rt (Failure ("illegal assignment " ^ string_of_typ lt ^

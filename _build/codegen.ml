@@ -23,13 +23,12 @@ let translate (globals, functions) =
   and i32_t  = L.i32_type  context
   and i8_t   = L.i8_type   context
   and i1_t   = L.i1_type   context
-  and void_t = L.void_type context 
-  and string_t = L.pointer_type (L.i8_type context) in
+  and void_t = L.void_type context in
+
   let ltype_of_typ = function
       A.Int -> i32_t
     | A.Bool -> i1_t
-    | A.Void -> void_t
-    | A.Node -> string_t in
+    | A.Void -> void_t in
 
   (* Declare each global variable; remember its value in a map *)
   let global_vars =
@@ -89,7 +88,7 @@ let translate (globals, functions) =
     let rec expr builder = function
 	A.Literal i -> L.const_int i32_t i
       | A.BoolLit b -> L.const_int i1_t (if b then 1 else 0)
-      | A.NodeLit a -> L.build_global_stringptr a "str" builder
+      | A.NodeLit a -> L.const_string a
       | A.Noexpr -> L.const_int i32_t 0
       | A.Id s -> L.build_load (lookup s) s builder
       | A.Binop (e1, op, e2) ->
@@ -99,7 +98,7 @@ let translate (globals, functions) =
 	    A.Add     -> L.build_add
 	  | A.Sub     -> L.build_sub
 	  | A.Mult    -> L.build_mul
-    | A.Div     -> L.build_sdiv
+          | A.Div     -> L.build_sdiv
 	  | A.And     -> L.build_and
 	  | A.Or      -> L.build_or
 	  | A.Equal   -> L.build_icmp L.Icmp.Eq
@@ -113,9 +112,10 @@ let translate (globals, functions) =
 	  let e' = expr builder e in
 	  (match op with
 	    A.Neg     -> L.build_neg
-      | A.Not     -> L.build_not) e' "tmp" builder
-      | A.Assign_Edge (a, b, v) -> let v' = expr builder v
-                                   in ignore(L.build_store v' (lookup (A.string_of_expr a ^ "->" ^ A.string_of_expr b)) builder); v'
+          | A.Not     -> L.build_not) e' "tmp" builder
+      | A.Assign_Edge (a, b, v) -> let s = A.string_of_expr a ^ A.string_of_expr b
+                                   in let v' = expr builder v
+                                   in ignore(L.build_store v' (lookup s) builder); v'
       | A.Assign (s, e) -> let e' = expr builder e in
 	                   ignore (L.build_store e' (lookup s) builder); e'
       | A.Call ("print", [e]) | A.Call ("printb", [e]) ->

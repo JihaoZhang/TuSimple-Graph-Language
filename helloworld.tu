@@ -1,3 +1,7 @@
-int a = 1;
-int b = 2;
-print(a -> b);
+node a;
+node b;
+
+int main(){
+  a -> b = 1;
+  return 0;
+}
