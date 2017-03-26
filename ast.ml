@@ -1,23 +1,22 @@
 (* Abstract Syntax Tree and functions for printing it *)
 
 type op = Add | Sub | Mult | Div | Equal | Neq | Less | Leq | Greater | Geq |
-          And | Or
-
-type node_op = Arrow
+          And | Or  | Arrow
 
 type uop = Neg | Not
 
-type typ = Int | Bool | Void | Node | 
+type typ = Int | Bool | Void | Node
 
 type bind = typ * string
 
 type expr =
     Literal of int
   | BoolLit of bool
+  | NodeLit of string
   | Id of string
-  | Id_edge of Id * node_op * Id
   | Binop of expr * op * expr
   | Unop of uop * expr
+  | Assign_Edge of string * string * expr
   | Assign of string * expr
   | Call of string * expr list
   | Noexpr
@@ -66,9 +65,11 @@ let rec string_of_expr = function
   | BoolLit(true) -> "true"
   | BoolLit(false) -> "false"
   | Id(s) -> s
+  | NodeLit(s) -> s
   | Binop(e1, o, e2) ->
       string_of_expr e1 ^ " " ^ string_of_op o ^ " " ^ string_of_expr e2
   | Unop(o, e) -> string_of_uop o ^ string_of_expr e
+  | Assign_Edge(a, b, v) -> a ^ " -> " ^ b ^ " = " ^ string_of_expr v
   | Assign(v, e) -> v ^ " = " ^ string_of_expr e
   | Call(f, el) ->
       f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ")"
@@ -91,6 +92,7 @@ let string_of_typ = function
     Int -> "int"
   | Bool -> "bool"
   | Void -> "void"
+  | Node -> "node"
 
 let string_of_vdecl (t, id) = string_of_typ t ^ " " ^ id ^ ";\n"
 
