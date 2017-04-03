@@ -1,6 +1,6 @@
-int a;
-int b;
+node a;
+node b;
 
 int main(){
-  print(a -> b = 7);
+  a -> b = 7;
 }

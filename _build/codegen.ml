@@ -19,12 +19,12 @@ module StringMap = Map.Make(String)
 
 let translate (globals, functions) =
   let context = L.global_context () in
-  let the_module = L.create_module context "MicroC"
+  let the_module = L.create_module context "TuSimple"
   and i32_t  = L.i32_type  context
   and i8_t   = L.i8_type   context
   and i1_t   = L.i1_type   context
-  and void_t = L.void_type context 
-  and string_t = L.pointer_type (L.i8_type context) in
+  and void_t = L.void_type context in
+  let string_t = L.pointer_type i8_t in
   let ltype_of_typ = function
       A.Int -> i32_t
     | A.Bool -> i1_t
@@ -62,6 +62,7 @@ let translate (globals, functions) =
     let builder = L.builder_at_end context (L.entry_block the_function) in
 
     let int_format_str = L.build_global_stringptr "%d\n" "fmt" builder in
+    let str_format_str = L.build_global_stringptr "%s\n" "fmt2" builder in
     
     (* Construct the function's "locals": formal arguments and locally
        declared variables.  Allocate each on the stack, initialize their
@@ -83,14 +84,16 @@ let translate (globals, functions) =
     (* Return the value for a variable or formal argument *)
     let lookup n = try StringMap.find n local_vars
                    with Not_found -> StringMap.find n global_vars
+    and codegen_string_lit s sbuilder = 
+      L.build_global_stringptr s "str_tmp" builder
+
     in
 
     (* Construct code for an expression; return its value *)
     let rec expr builder = function
 	A.Literal i -> L.const_int i32_t i
       | A.BoolLit b -> L.const_int i1_t (if b then 1 else 0)
-      (*| A.NodeLit s -> L.build_global_stringptr s "str" builder*)
-      | A.NodeLit a -> L.const_int i32_t int_of_string a
+      | A.NodeLit s -> codegen_string_lit s builder
       | A.Noexpr -> L.const_int i32_t 0
       | A.Id s -> L.build_load (lookup s) s builder
       | A.Binop (e1, op, e2) ->
@@ -114,8 +117,13 @@ let translate (globals, functions) =
 	  let e' = expr builder e in
 	  (match op with
 	    A.Neg     -> L.build_neg
-      | A.Not     -> L.build_not) e' "tmp" builder
-      | A.Assign_Edge (a, b, v) -> expr builder v
+      | A.Not     -> L.build_not
+    ) e' "tmp" builder
+      | A.Assign_Edge (a, b, v) -> let s = a^"->"^b in
+                                   let v' = expr builder v in
+                                   let result = lookup s in
+                                   let store = L.build_load result s builder in
+                                   ignore (L.build_store v' result builder); v'
       | A.Assign (s, e) -> let e' = expr builder e in
 	                   ignore (L.build_store e' (lookup s) builder); e'
       | A.Call ("print", [e]) | A.Call ("printb", [e]) ->

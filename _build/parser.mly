@@ -105,7 +105,7 @@ expr:
   | expr OR     expr { Binop($1, Or,    $3) }
   | MINUS expr %prec NEG { Unop(Neg, $2) }
   | NOT expr         { Unop(Not, $2) }
-  | ID ARROW ID ASSIGN expr  { Assign($1, $5) }
+  | ID ARROW ID ASSIGN expr  { Assign_Edge($1, $3, $5) }
   | ID ASSIGN expr   { Assign($1, $3) }
   | ID LPAREN actuals_opt RPAREN { Call($1, $3) }
   | LPAREN expr RPAREN { $2 }

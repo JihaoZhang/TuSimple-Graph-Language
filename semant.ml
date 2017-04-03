@@ -28,8 +28,11 @@ let check (globals, functions) =
   
   (* Raise an exception of the given rvalue type cannot be assigned to
      the given lvalue type *)
+  let check_assign_edge atype btype ctype error =
+     if atype == btype then ctype else raise error
+  in
   let check_assign lvaluet rvaluet err =
-     if lvaluet == rvaluet then lvaluet else raise err
+     if (lvaluet == Ast.Node) or (lvaluet == rvaluet) then lvaluet else raise err
   in
    
   (**** Checking Global Variables ****)
@@ -113,7 +116,11 @@ let check (globals, functions) =
          | _ -> raise (Failure ("illegal unary operator " ^ string_of_uop op ^
 	  		   string_of_typ t ^ " in " ^ string_of_expr ex)))
       | Noexpr -> Void
-      | Assign_Edge(a, b, v) -> type_of_identifier a
+      | Assign_Edge(a, b, v) -> let lt = type_of_identifier a
+                                and rt = type_of_identifier b
+                                and vt = expr v in
+        check_assign_edge lt rt vt (Failure ("illegal assignment " ^ string_of_typ lt ^ " -> " ^ string_of_typ rt ^
+             " = " ^ string_of_typ vt))
       | Assign(var, e) as ex -> let lt = type_of_identifier var
                                 and rt = expr e in
         check_assign lt rt (Failure ("illegal assignment " ^ string_of_typ lt ^
