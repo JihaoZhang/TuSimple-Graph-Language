@@ -18,18 +18,24 @@ module A = Ast
 module StringMap = Map.Make(String)
 
 let translate (globals, functions) =
+  let tys = [| L.i32_type, L.pointer_type L.i8_type |] in
+
   let context = L.global_context () in
   let the_module = L.create_module context "TuSimple"
   and i32_t  = L.i32_type  context
   and i8_t   = L.i8_type   context
   and i1_t   = L.i1_type   context
-  and void_t = L.void_type context in
-  let string_t = L.pointer_type i8_t in
+  and void_t = L.void_type context
+  (*let string_t = L.pointer_type i8_t *)
+  and node_t = L.struct_type context tys
+  in
+
+
   let ltype_of_typ = function
       A.Int -> i32_t
     | A.Bool -> i1_t
     | A.Void -> void_t
-    | A.Node -> string_t in
+    | A.Node -> node_t in
 
   (* Declare each global variable; remember its value in a map *)
   let global_vars =
@@ -93,7 +99,8 @@ let translate (globals, functions) =
     let rec expr builder = function
 	A.Literal i -> L.const_int i32_t i
       | A.BoolLit b -> L.const_int i1_t (if b then 1 else 0)
-      | A.NodeLit s -> codegen_string_lit s builder
+      (*| A.NodeLit s -> codegen_string_lit s builder*)
+      | A.NodeLit s -> L.const_struct context [|0, None|]
       | A.Noexpr -> L.const_int i32_t 0
       | A.Id s -> L.build_load (lookup s) s builder
       | A.Binop (e1, op, e2) ->
