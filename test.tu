@@ -1,7 +1,9 @@
 node a;
+node c;
 int b;
 
 int main(){
+  a -> c = 1;
   b = 10;
-  a += 7;
+  b += 7;
 }

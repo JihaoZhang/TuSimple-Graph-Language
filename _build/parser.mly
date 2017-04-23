@@ -6,7 +6,7 @@ open Ast
 
 %token SEMI LPAREN RPAREN LBRACE RBRACE COMMA
 %token PLUS MINUS TIMES DIVIDE ASSIGN NOT ADDASSIGN
-%token EQ NEQ LT LEQ GT GEQ TRUE FALSE AND OR
+%token EQ NEQ LT LEQ GT GEQ TRUE FALSE AND OR SINGLELINK
 %token RETURN IF ELSE FOR WHILE INT BOOL VOID NODE
 %token <int> LITERAL
 %token <string> ID
@@ -22,6 +22,7 @@ open Ast
 %left PLUS MINUS
 %left TIMES DIVIDE
 %right NOT NEG
+%left SINGLELINK
 
 %start program
 %type <Ast.program> program
@@ -105,6 +106,7 @@ expr:
   | NOT expr         { Unop(Not, $2) }
   | ID ADDASSIGN expr { AddAssign($1, $3) }
   | ID ASSIGN expr   { Assign($1, $3) }
+  | ID SINGLELINK ID ASSIGN expr { SingleLinkAssign($1, $3, $5) }
   | ID LPAREN actuals_opt RPAREN { Call($1, $3) }
   | LPAREN expr RPAREN { $2 }
 

@@ -22,6 +22,7 @@ type token =
   | FALSE
   | AND
   | OR
+  | SINGLELINK
   | RETURN
   | IF
   | ELSE

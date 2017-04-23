@@ -29,7 +29,7 @@ Node
 File "codegen.ml", line 88, characters 27-1683:
 Warning 8: this pattern-matching is not exhaustive.
 Here is an example of a value that is not matched:
-AddAssign (_, _)
+(AddAssign (_, _)|SingleLinkAssign (_, _, _))
 # Target: scanner.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:scanner.cmo, file:scanner.ml, implem, ocaml, package(llvm), package(llvm.analysis), quiet }
 ocamlfind ocamlc -c -w +a-4 -package llvm.analysis -package llvm -o scanner.cmo scanner.ml
 # Target: semant.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:semant.cmo, file:semant.ml, implem, ocaml, package(llvm), package(llvm.analysis), quiet }
@@ -52,7 +52,7 @@ Node
 File "codegen.ml", line 88, characters 27-1683:
 Warning 8: this pattern-matching is not exhaustive.
 Here is an example of a value that is not matched:
-AddAssign (_, _)
+(AddAssign (_, _)|SingleLinkAssign (_, _, _))
 # Target: scanner.cmx, tags: { compile, extension:cmx, extension:ml, file:scanner.cmx, file:scanner.ml, implem, native, ocaml, package(llvm), package(llvm.analysis), quiet }
 ocamlfind ocamlopt -c -w +a-4 -package llvm.analysis -package llvm -o scanner.cmx scanner.ml
 # Target: semant.cmx, tags: { compile, extension:cmx, extension:ml, file:semant.cmx, file:semant.ml, implem, native, ocaml, package(llvm), package(llvm.analysis), quiet }

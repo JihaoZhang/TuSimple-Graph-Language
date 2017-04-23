@@ -17,6 +17,7 @@ type expr =
   | Unop of uop * expr
   | Assign of string * expr
   | AddAssign of string * expr
+  | SingleLinkAssign of string * string * expr
   | Call of string * expr list
   | Noexpr
 
@@ -68,6 +69,7 @@ let rec string_of_expr = function
   | Unop(o, e) -> string_of_uop o ^ string_of_expr e
   | Assign(v, e) -> v ^ " = " ^ string_of_expr e
   | AddAssign(v, e) -> v ^ " += " ^ string_of_expr e
+  | SingleLinkAssign(n1, n2, e) -> n1 ^ " -> " ^ n2 ^ " = " ^ string_of_expr e
   | Call(f, el) ->
       f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ")"
   | Noexpr -> ""

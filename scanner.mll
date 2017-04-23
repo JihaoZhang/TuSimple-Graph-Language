@@ -26,6 +26,7 @@ rule token = parse
 | "&&"     { AND }
 | "||"     { OR }
 | "!"      { NOT }
+| "->"	   { SINGLELINK }
 | "if"     { IF }
 | "else"   { ELSE }
 | "for"    { FOR }

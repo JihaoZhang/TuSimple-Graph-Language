@@ -32,6 +32,15 @@ let check (globals, functions) =
      if lvaluet == rvaluet then lvaluet else raise err
   in
    
+  let checkLinkAssign node1Type node2Type exprType err=
+     if node1Type == node2Type 
+     then if node1Type == Node && node2Type == Node 
+            then if exprType == Int
+                 then exprType 
+                 else raise err
+            else raise err
+     else raise err
+  in
   (**** Checking Global Variables ****)
 
   List.iter (check_not_void (fun n -> "illegal void global " ^ n)) globals;
@@ -119,9 +128,15 @@ let check (globals, functions) =
 				     string_of_expr ex))
       | AddAssign(var, e) as ex -> let lt = type_of_identifier var
                                    and rt = expr e in
-        check_assign (type_of_identifier var) (expr e)
-                 (Failure ("illegal add assignment " ^ string_of_typ lt ^ " += " ^
+        check_assign lt rt
+                         (Failure ("illegal add assignment " ^ string_of_typ lt ^ " += " ^
                            string_of_typ rt ^ " in " ^ string_of_expr ex))
+      | SingleLinkAssign(var1, var2, e) as ex -> let node1Type = type_of_identifier var1
+                                                 and node2Type = type_of_identifier var2 
+                                                 and exprType = expr e in
+        checkLinkAssign node1Type node2Type exprType
+                  (Failure ("illegal single directed edge assignment " ^ string_of_typ node1Type ^ " -> " ^
+                           string_of_typ node2Type ^ " = " ^ string_of_typ exprType ^ " in " ^ string_of_expr ex))
       | Call(fname, actuals) as call -> let fd = function_decl fname in
          if List.length actuals != List.length fd.formals then
            raise (Failure ("expecting " ^ string_of_int
