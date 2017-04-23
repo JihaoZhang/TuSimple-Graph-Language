@@ -4,13 +4,16 @@
 open Ast
 %}
 
-%token SEMI LPAREN RPAREN LBRACE RBRACE COMMA
+%token SEMI LPAREN RPAREN LBRACE RBRACE COMMA LEFTSQUAREBRACKET RIGHTSQUAREBRACKET
 %token PLUS MINUS TIMES DIVIDE ASSIGN NOT ADDASSIGN MINUSASSIGN MOD
-%token EQ NEQ LT LEQ GT GEQ TRUE FALSE AND OR SINGLELINK DOUBLELINK ADDADD
-%token RETURN IF ELSE FOR WHILE INT BOOL VOID NODE FLOAT
+%token EQ NEQ LT LEQ GT GEQ TRUE FALSE AND OR SINGLELINK DOUBLELINK ADDADD AT
+%token RETURN IF ELSE FOR WHILE INT BOOL VOID NODE FLOAT STRING LIST SET MAP GRAPH
+
+%token <string> ID
+
 %token <int> LITERAL
 %token <float> FLOAT_LITERAL
-%token <string> ID
+%token <string> STRING_LITERAL
 %token EOF
 
 %nonassoc NOELSE
@@ -61,13 +64,19 @@ typ:
   | VOID { Void }
   | NODE { Node }
   | FLOAT { Float }
+  | STRING { String }
+  | GRAPH { Graph }
+  | LIST AT LBRACE typ RBRACE { List($4) }
+  | SET AT LBRACE typ RBRACE { Set($4) }
+  | MAP AT LBRACE typ COMMA typ RBRACE { Map($4, $6) }
+
 
 vdecl_list:
     /* nothing */    { [] }
   | vdecl_list vdecl { $2 :: $1 }
 
 vdecl:
-   typ ID SEMI { ($1, $2) }
+    typ ID SEMI { ($1, $2) }
 
 stmt_list:
     /* nothing */  { [] }
@@ -91,6 +100,7 @@ expr_opt:
 expr:
     LITERAL          { Literal($1) }
   | FLOAT_LITERAL    { FloatLit($1) }
+  | STRING_LITERAL   { StringLit($1) }
   | TRUE             { BoolLit(true) }
   | FALSE            { BoolLit(false) }
   | ID               { Id($1) }
@@ -117,6 +127,9 @@ expr:
   | ID DOUBLELINK ID ASSIGN expr { DoubleLinkAssign($1, $3, $5) }
   | ID LPAREN actuals_opt RPAREN { Call($1, $3) }
   | LPAREN expr RPAREN { $2 }
+  | ID LEFTSQUAREBRACKET expr RIGHTSQUAREBRACKET { Subscript($1, $3) }
+
+
 
 actuals_opt:
     /* nothing */ { [] }

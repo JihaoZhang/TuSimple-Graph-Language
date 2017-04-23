@@ -1,9 +1,14 @@
 (* Ocamllex scanner for TuSimple *)
 
-{ open Parser }
+{ open Parser 
+  let unescape s =
+    	Scanf.sscanf ("\"" ^ s ^ "\"") "%S%!" (fun x -> x)
+}
 
 let digit = ['0'-'9']
 let float = '-'?(digit+) ['.'] digit+
+let escape = '\\' ['\\' ''' '"' 'n' 'r' 't']
+let ascii = ([' '-'!' '#'-'[' ']'-'~'])
 
 rule token = parse
   [' ' '\t' '\r' '\n'] { token lexbuf } (* Whitespace *)
@@ -12,6 +17,8 @@ rule token = parse
 | ')'      { RPAREN }
 | '{'      { LBRACE }
 | '}'      { RBRACE }
+| '[' 	   { LEFTSQUAREBRACKET }
+| ']' 	   { RIGHTSQUAREBRACKET }
 | ';'      { SEMI }
 | ','      { COMMA }
 | '+'      { PLUS }
@@ -32,6 +39,8 @@ rule token = parse
 | "!"      { NOT }
 | "->"	   { SINGLELINK }
 | "--"	   { DOUBLELINK }
+| "@"      { AT }
+
 | "%"	   { MOD }
 | "++" 	   { ADDADD }
 | "if"     { IF }
@@ -39,16 +48,26 @@ rule token = parse
 | "for"    { FOR }
 | "while"  { WHILE }
 | "return" { RETURN }
+
 | "int"    { INT }
 | "float"  { FLOAT }
-| "node"   { NODE }
 | "bool"   { BOOL }
 | "void"   { VOID }
+| "string" { STRING }
+
+| "node"   { NODE }
+| "list"   { LIST }
+| "set"    { SET }
+| "map"    { MAP }
+| "graph"  { GRAPH }
+
 | "true"   { TRUE }
 | "false"  { FALSE }
-| ['0'-'9']+ as lxm { LITERAL(int_of_string lxm) }
+
 | ['a'-'z' 'A'-'Z']['a'-'z' 'A'-'Z' '0'-'9' '_']* as lxm { ID(lxm) }
+| ['0'-'9']+ as lxm { LITERAL(int_of_string lxm) }
 | float as lxm { FLOAT_LITERAL(float_of_string lxm) }
+| '"' ((ascii | escape)* as lit) '"' { STRING_LITERAL(unescape lit) }
 | eof { EOF }
 | _ as char { raise (Failure("illegal character " ^ Char.escaped char)) }
 

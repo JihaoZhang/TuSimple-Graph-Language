@@ -29,27 +29,45 @@ let check (globals, functions) =
   (* Raise an exception of the given rvalue type cannot be assigned to
      the given lvalue type *)
   let check_assign lvaluet rvaluet err =
-     if lvaluet == rvaluet then lvaluet else raise err
+     if lvaluet = rvaluet then lvaluet else raise err
   in
 
-  let checkOpAssign lvaluet rvaluet err =
-     if (lvaluet == Int || lvaluet == Float) && (rvaluet == Int || rvaluet == Float) 
-     then if lvaluet == rvaluet then lvaluet else raise err
-     else raise err
+  let checkAddAssign lvaluet rvaluet err =
+     if ((lvaluet = Int || lvaluet = Float) && (rvaluet = Int || rvaluet = Float)) || ((rvaluet = String && rvaluet = String))
+     then if lvaluet = rvaluet 
+                then lvaluet
+                else raise err
+     else match lvaluet with
+     List type1  when type1 = rvaluet -> Void
+     | Set type1  when type1 = rvaluet -> Void
+     | Map (type1, type2) when  type1 = rvaluet -> Void
+     | _ -> raise err
   in 
-   
+  
+  let checkMinusAssign lvaluet rvaluet err =
+     if (lvaluet = Int || lvaluet = Float) && (rvaluet = Int || rvaluet = Float) 
+     then if lvaluet = rvaluet then lvaluet else raise err
+     else raise err
+  in
+
   let checkLinkAssign node1Type node2Type exprType err=
-     if node1Type == node2Type 
-     then if node1Type == Node && node2Type == Node 
-            then if exprType == Int || exprType == Float
+     if node1Type = node2Type 
+     then if node1Type = Node && node2Type = Node 
+            then if exprType = Int || exprType = Float
                  then exprType 
                  else raise err
             else raise err
      else raise err
   in
 
+  let checkSubscript varType rt err =
+    if varType = String && rt = Int
+      then varType
+    else raise err
+  in
+  
   let checkAddAdd tp err =
-    if tp == Int
+    if tp = Int
       then tp
     else raise err
   in
@@ -116,6 +134,7 @@ let check (globals, functions) =
 	Literal _ -> Int
       | BoolLit _ -> Bool
       | FloatLit _ -> Float
+      | StringLit _ -> String
       | Id s -> type_of_identifier s
       | AddAdd s -> let tp = type_of_identifier s in
         checkAddAdd tp (Failure ("illegal next operation " ^ string_of_typ tp ^
@@ -126,6 +145,7 @@ let check (globals, functions) =
   | Add | Sub | Mult | Div when t1 = Float && t2 = Float -> Float
   | Add | Sub | Mult | Div when t1 = Float && t2 = Int -> Float
   | Add | Sub | Mult | Div when t1 = Int && t2 = Float -> Float
+  | Add when t1 = String && t2 = String -> String
   | Mod when t1 = Int && t2 = Int -> Int
 	| Equal | Neq when t1 = t2 -> Bool
 	| Less | Leq | Greater | Geq when (t1 = Int || t1 = Float) && (t1 = Float || t2 = Int) -> Bool
@@ -142,6 +162,11 @@ let check (globals, functions) =
          | _ -> raise (Failure ("illegal unary operator " ^ string_of_uop op ^
 	  		   string_of_typ t ^ " in " ^ string_of_expr ex)))
       | Noexpr -> Void
+      | Subscript(var, e) as ex -> let varType = type_of_identifier var 
+                             and rt = expr e in
+        checkSubscript varType rt (Failure ("illegal subscript  " ^ string_of_typ varType ^
+             " = " ^ string_of_typ rt ^ " in " ^ 
+             string_of_expr ex))
       | Assign(var, e) as ex -> let lt = type_of_identifier var
                                 and rt = expr e in
         check_assign lt rt (Failure ("illegal assignment " ^ string_of_typ lt ^
@@ -149,12 +174,12 @@ let check (globals, functions) =
 				     string_of_expr ex))
       | AddAssign(var, e) as ex -> let lt = type_of_identifier var
                                    and rt = expr e in
-        checkOpAssign lt rt
+        checkAddAssign lt rt
                          (Failure ("illegal add assignment " ^ string_of_typ lt ^ " += " ^
                            string_of_typ rt ^ " in " ^ string_of_expr ex))
       | MinusAssign(var, e) as ex -> let lt = type_of_identifier var
                                      and rt = expr e in
-        checkOpAssign lt rt
+        checkMinusAssign lt rt
                          (Failure ("illegal add assignment " ^ string_of_typ lt ^ " -= " ^
                            string_of_typ rt ^ " in " ^ string_of_expr ex))
       | SingleLinkAssign(var1, var2, e) as ex -> let node1Type = type_of_identifier var1

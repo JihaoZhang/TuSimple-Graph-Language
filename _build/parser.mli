@@ -5,6 +5,8 @@ type token =
   | LBRACE
   | RBRACE
   | COMMA
+  | LEFTSQUAREBRACKET
+  | RIGHTSQUAREBRACKET
   | PLUS
   | MINUS
   | TIMES
@@ -27,6 +29,7 @@ type token =
   | SINGLELINK
   | DOUBLELINK
   | ADDADD
+  | AT
   | RETURN
   | IF
   | ELSE
@@ -37,9 +40,15 @@ type token =
   | VOID
   | NODE
   | FLOAT
+  | STRING
+  | LIST
+  | SET
+  | MAP
+  | GRAPH
+  | ID of (string)
   | LITERAL of (int)
   | FLOAT_LITERAL of (float)
-  | ID of (string)
+  | STRING_LITERAL of (string)
   | EOF
 
 val program :
