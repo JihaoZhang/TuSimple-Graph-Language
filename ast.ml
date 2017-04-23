@@ -1,23 +1,27 @@
 (* Abstract Syntax Tree and functions for printing it *)
 
 type op = Add | Sub | Mult | Div | Equal | Neq | Less | Leq | Greater | Geq |
-          And | Or
+          And | Or  | Mod
 
 type uop = Neg | Not
 
-type typ = Int | Bool | Void | Node
+type typ = Int | Bool | Void | Node | Float
 
 type bind = typ * string
 
 type expr =
     Literal of int
   | BoolLit of bool
+  | FloatLit of float
   | Id of string
   | Binop of expr * op * expr
   | Unop of uop * expr
   | Assign of string * expr
   | AddAssign of string * expr
+  | MinusAssign of string * expr
+  | AddAdd of string 
   | SingleLinkAssign of string * string * expr
+  | DoubleLinkAssign of string * string * expr
   | Call of string * expr list
   | Noexpr
 
@@ -54,6 +58,7 @@ let string_of_op = function
   | Geq -> ">="
   | And -> "&&"
   | Or -> "||"
+  | Mod -> "%"
 
 let string_of_uop = function
     Neg -> "-"
@@ -61,15 +66,19 @@ let string_of_uop = function
 
 let rec string_of_expr = function
     Literal(l) -> string_of_int l
+  | FloatLit(f) -> string_of_float f
   | BoolLit(true) -> "true"
   | BoolLit(false) -> "false"
   | Id(s) -> s
+  | AddAdd(s) -> s ^ "++"
   | Binop(e1, o, e2) ->
       string_of_expr e1 ^ " " ^ string_of_op o ^ " " ^ string_of_expr e2
   | Unop(o, e) -> string_of_uop o ^ string_of_expr e
   | Assign(v, e) -> v ^ " = " ^ string_of_expr e
   | AddAssign(v, e) -> v ^ " += " ^ string_of_expr e
+  | MinusAssign(v, e) -> v ^ " -= " ^ string_of_expr e
   | SingleLinkAssign(n1, n2, e) -> n1 ^ " -> " ^ n2 ^ " = " ^ string_of_expr e
+  | DoubleLinkAssign(n1, n2, e) -> n1 ^ " -- " ^ n2 ^ " = " ^ string_of_expr e
   | Call(f, el) ->
       f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ")"
   | Noexpr -> ""
@@ -92,6 +101,7 @@ let string_of_typ = function
   | Bool -> "bool"
   | Void -> "void"
   | Node -> "node"
+  | Float -> "float"
 
 let string_of_vdecl (t, id) = string_of_typ t ^ " " ^ id ^ ";\n"
 

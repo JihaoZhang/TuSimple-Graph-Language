@@ -5,24 +5,26 @@ open Ast
 %}
 
 %token SEMI LPAREN RPAREN LBRACE RBRACE COMMA
-%token PLUS MINUS TIMES DIVIDE ASSIGN NOT ADDASSIGN
-%token EQ NEQ LT LEQ GT GEQ TRUE FALSE AND OR SINGLELINK
-%token RETURN IF ELSE FOR WHILE INT BOOL VOID NODE
+%token PLUS MINUS TIMES DIVIDE ASSIGN NOT ADDASSIGN MINUSASSIGN MOD
+%token EQ NEQ LT LEQ GT GEQ TRUE FALSE AND OR SINGLELINK DOUBLELINK ADDADD
+%token RETURN IF ELSE FOR WHILE INT BOOL VOID NODE FLOAT
 %token <int> LITERAL
+%token <float> FLOAT_LITERAL
 %token <string> ID
 %token EOF
 
 %nonassoc NOELSE
 %nonassoc ELSE
-%right ASSIGN ADDASSIGN
+%right ASSIGN ADDASSIGN MINUSASSIGN
 %left OR
 %left AND
 %left EQ NEQ
 %left LT GT LEQ GEQ
 %left PLUS MINUS
-%left TIMES DIVIDE
+%left TIMES DIVIDE MOD
 %right NOT NEG
-%left SINGLELINK
+%left ADDADD
+%left SINGLELINK DOUBLELINK
 
 %start program
 %type <Ast.program> program
@@ -58,6 +60,7 @@ typ:
   | BOOL { Bool }
   | VOID { Void }
   | NODE { Node }
+  | FLOAT { Float }
 
 vdecl_list:
     /* nothing */    { [] }
@@ -87,6 +90,7 @@ expr_opt:
 
 expr:
     LITERAL          { Literal($1) }
+  | FLOAT_LITERAL    { FloatLit($1) }
   | TRUE             { BoolLit(true) }
   | FALSE            { BoolLit(false) }
   | ID               { Id($1) }
@@ -102,11 +106,15 @@ expr:
   | expr GEQ    expr { Binop($1, Geq,   $3) }
   | expr AND    expr { Binop($1, And,   $3) }
   | expr OR     expr { Binop($1, Or,    $3) }
+  | expr MOD    expr { Binop($1, Mod,   $3) }
+  | ID ADDADD { AddAdd($1) }
   | MINUS expr %prec NEG { Unop(Neg, $2) }
   | NOT expr         { Unop(Not, $2) }
   | ID ADDASSIGN expr { AddAssign($1, $3) }
+  | ID MINUSASSIGN expr { MinusAssign($1, $3) }
   | ID ASSIGN expr   { Assign($1, $3) }
   | ID SINGLELINK ID ASSIGN expr { SingleLinkAssign($1, $3, $5) }
+  | ID DOUBLELINK ID ASSIGN expr { DoubleLinkAssign($1, $3, $5) }
   | ID LPAREN actuals_opt RPAREN { Call($1, $3) }
   | LPAREN expr RPAREN { $2 }
 

@@ -31,15 +31,27 @@ let check (globals, functions) =
   let check_assign lvaluet rvaluet err =
      if lvaluet == rvaluet then lvaluet else raise err
   in
+
+  let checkOpAssign lvaluet rvaluet err =
+     if (lvaluet == Int || lvaluet == Float) && (rvaluet == Int || rvaluet == Float) 
+     then if lvaluet == rvaluet then lvaluet else raise err
+     else raise err
+  in 
    
   let checkLinkAssign node1Type node2Type exprType err=
      if node1Type == node2Type 
      then if node1Type == Node && node2Type == Node 
-            then if exprType == Int
+            then if exprType == Int || exprType == Float
                  then exprType 
                  else raise err
             else raise err
      else raise err
+  in
+
+  let checkAddAdd tp err =
+    if tp == Int
+      then tp
+    else raise err
   in
   (**** Checking Global Variables ****)
 
@@ -103,12 +115,20 @@ let check (globals, functions) =
     let rec expr = function
 	Literal _ -> Int
       | BoolLit _ -> Bool
+      | FloatLit _ -> Float
       | Id s -> type_of_identifier s
+      | AddAdd s -> let tp = type_of_identifier s in
+        checkAddAdd tp (Failure ("illegal next operation " ^ string_of_typ tp ^
+             " ++ "))
       | Binop(e1, op, e2) as e -> let t1 = expr e1 and t2 = expr e2 in
 	(match op with
-          Add | Sub | Mult | Div when t1 = Int && t2 = Int -> Int
+    Add | Sub | Mult | Div when t1 = Int && t2 = Int -> Int
+  | Add | Sub | Mult | Div when t1 = Float && t2 = Float -> Float
+  | Add | Sub | Mult | Div when t1 = Float && t2 = Int -> Float
+  | Add | Sub | Mult | Div when t1 = Int && t2 = Float -> Float
+  | Mod when t1 = Int && t2 = Int -> Int
 	| Equal | Neq when t1 = t2 -> Bool
-	| Less | Leq | Greater | Geq when t1 = Int && t2 = Int -> Bool
+	| Less | Leq | Greater | Geq when (t1 = Int || t1 = Float) && (t1 = Float || t2 = Int) -> Bool
 	| And | Or when t1 = Bool && t2 = Bool -> Bool
         | _ -> raise (Failure ("illegal binary operator " ^
               string_of_typ t1 ^ " " ^ string_of_op op ^ " " ^
@@ -117,6 +137,7 @@ let check (globals, functions) =
       | Unop(op, e) as ex -> let t = expr e in
 	 (match op with
 	   Neg when t = Int -> Int
+   | Neg when t = Float -> Float
 	 | Not when t = Bool -> Bool
          | _ -> raise (Failure ("illegal unary operator " ^ string_of_uop op ^
 	  		   string_of_typ t ^ " in " ^ string_of_expr ex)))
@@ -128,14 +149,25 @@ let check (globals, functions) =
 				     string_of_expr ex))
       | AddAssign(var, e) as ex -> let lt = type_of_identifier var
                                    and rt = expr e in
-        check_assign lt rt
+        checkOpAssign lt rt
                          (Failure ("illegal add assignment " ^ string_of_typ lt ^ " += " ^
+                           string_of_typ rt ^ " in " ^ string_of_expr ex))
+      | MinusAssign(var, e) as ex -> let lt = type_of_identifier var
+                                     and rt = expr e in
+        checkOpAssign lt rt
+                         (Failure ("illegal add assignment " ^ string_of_typ lt ^ " -= " ^
                            string_of_typ rt ^ " in " ^ string_of_expr ex))
       | SingleLinkAssign(var1, var2, e) as ex -> let node1Type = type_of_identifier var1
                                                  and node2Type = type_of_identifier var2 
                                                  and exprType = expr e in
         checkLinkAssign node1Type node2Type exprType
                   (Failure ("illegal single directed edge assignment " ^ string_of_typ node1Type ^ " -> " ^
+                           string_of_typ node2Type ^ " = " ^ string_of_typ exprType ^ " in " ^ string_of_expr ex))
+      | DoubleLinkAssign(var1, var2, e) as ex -> let node1Type = type_of_identifier var1
+                                                 and node2Type = type_of_identifier var2 
+                                                 and exprType = expr e in
+        checkLinkAssign node1Type node2Type exprType
+                  (Failure ("illegal undirected edge assignment " ^ string_of_typ node1Type ^ " -> " ^
                            string_of_typ node2Type ^ " = " ^ string_of_typ exprType ^ " in " ^ string_of_expr ex))
       | Call(fname, actuals) as call -> let fd = function_decl fname in
          if List.length actuals != List.length fd.formals then

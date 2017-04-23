@@ -12,6 +12,8 @@ type token =
   | ASSIGN
   | NOT
   | ADDASSIGN
+  | MINUSASSIGN
+  | MOD
   | EQ
   | NEQ
   | LT
@@ -23,6 +25,8 @@ type token =
   | AND
   | OR
   | SINGLELINK
+  | DOUBLELINK
+  | ADDADD
   | RETURN
   | IF
   | ELSE
@@ -32,7 +36,9 @@ type token =
   | BOOL
   | VOID
   | NODE
+  | FLOAT
   | LITERAL of (int)
+  | FLOAT_LITERAL of (float)
   | ID of (string)
   | EOF
 
