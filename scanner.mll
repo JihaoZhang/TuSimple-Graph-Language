@@ -32,6 +32,7 @@ rule token = parse
 | "while"  { WHILE }
 | "return" { RETURN }
 | "int"    { INT }
+| "node"   { NODE }
 | "bool"   { BOOL }
 | "void"   { VOID }
 | "true"   { TRUE }

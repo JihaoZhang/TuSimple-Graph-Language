@@ -30,6 +30,7 @@ type token =
   | INT
   | BOOL
   | VOID
+  | NODE
   | LITERAL of (int)
   | ID of (string)
   | EOF
