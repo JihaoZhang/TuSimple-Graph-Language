@@ -124,14 +124,18 @@ expr:
   | ID ADDASSIGN expr { AddAssign($1, $3) }
   | ID MINUSASSIGN expr { MinusAssign($1, $3) }
   | ID ASSIGN expr   { Assign($1, $3) }
+  | subscript ASSIGN expr { SubscriptAssign($1, $3) }
   | ID SINGLELINK ID ASSIGN expr { SingleLinkAssign($1, $3, $5) }
   | ID DOUBLELINK ID ASSIGN expr { DoubleLinkAssign($1, $3, $5) }
   | ID LPAREN actuals_opt RPAREN { Call($1, $3) }
   | LPAREN expr RPAREN { $2 } 
-  | ID LEFTSQUAREBRACKET expr RIGHTSQUAREBRACKET { Subscript($1, $3) }
   | ID SINGLELINK lists ASSIGN lists { BatchSingleLinkAssign($1, $3, $5) }
   | ID DOUBLELINK lists ASSIGN lists { BatchDoubleLinkAssign($1, $3, $5) }  
   | lists { $1 }
+  | subscript { $1 }
+
+subscript:
+   ID LEFTSQUAREBRACKET expr RIGHTSQUAREBRACKET { Subscript($1, $3) }
 
 lists:
   | AT LBRACE list_literals { ListLiteral($3) } 

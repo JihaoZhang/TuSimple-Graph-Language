@@ -24,6 +24,7 @@ int main(){
   map1 += s1;
   map1 += @{n1, n2, n3};  
   map1[n1];
+  map1[n1] = 1;
  /* l1 = {a, c , d}; illegal assignment list@{int} = list@{node} in l1 = {a, c, d} */
  /* {1, 2, a}; Type Must be homogeneous in a list */
   a -> @{n1, n2, n3} = @{1, 2, 3};
@@ -48,6 +49,5 @@ int main(){
   s1 += a;
   s1 = null;
   while(true){
-    a+=1;
   }
 }

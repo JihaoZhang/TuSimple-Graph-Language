@@ -29,7 +29,13 @@ let check (globals, functions) =
   (* Raise an exception of the given rvalue type cannot be assigned to
      the given lvalue type *)
   let check_assign lvaluet rvaluet err =
-     if lvaluet = rvaluet then lvaluet else raise err
+     if lvaluet = rvaluet then lvaluet else 
+     if rvaluet = Null_t 
+     then (match lvaluet with 
+        List t1 -> List(t1)
+      | Set t1 -> Set(t1)
+      |  _ -> raise err) 
+    else raise err
   in
 
   let checkAddAssign lvaluet rvaluet err = 
@@ -168,7 +174,7 @@ let check (globals, functions) =
       | BoolLit _ -> Bool
       | FloatLit _ -> Float
       | StringLit _ -> String
-      | Null -> List(Node)
+      | Null -> Null_t
       | ListLiteral el ->  let checkListLit el err = 
          match List.length el  with 
            0 -> raise (Failure ("can't define empty list in this way in TuSimple "))
@@ -189,7 +195,17 @@ let check (globals, functions) =
   | Add | Sub | Mult | Div when t1 = Int && t2 = Float -> Float
   | Add when t1 = String && t2 = String -> String
   | Mod when t1 = Int && t2 = Int -> Int
-	| Equal | Neq when t1 = t2 -> Bool
+	| Equal | Neq when t1 = t2 -> Bool 
+  | Equal | Neq when t1 = Null_t ->
+        (match t2 with 
+          List _ -> Bool
+        | Set _ -> Bool
+        |  _ -> raise (Failure ("illegal Equal/Not Equal Comparison with null ")))
+  | Equal | Neq when t2 = Null_t ->
+        (match t1 with 
+          List _ -> Bool
+        | Set _ -> Bool
+        |  _ -> raise (Failure ("illegal Equal/Not Equal Comparison with null ")))
 	| Less | Leq | Greater | Geq when (t1 = Int || t1 = Float) && (t1 = Float || t2 = Int) -> Bool
 	| And | Or when t1 = Bool && t2 = Bool -> Bool
         | _ -> raise (Failure ("illegal binary operator " ^
@@ -214,6 +230,11 @@ let check (globals, functions) =
         check_assign lt rt (Failure ("illegal assignment " ^ string_of_typ lt ^
 				     " = " ^ string_of_typ rt ^ " in " ^ 
 				     string_of_expr ex))
+      | SubscriptAssign(e1, e2) as ex -> let lt = expr e1 
+                                   and rt = expr e2 in
+        check_assign lt rt (Failure ("illegal assignment " ^ string_of_typ lt ^
+             " = " ^ string_of_typ rt ^ " in " ^ 
+             string_of_expr ex))                    
       | AddAssign(var, e) as ex -> let lt = type_of_identifier var
                                    and rt = expr e in
         checkAddAssign lt rt

@@ -9,8 +9,8 @@ int main(){
 	node b;
 	node c;
 	node d;
-	node n; 
 	node i;
+	node curr;
 	a -> b = 7; 
 	b -> c = 5; 
 	c -> d = 4; 
@@ -19,9 +19,10 @@ int main(){
 	distant += @{a,b,c,d}; 
 	queue += a; 
 	// distant.fill(maxint); 
-	while (b != a){ 
-//		visited[queue] = true; 
-//		for (i =queue ;i!=null; i++){ 
+	while (queue != null){ 
+	//  curr = queue.get
+		visited[curr] = true; 
+//		for (i = curr ;i!=null; i++){ 
 //		    if (distant[i]==null || distant[i]<distant[queue]+queue->i)
 //		    {
 //		     	distant[i] = distant[queue]+queue->i; 
