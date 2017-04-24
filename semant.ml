@@ -32,15 +32,24 @@ let check (globals, functions) =
      if lvaluet = rvaluet then lvaluet else raise err
   in
 
-  let checkAddAssign lvaluet rvaluet err =
+  let checkAddAssign lvaluet rvaluet err = 
      if ((lvaluet = Int || lvaluet = Float) && (rvaluet = Int || rvaluet = Float)) || ((rvaluet = String && rvaluet = String))
      then if lvaluet = rvaluet 
                 then lvaluet
                 else raise err
      else match lvaluet with
        List type1  when type1 = rvaluet -> Void
+     | List _ when lvaluet = rvaluet -> Void
      | Set type1  when type1 = rvaluet -> Void
+     | Set type1 -> (match rvaluet with
+                    List type2 when type1 = type2 -> Void
+                  |  Set type2 when type1 = type2 -> Void  
+                  | _ -> raise err)
      | Map (type1, _) when  type1 = rvaluet -> Void
+     | Map (type1, _ ) -> (match rvaluet with
+                    List type2 when type1 = type2 -> Void
+                  |  Set type2 when type1 = type2 -> Void  
+                  | _ -> raise err)
      | _ -> raise err
   in 
   
@@ -58,10 +67,20 @@ let check (globals, functions) =
      if node1Type = node2Type 
      then if node1Type = Node && node2Type = Node 
             then if exprType = Int || exprType = Float
-                 then exprType 
+                 then Edge 
                  else raise err
             else raise err
      else raise err
+  in
+
+  let checkBatchLinkAssign t1 t2 t3 err = 
+    if t1 = Node
+    then match t2 with
+          List _ -> (match t3 with
+                    | List _-> Edge
+                    | _ -> raise err)
+         | _ -> raise err
+    else raise err
   in
 
   let checkSubscript varType rt err =
@@ -77,7 +96,7 @@ let check (globals, functions) =
     if tp = Int || tp = Float
       then tp
     else match tp with
-       List _ -> tp
+       List rListTyp when rListTyp = Int || rListTyp = Float -> tp
       | _         -> raise err
   in
   (**** Checking Global Variables ****)
@@ -153,7 +172,7 @@ let check (globals, functions) =
          match List.length el  with 
            0 -> raise (Failure ("can't define empty list in this way in TuSimple "))
          | _ -> let elementType = expr (List.hd el) 
-                in List.iter (checkHomogeneous elementType err) (List.map expr el) ; elementType
+                in List.iter (checkHomogeneous elementType err) (List.map expr el) ; List(elementType)
         in
         checkListLit el (Failure ("illegal list definition" ^ " {" ^ String.concat ", " (List.map string_of_expr el) 
           ^ "}. Type Must be homogeneous in a list"))
@@ -216,6 +235,18 @@ let check (globals, functions) =
         checkLinkAssign node1Type node2Type exprType
                   (Failure ("illegal undirected edge assignment " ^ string_of_typ node1Type ^ " -> " ^
                            string_of_typ node2Type ^ " = " ^ string_of_typ exprType ^ " in " ^ string_of_expr ex))
+      | BatchSingleLinkAssign(var1, e2, e3) as ex -> let type1 = type_of_identifier var1 
+                                                   and type2 = expr e2
+                                                   and type3 = expr e3 in 
+        checkBatchLinkAssign type1 type2 type3
+                  (Failure ("illegal batch singlelink assignment" ^ string_of_expr ex ^ " in "^ string_of_typ type1 ^ " -> " 
+                    ^ string_of_typ type2 ^ " = " ^ string_of_typ type3))
+      | BatchDoubleLinkAssign(var1, e2, e3) as ex -> let type1 = type_of_identifier var1 
+                                                   and type2 = expr e2
+                                                   and type3 = expr e3 in 
+        checkBatchLinkAssign type1 type2 type3
+                  (Failure ("illegal batch undirected edge assignment" ^ string_of_expr ex ^ " in "^ string_of_typ type1 ^ " -> " 
+                    ^ string_of_typ type2 ^ " = " ^ string_of_typ type3))
       | Call(fname, actuals) as call -> let fd = function_decl fname in
          if List.length actuals != List.length fd.formals then
            raise (Failure ("expecting " ^ string_of_int

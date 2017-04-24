@@ -5,7 +5,7 @@ type op = Add | Sub | Mult | Div | Equal | Neq | Less | Leq | Greater | Geq |
 
 type uop = Neg | Not
 
-type typ = Int | Bool | Void | Node | Float | String | List of typ | Set of typ | Map of typ * typ | Graph
+type typ = Int | Bool | Void | Node | Float | String | List of typ | Set of typ | Map of typ * typ | Graph | Edge
 
 type bind = typ * string
 
@@ -27,6 +27,8 @@ type expr =
   | Subscript of string * expr
   | ListLiteral of expr list
   | Noexpr
+  | BatchSingleLinkAssign of string * expr * expr
+  | BatchDoubleLinkAssign of string * expr * expr
 
 type stmt =
     Block of stmt list
@@ -88,6 +90,8 @@ let rec string_of_expr = function
   | Noexpr -> ""
   | Subscript(var1, e) -> var1 ^ "[" ^ string_of_expr e ^ "]" 
   | ListLiteral(el) -> "{" ^ String.concat ", " (List.map string_of_expr el) ^ "}"
+  | BatchSingleLinkAssign(var1, e2, e3) ->  var1 ^ " -> " ^ string_of_expr e2 ^ " = " ^ string_of_expr e3
+  | BatchDoubleLinkAssign(var1, e2, e3) ->  var1 ^ " -- " ^ string_of_expr e2 ^ " = " ^ string_of_expr e3
 
 let rec string_of_stmt = function
     Block(stmts) ->
@@ -113,6 +117,7 @@ let rec string_of_typ = function
   | Set(t1) -> "set" ^ "@{" ^ string_of_typ t1 ^ "}"
   | Map(t1, t2) -> "map" ^ "@{" ^ string_of_typ t1 ^ ", " ^ string_of_typ t2 ^ "}"
   | Graph -> "graph"
+  | Edge -> "edge"
 
 let string_of_vdecl (t, id) = string_of_typ t ^ " " ^ id ^ ";\n"
 

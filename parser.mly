@@ -129,6 +129,8 @@ expr:
   | LPAREN expr RPAREN { $2 }
   | ID LEFTSQUAREBRACKET expr RIGHTSQUAREBRACKET { Subscript($1, $3) }
   | LBRACE list_literals { ListLiteral($2) }
+  | ID SINGLELINK expr ASSIGN expr { BatchSingleLinkAssign($1, $3, $5) }
+  | ID DOUBLELINK expr ASSIGN expr { BatchDoubleLinkAssign($1, $3, $5) }
 
 
 list_literals:
