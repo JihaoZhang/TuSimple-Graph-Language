@@ -9,6 +9,8 @@ int main(){
   list @{list @{int}} l2;
   set @{node} s1;
   map @{node, int} map1;
+ {1, 2, 3};
+ {a, c, d};
   a -> c = 1;                                                   /*  single  directed edge */
   a -- d = 2;                                                   /*  undirected edge			*/
   b = 10; 		                                                  /*  integer assignment		*/

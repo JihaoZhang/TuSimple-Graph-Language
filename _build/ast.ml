@@ -25,6 +25,7 @@ type expr =
   | DoubleLinkAssign of string * string * expr
   | Call of string * expr list
   | Subscript of string * expr
+  | ListLiteral of expr list
   | Noexpr
 
 type stmt =
@@ -86,6 +87,7 @@ let rec string_of_expr = function
       f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ")"
   | Noexpr -> ""
   | Subscript(var1, e) -> var1 ^ "[" ^ string_of_expr e ^ "]" 
+  | ListLiteral(el) -> "{" ^ String.concat ", " (List.map string_of_expr el) ^ "}"
 
 let rec string_of_stmt = function
     Block(stmts) ->

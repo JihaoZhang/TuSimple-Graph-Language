@@ -38,16 +38,20 @@ let check (globals, functions) =
                 then lvaluet
                 else raise err
      else match lvaluet with
-     List type1  when type1 = rvaluet -> Void
+       List type1  when type1 = rvaluet -> Void
      | Set type1  when type1 = rvaluet -> Void
-     | Map (type1, type2) when  type1 = rvaluet -> Void
+     | Map (type1, _) when  type1 = rvaluet -> Void
      | _ -> raise err
   in 
   
   let checkMinusAssign lvaluet rvaluet err =
      if (lvaluet = Int || lvaluet = Float) && (rvaluet = Int || rvaluet = Float) 
      then if lvaluet = rvaluet then lvaluet else raise err
-     else raise err
+     else match lvaluet with
+       List type1  when type1 = rvaluet -> Void
+     | Set type1  when type1 = rvaluet -> Void
+     | Map (type1, _) when  type1 = rvaluet -> Void
+     | _ -> raise err
   in
 
   let checkLinkAssign node1Type node2Type exprType err=
@@ -63,13 +67,18 @@ let check (globals, functions) =
   let checkSubscript varType rt err =
     if varType = String && rt = Int
       then varType
-    else raise err
+    else match varType with
+       List type1  when rt = Int -> type1
+     | Map (type1, type2) when  type1 = rt -> type2
+     | _ -> raise err
   in
-  
+
   let checkAddAdd tp err =
-    if tp = Int
+    if tp = Int || tp = Float
       then tp
-    else raise err
+    else match tp with
+       List _ -> tp
+      | _         -> raise err
   in
   (**** Checking Global Variables ****)
 
@@ -129,12 +138,25 @@ let check (globals, functions) =
       with Not_found -> raise (Failure ("undeclared identifier " ^ s))
     in
 
+    let checkHomogeneous elementType err tp  =
+        if tp != elementType 
+        then raise err
+    in 
+
     (* Return the type of an expression or throw an exception *)
     let rec expr = function
 	Literal _ -> Int
       | BoolLit _ -> Bool
       | FloatLit _ -> Float
       | StringLit _ -> String
+      | ListLiteral el ->  let checkListLit el err = 
+         match List.length el  with 
+           0 -> raise (Failure ("can't define empty list in this way in TuSimple "))
+         | _ -> let elementType = expr (List.hd el) 
+                in List.iter (checkHomogeneous elementType err) (List.map expr el) ; elementType
+        in
+        checkListLit el (Failure ("illegal list definition" ^ " {" ^ String.concat ", " (List.map string_of_expr el) 
+          ^ "}. Type Must be homogeneous in a list"))
       | Id s -> type_of_identifier s
       | AddAdd s -> let tp = type_of_identifier s in
         checkAddAdd tp (Failure ("illegal next operation " ^ string_of_typ tp ^

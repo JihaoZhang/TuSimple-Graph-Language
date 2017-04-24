@@ -128,6 +128,16 @@ expr:
   | ID LPAREN actuals_opt RPAREN { Call($1, $3) }
   | LPAREN expr RPAREN { $2 }
   | ID LEFTSQUAREBRACKET expr RIGHTSQUAREBRACKET { Subscript($1, $3) }
+  | LBRACE list_literals { ListLiteral($2) }
+
+
+list_literals:
+   RBRACE { [] }
+ | listElements RBRACE { List.rev $1 }
+
+listElements:
+    expr    { [$1] }
+  | listElements COMMA expr  { $3 :: $1 }
 
 
 
