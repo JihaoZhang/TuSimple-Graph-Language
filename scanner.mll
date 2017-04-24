@@ -40,6 +40,7 @@ rule token = parse
 | "->"	   { SINGLELINK }
 | "--"	   { DOUBLELINK }
 | "@"      { AT }
+| "//"	   { signleLineComment lexbuf }
 
 | "%"	   { MOD }
 | "++" 	   { ADDADD }
@@ -63,6 +64,7 @@ rule token = parse
 
 | "true"   { TRUE }
 | "false"  { FALSE }
+| "null"   { NULL }
 
 | ['a'-'z' 'A'-'Z']['a'-'z' 'A'-'Z' '0'-'9' '_']* as lxm { ID(lxm) }
 | ['0'-'9']+ as lxm { LITERAL(int_of_string lxm) }
@@ -74,3 +76,7 @@ rule token = parse
 and comment = parse
   "*/" { token lexbuf }
 | _    { comment lexbuf }
+
+and signleLineComment = parse
+  "\n" { token lexbuf }
+| _ {signleLineComment lexbuf}

@@ -9,8 +9,6 @@ ocamlfind ocamldep -package llvm.analysis -package llvm -modules codegen.ml > co
 ocamlfind ocamlc -c -w +a-4 -package llvm.analysis -package llvm -o ast.cmo ast.ml
 # Target: parser.mly, tags: { extension:mly, file:parser.mly, ocaml, ocamlyacc, package(llvm), package(llvm.analysis), parser, quiet }
 /usr/bin/ocamlyacc parser.mly
-+ /usr/bin/ocamlyacc parser.mly
-14 shift/reduce conflicts, 2 reduce/reduce conflicts.
 # Target: parser.mli.depends, tags: { extension:mli, file:parser.mli, ocaml, ocamldep, package(llvm), package(llvm.analysis), quiet }
 ocamlfind ocamldep -package llvm.analysis -package llvm -modules parser.mli > parser.mli.depends
 # Target: scanner.mll, tags: { extension:mll, file:scanner.mll, lexer, ocaml, ocamllex, package(llvm), package(llvm.analysis), quiet }
@@ -35,7 +33,7 @@ Mod
 File "codegen.ml", line 88, characters 27-1683:
 Warning 8: this pattern-matching is not exhaustive.
 Here is an example of a value that is not matched:
-(FloatLit _|StringLit _|AddAssign (_, _)|MinusAssign (_, _)|AddAdd _|
+(Null|FloatLit _|StringLit _|AddAssign (_, _)|MinusAssign (_, _)|AddAdd _|
 SingleLinkAssign (_, _, _)|DoubleLinkAssign (_, _, _)|Subscript (_, _)|
 ListLiteral _|BatchSingleLinkAssign (_, _, _)|
 BatchDoubleLinkAssign (_, _, _))
@@ -65,7 +63,7 @@ Mod
 File "codegen.ml", line 88, characters 27-1683:
 Warning 8: this pattern-matching is not exhaustive.
 Here is an example of a value that is not matched:
-(FloatLit _|StringLit _|AddAssign (_, _)|MinusAssign (_, _)|AddAdd _|
+(Null|FloatLit _|StringLit _|AddAssign (_, _)|MinusAssign (_, _)|AddAdd _|
 SingleLinkAssign (_, _, _)|DoubleLinkAssign (_, _, _)|Subscript (_, _)|
 ListLiteral _|BatchSingleLinkAssign (_, _, _)|
 BatchDoubleLinkAssign (_, _, _))

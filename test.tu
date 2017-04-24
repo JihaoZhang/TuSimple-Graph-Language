@@ -3,7 +3,7 @@ int main(){
   int b;
   node c;
   node d;
-  node n1;
+  node n1; // this is a node
   node n2;
   node n3;
   float e;
@@ -13,20 +13,21 @@ int main(){
   list @{node} l3; 
   set @{node} s1;
   map @{node, int} map1;
- {1, 2, 3};
- {a, c, d};
-  l1 = {1, 2, 3};
-  l2 = {l1};
-  l3 += {a, c, d};
-  l1 += {4, 5, 6};
-  s1 += {a, c, d};
+ @{1, 2, 3};
+ @{a, c, d};
+  l1 = @{1, 2, 3};
+  l2 = @{l1};
+  l3 += @{a, c, d};
+  l1 += @{4, 5, 6};
+  s1 += @{a, c, d};
   map1 += l3;
   map1 += s1;
-  map1 += {n1, n2, n3};  
+  map1 += @{n1, n2, n3};  
+  map1[n1];
  /* l1 = {a, c , d}; illegal assignment list@{int} = list@{node} in l1 = {a, c, d} */
  /* {1, 2, a}; Type Must be homogeneous in a list */
-  a -> {n1, n2, n3} = {1, 2, 3};
-  a -- {n1, n2, n3} = {2, 3, 4};
+  a -> @{n1, n2, n3} = @{1, 2, 3};
+  a -- @{n1, n2, n3} = @{2, 3, 4};
   a -> c = 1;                                                   /*  single  directed edge */
   a -- d = 2;                                                   /*  undirected edge			*/
   b = 10; 		                                                  /*  integer assignment		*/
@@ -45,4 +46,8 @@ int main(){
   l2 += l1;
   map1 += a;
   s1 += a;
+  s1 = null;
+  while(true){
+    a+=1;
+  }
 }

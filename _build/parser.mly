@@ -6,7 +6,7 @@ open Ast
 
 %token SEMI LPAREN RPAREN LBRACE RBRACE COMMA LEFTSQUAREBRACKET RIGHTSQUAREBRACKET
 %token PLUS MINUS TIMES DIVIDE ASSIGN NOT ADDASSIGN MINUSASSIGN MOD
-%token EQ NEQ LT LEQ GT GEQ TRUE FALSE AND OR SINGLELINK DOUBLELINK ADDADD AT
+%token EQ NEQ LT LEQ GT GEQ TRUE FALSE AND OR SINGLELINK DOUBLELINK ADDADD AT NULL
 %token RETURN IF ELSE FOR WHILE INT BOOL VOID NODE FLOAT STRING LIST SET MAP GRAPH
 
 %token <string> ID
@@ -103,6 +103,7 @@ expr:
   | STRING_LITERAL   { StringLit($1) }
   | TRUE             { BoolLit(true) }
   | FALSE            { BoolLit(false) }
+  | NULL             { Null }
   | ID               { Id($1) }
   | expr PLUS   expr { Binop($1, Add,   $3) }
   | expr MINUS  expr { Binop($1, Sub,   $3) }
@@ -126,20 +127,23 @@ expr:
   | ID SINGLELINK ID ASSIGN expr { SingleLinkAssign($1, $3, $5) }
   | ID DOUBLELINK ID ASSIGN expr { DoubleLinkAssign($1, $3, $5) }
   | ID LPAREN actuals_opt RPAREN { Call($1, $3) }
-  | LPAREN expr RPAREN { $2 }
+  | LPAREN expr RPAREN { $2 } 
   | ID LEFTSQUAREBRACKET expr RIGHTSQUAREBRACKET { Subscript($1, $3) }
-  | LBRACE list_literals { ListLiteral($2) }
-  | ID SINGLELINK expr ASSIGN expr { BatchSingleLinkAssign($1, $3, $5) }
-  | ID DOUBLELINK expr ASSIGN expr { BatchDoubleLinkAssign($1, $3, $5) }
+  | ID SINGLELINK lists ASSIGN lists { BatchSingleLinkAssign($1, $3, $5) }
+  | ID DOUBLELINK lists ASSIGN lists { BatchDoubleLinkAssign($1, $3, $5) }  
+  | lists { $1 }
+
+lists:
+  | AT LBRACE list_literals { ListLiteral($3) } 
 
 
-list_literals:
-   RBRACE { [] }
+ list_literals:
+    RBRACE { [] }
  | listElements RBRACE { List.rev $1 }
 
 listElements:
     expr    { [$1] }
-  | listElements COMMA expr  { $3 :: $1 }
+  | listElements COMMA expr  { $3 :: $1 } 
 
 
 

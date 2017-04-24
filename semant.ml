@@ -168,6 +168,7 @@ let check (globals, functions) =
       | BoolLit _ -> Bool
       | FloatLit _ -> Float
       | StringLit _ -> String
+      | Null -> List(Node)
       | ListLiteral el ->  let checkListLit el err = 
          match List.length el  with 
            0 -> raise (Failure ("can't define empty list in this way in TuSimple "))

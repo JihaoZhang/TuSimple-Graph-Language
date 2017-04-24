@@ -30,6 +30,7 @@ type token =
   | DOUBLELINK
   | ADDADD
   | AT
+  | NULL
   | RETURN
   | IF
   | ELSE
