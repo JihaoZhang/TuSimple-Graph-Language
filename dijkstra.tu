@@ -20,16 +20,16 @@ int main(){
 	queue += a; 
 	// distant.fill(maxint); 
 	while (queue != null){ 
-	//  curr = queue.get
+	//  curr = queue.first
 		visited[curr] = true; 
-//		for (i = curr ;i!=null; i++){ 
-//		    if (distant[i]==null || distant[i]<distant[queue]+queue->i)
-//		    {
-//		     	distant[i] = distant[queue]+queue->i; 
-//		    }
-//		} 
-//		queue++; 
-//		// queue += distant.del(visited).min.node;
+		for (i = curr; i!=null; i++){ 
+		    if ( distant[i] == null || (distant[i] < (distant[curr] + curr -> i)))
+		    {
+		     	distant[i] = distant[curr]+ curr->i; 
+		    }
+		} 
+		queue++; 
+		// queue += distant.del(visited).min.node;
 	}
 
 }

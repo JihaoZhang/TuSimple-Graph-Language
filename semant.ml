@@ -99,10 +99,10 @@ let check (globals, functions) =
   in
 
   let checkAddAdd tp err =
-    if tp = Int || tp = Float
+    if tp = Int || tp = Float || tp = Node
       then tp
     else match tp with
-       List rListTyp when rListTyp = Int || rListTyp = Float -> tp
+       List _ -> tp
       | _         -> raise err
   in
   (**** Checking Global Variables ****)
@@ -189,23 +189,28 @@ let check (globals, functions) =
              " ++ "))
       | Binop(e1, op, e2) as e -> let t1 = expr e1 and t2 = expr e2 in
 	(match op with
-    Add | Sub | Mult | Div when t1 = Int && t2 = Int -> Int
+    (* Add | Sub | Mult | Div when t1 = Int && t2 = Int -> Int
   | Add | Sub | Mult | Div when t1 = Float && t2 = Float -> Float
   | Add | Sub | Mult | Div when t1 = Float && t2 = Int -> Float
   | Add | Sub | Mult | Div when t1 = Int && t2 = Float -> Float
+  | *) 
+    Add | Sub | Mult | Div when (t1 = Edge || t1 = Int) && (t2 = Edge || t2 = Int) -> Int
+  | Add | Sub | Mult | Div when (t1 = Edge || t1 = Float) && (t2 = Float || t2 = Int) -> Float
   | Add when t1 = String && t2 = String -> String
   | Mod when t1 = Int && t2 = Int -> Int
 	| Equal | Neq when t1 = t2 -> Bool 
-  | Equal | Neq when t1 = Null_t ->
-        (match t2 with 
+  | Equal | Neq when t1 = Null_t -> Bool
+        (* match t2 with 
           List _ -> Bool
         | Set _ -> Bool
-        |  _ -> raise (Failure ("illegal Equal/Not Equal Comparison with null ")))
-  | Equal | Neq when t2 = Null_t ->
-        (match t1 with 
+        | Node -> Bool
+        |  _ -> raise (Failure ("illegal Equal/Not Equal Comparison with null " ^ string_of_typ t2 ^ " = null")) *)
+  | Equal | Neq when t2 = Null_t -> Bool
+        (* match t1 with 
           List _ -> Bool
         | Set _ -> Bool
-        |  _ -> raise (Failure ("illegal Equal/Not Equal Comparison with null ")))
+        | Node -> Bool
+        |  _ -> raise (Failure ("illegal Equal/Not Equal Comparison with null " ^ string_of_typ t1 ^ " = null")) *)
 	| Less | Leq | Greater | Geq when (t1 = Int || t1 = Float) && (t1 = Float || t2 = Int) -> Bool
 	| And | Or when t1 = Bool && t2 = Bool -> Bool
         | _ -> raise (Failure ("illegal binary operator " ^
@@ -245,12 +250,18 @@ let check (globals, functions) =
         checkMinusAssign lt rt
                          (Failure ("illegal add assignment " ^ string_of_typ lt ^ " -= " ^
                            string_of_typ rt ^ " in " ^ string_of_expr ex))
-      | SingleLinkAssign(var1, var2, e) as ex -> let node1Type = type_of_identifier var1
-                                                 and node2Type = type_of_identifier var2 
-                                                 and exprType = expr e in
-        checkLinkAssign node1Type node2Type exprType
-                  (Failure ("illegal single directed edge assignment " ^ string_of_typ node1Type ^ " -> " ^
-                           string_of_typ node2Type ^ " = " ^ string_of_typ exprType ^ " in " ^ string_of_expr ex))
+      | SingleEdge(e1, e2) as ex -> let lt = type_of_identifier e1
+                                    and rt = type_of_identifier e2 in
+        if lt = Node && rt = Node
+        then Edge
+        else raise (Failure ("illegal get edge " ^ string_of_typ lt ^ " -> " ^
+                           string_of_typ rt ^ " in " ^ string_of_expr ex))
+      | SingleLinkAssign(e1, e) as ex -> let tp1 = expr e1
+                                         and tp2 = expr e in
+        if tp1 = Edge && (tp2 = Int || tp2 = Float)
+        then tp2
+        else raise (Failure ("illegal single directed edge assignment " ^ string_of_typ tp1 ^ " = " 
+                      ^ string_of_typ tp2 ^ " in " ^ string_of_expr ex))
       | DoubleLinkAssign(var1, var2, e) as ex -> let node1Type = type_of_identifier var1
                                                  and node2Type = type_of_identifier var2 
                                                  and exprType = expr e in

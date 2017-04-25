@@ -22,12 +22,13 @@ type expr =
   | AddAssign of string * expr
   | MinusAssign of string * expr
   | AddAdd of string 
-  | SingleLinkAssign of string * string * expr
-  | DoubleLinkAssign of string * string * expr
+  | SingleEdge of  string * string
   | Call of string * expr list
   | Subscript of string * expr
   | ListLiteral of expr list
   | Noexpr
+  | SingleLinkAssign of expr * expr
+  | DoubleLinkAssign of string * string * expr
   | SubscriptAssign of expr * expr
   | BatchSingleLinkAssign of string * expr * expr
   | BatchDoubleLinkAssign of string * expr * expr
@@ -87,7 +88,8 @@ let rec string_of_expr = function
   | SubscriptAssign(subscript, e) -> string_of_expr subscript ^ " = " ^ string_of_expr e
   | AddAssign(v, e) -> v ^ " += " ^ string_of_expr e
   | MinusAssign(v, e) -> v ^ " -= " ^ string_of_expr e
-  | SingleLinkAssign(n1, n2, e) -> n1 ^ " -> " ^ n2 ^ " = " ^ string_of_expr e
+  | SingleEdge(e1, e2) ->  e1 ^ " -> " ^  e2
+  | SingleLinkAssign(e1 , e) -> string_of_expr e1 ^ " = " ^ string_of_expr e
   | DoubleLinkAssign(n1, n2, e) -> n1 ^ " -- " ^ n2 ^ " = " ^ string_of_expr e
   | Call(f, el) ->
       f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ")"
