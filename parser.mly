@@ -5,8 +5,8 @@ open Ast
 %}
 
 %token SEMI LPAREN RPAREN LBRACE RBRACE COMMA LEFTSQUAREBRACKET RIGHTSQUAREBRACKET
-%token PLUS MINUS TIMES DIVIDE ASSIGN NOT ADDASSIGN MINUSASSIGN MOD
-%token EQ NEQ LT LEQ GT GEQ TRUE FALSE AND OR SINGLELINK DOUBLELINK ADDADD AT NULL
+%token PLUS MINUS TIMES DIVIDE ASSIGN NOT ADDASSIGN MINUSASSIGN MOD DOT
+%token EQ NEQ LT LEQ GT GEQ TRUE FALSE AND OR SINGLELINK DOUBLELINK ADDADD AT NULL MAXINT MININT
 %token RETURN IF ELSE FOR WHILE INT BOOL VOID NODE FLOAT STRING LIST SET MAP GRAPH
 
 %token <string> ID
@@ -99,6 +99,8 @@ expr_opt:
 
 expr:
     LITERAL          { Literal($1) }
+  | MAXINT           { Literal(1073741823) }
+  | MININT           { Literal(-1073741824) }
   | FLOAT_LITERAL    { FloatLit($1) }
   | STRING_LITERAL   { StringLit($1) }
   | TRUE             { BoolLit(true) }
@@ -128,16 +130,18 @@ expr:
   | singleEdge ASSIGN expr { SingleLinkAssign($1, $3) }
   | ID DOUBLELINK ID ASSIGN expr { DoubleLinkAssign($1, $3, $5) }
   | ID LPAREN actuals_opt RPAREN { Call($1, $3) }
+  | ID DOT ID LPAREN actuals_opt RPAREN { DotCall($1, $3, $5) }
   | LPAREN expr RPAREN { $2 } 
   | ID SINGLELINK lists ASSIGN lists { BatchSingleLinkAssign($1, $3, $5) }
-  | ID DOUBLELINK lists ASSIGN lists { BatchDoubleLinkAssign($1, $3, $5) }  
+  | ID DOUBLELINK lists ASSIGN lists { BatchDoubleLinkAssign($1, $3, $5) } 
   | lists { $1 }
   | singleEdge { $1 }
   | subscript { $1 }
 
+   
+
 singleEdge:
    ID SINGLELINK ID { SingleEdge($1, $3) }
-
 
 subscript:
    ID LEFTSQUAREBRACKET expr RIGHTSQUAREBRACKET { Subscript($1, $3) }

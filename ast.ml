@@ -24,6 +24,7 @@ type expr =
   | AddAdd of string 
   | SingleEdge of  string * string
   | Call of string * expr list
+  | DotCall of string * string * expr list
   | Subscript of string * expr
   | ListLiteral of expr list
   | Noexpr
@@ -93,6 +94,8 @@ let rec string_of_expr = function
   | DoubleLinkAssign(n1, n2, e) -> n1 ^ " -- " ^ n2 ^ " = " ^ string_of_expr e
   | Call(f, el) ->
       f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ")"
+  | DotCall(d, f, el) ->
+     d ^ "." ^ f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ")"
   | Noexpr -> ""
   | Subscript(var1, e) -> var1 ^ "[" ^ string_of_expr e ^ "]" 
   | ListLiteral(el) -> "@{" ^ String.concat ", " (List.map string_of_expr el) ^ "}"

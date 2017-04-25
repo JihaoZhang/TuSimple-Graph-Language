@@ -291,6 +291,7 @@ let check (globals, functions) =
                 " expected " ^ string_of_typ ft ^ " in " ^ string_of_expr e))))
              fd.formals actuals;
            fd.typ
+       | DotCall(dname, fname, actuals) as call -> Int
     in
 
     let check_bool_expr e = if expr e != Bool

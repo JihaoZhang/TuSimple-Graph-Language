@@ -18,9 +18,9 @@ int main(){
 	
 	distant += @{a,b,c,d}; 
 	queue += a; 
-	// distant.fill(maxint); 
+	distant.fill(maxint); 
 	while (queue != null){ 
-	//  curr = queue.first
+	//  curr = queue.first();
 		visited[curr] = true; 
 		for (i = curr; i!=null; i++){ 
 		    if ( distant[i] == null || (distant[i] < (distant[curr] + curr -> i)))
@@ -29,7 +29,7 @@ int main(){
 		    }
 		} 
 		queue++; 
-		// queue += distant.del(visited).min.node;
+		// queue += distant.del(visited).min().node;
 	}
 
 }

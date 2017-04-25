@@ -16,6 +16,7 @@ type token =
   | ADDASSIGN
   | MINUSASSIGN
   | MOD
+  | DOT
   | EQ
   | NEQ
   | LT
@@ -31,6 +32,8 @@ type token =
   | ADDADD
   | AT
   | NULL
+  | MAXINT
+  | MININT
   | RETURN
   | IF
   | ELSE

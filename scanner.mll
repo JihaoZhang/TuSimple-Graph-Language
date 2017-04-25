@@ -41,6 +41,11 @@ rule token = parse
 | "--"	   { DOUBLELINK }
 | "@"      { AT }
 | "//"	   { signleLineComment lexbuf }
+| "."	   { DOT }
+
+| "maxint" { MAXINT }
+| "minint" { MININT }
+
 
 | "%"	   { MOD }
 | "++" 	   { ADDADD }
