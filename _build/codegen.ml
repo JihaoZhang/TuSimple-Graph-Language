@@ -19,16 +19,64 @@ module StringMap = Map.Make(String)
 
 let translate (globals, functions) =
   let context = L.global_context () in
+  let llctx = L.global_context () in
+  let customM = L.MemoryBuffer.of_file "list.bc" in
+  let llm = Llvm_bitreader.parse_bitcode llctx customM in
   let the_module = L.create_module context "TuSimple"
   and i32_t  = L.i32_type  context
   and i8_t   = L.i8_type   context
   and i1_t   = L.i1_type   context
-  and void_t = L.void_type context in
+  and void_t = L.void_type context 
+  and list_t = L.pointer_type (match L.type_by_name llm "struct.List" with
+    None -> raise (Failure "struct.List doesn't defined.")
+  | Some x -> x)
+
+  in
 
   let ltype_of_typ = function
       A.Int -> i32_t
     | A.Bool -> i1_t
-    | A.Void -> void_t in
+    | A.Void -> void_t 
+    | A.List(_) -> list_t
+  in
+
+  let lconst_of_typ = function
+    A.Int -> L.const_int i32_t 0
+  | A.Float -> L.const_int i32_t 1
+  | A.Bool -> L.const_int i32_t 2
+  | A.String -> L.const_int i32_t 3
+   (* | A.Node_t -> L.const_int i32_t 4
+  | A.Graph_t -> L.const_int i32_t 5
+  | A.Edge_t -> L.const_int i32_t 8
+ | A.List_Int_t -> list_t
+  | A.Dict_String_t -> dict_t *)
+  | _ -> raise (Failure ("[Error] Type Not Found for lconst_of_typ."))
+
+  in
+(*
+List
+*)
+
+  let create_list_t  = L.function_type list_t [| i32_t |]
+  in
+  let create_list_f  = L.declare_function "create_list" create_list_t the_module
+  in
+  let create_list typ llbuilder =
+    let actuals = [|lconst_of_typ typ|]in (
+      L.build_call create_list_f actuals "create_list" llbuilder
+    )
+  in
+
+  let add_list_t  = L.var_arg_function_type list_t [| list_t |]
+  in
+
+  let add_list_f  = L.declare_function "plus_list" add_list_t the_module
+  in
+
+  let add_list data l_ptr llbuilder =
+    let actuals = [| l_ptr; data|] in
+      (L.build_call add_list_f actuals "plus_list" llbuilder)
+  in
 
   (* Declare each global variable; remember its value in a map *)
   let global_vars =
@@ -90,6 +138,7 @@ let translate (globals, functions) =
       | A.BoolLit b -> L.const_int i1_t (if b then 1 else 0)
       | A.Noexpr -> L.const_int i32_t 0
       | A.Id s -> L.build_load (lookup s) s builder
+      | A.ListP typ -> create_list typ builder
       | A.Binop (e1, op, e2) ->
 	  let e1' = expr builder e1
 	  and e2' = expr builder e2 in
