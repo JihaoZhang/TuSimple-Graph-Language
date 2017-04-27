@@ -1,3 +1,6 @@
-tusimple.native
+*.native
 .DS_Store
-
+_build/
+*.exe
+*.ll
+*.json
