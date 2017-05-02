@@ -1,13 +1,9 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <stdarg.h>
-#include "list.c"
-
-
 #ifndef TUSIMPLELIB_SET_H
 #define TUSIMPLELIB_SET_H
 
+
+#include "config.h"
+#include "list.c"
 
 #define SET_MISSING -1
 #define SET_OK 1

@@ -1,15 +1,9 @@
-#include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdbool.h>
-#include <stdarg.h>
-#include "list.h"
-
-
 #ifndef TUSIMPLELIB_HASHMAP_H
 #define TUSIMPLELIB_HASHMAP_H
 
+
+#include "config.h"
+#include "list.c"
 
 #define MAP_MISSING -3  /* No such element */
 #define MAP_FULL -2    /* Hashmap is full */

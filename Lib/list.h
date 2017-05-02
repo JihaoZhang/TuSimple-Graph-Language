@@ -4,17 +4,10 @@
 //#include <stdarg.h>
 //#include <stdbool.h>
 #include "config.h"
-#include "cast.c"
-
 
 #ifndef TUSIMPLELIB_LIST_H
 #define TUSIMPLELIB_LIST_H
 
-
-struct List_int
-{
-	List;
-} ;
 
 struct List {
     int32_t size;

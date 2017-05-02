@@ -14,12 +14,14 @@
 #include <string.h>
 #include <assert.h>
 #include <math.h>
+#include "cast.c"
 
 
 #define INT 0
 #define FLOAT 1
 #define BOOL 2
 #define STRING 3
+#define NODE 4
 
 
 #endif //LIB_CONFIG_H
