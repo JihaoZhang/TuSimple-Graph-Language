@@ -11,6 +11,11 @@
 #define TUSIMPLELIB_LIST_H
 
 
+struct List_int
+{
+	List;
+} ;
+
 struct List {
     int32_t size;
     int32_t type;

@@ -30,6 +30,12 @@ let translate (globals, functions) =
   and list_t = L.pointer_type (match L.type_by_name llm "struct.List" with
 	  None -> raise (Failure "struct.List doesn't defined.")
   | Some x -> x)
+  and set_t = (match L.type_by_name llm "struct.Set" with
+    None -> raise (Failure "struct.Set doesn't defined.")
+  | Some x -> x)
+  and map_t = (match L.type_by_name llm "struct.HashMap" with
+    None -> raise (Failure "struct.Set doesn't defined.")
+  | Some x -> x)
 
   in
 
@@ -38,6 +44,8 @@ let translate (globals, functions) =
 	| A.Bool -> i1_t
 	| A.Void -> void_t 
 	| A.List(_) -> list_t
+  | A.Set(_) -> set_t
+  | A.Map(_, _) -> map_t
   in
 
   let lconst_of_typ = function

@@ -13,7 +13,6 @@ type expr =
     Literal of int
   | BoolLit of bool
   | Null  
-  | ListP of typ
   | FloatLit of float
   | StringLit of string
   | Id of string
