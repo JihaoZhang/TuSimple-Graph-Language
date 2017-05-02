@@ -30,12 +30,12 @@ let translate (globals, functions) =
   and list_t = L.pointer_type (match L.type_by_name llm "struct.List" with
 	  None -> raise (Failure "struct.List doesn't defined.")
   | Some x -> x)
-  and set_t = (match L.type_by_name llm "struct.Set" with
+(*   and set_t = (match L.type_by_name llm "struct.Set" with
     None -> raise (Failure "struct.Set doesn't defined.")
   | Some x -> x)
   and map_t = (match L.type_by_name llm "struct.HashMap" with
     None -> raise (Failure "struct.Set doesn't defined.")
-  | Some x -> x)
+  | Some x -> x) *)
 
   in
 
@@ -44,8 +44,8 @@ let translate (globals, functions) =
 	| A.Bool -> i1_t
 	| A.Void -> void_t 
 	| A.List(_) -> list_t
-  | A.Set(_) -> set_t
-  | A.Map(_, _) -> map_t
+(*   | A.Set(_) -> set_t
+  | A.Map(_, _) -> map_t *)
   in
 
   let lconst_of_typ = function
@@ -81,12 +81,14 @@ List
   let add_list_f  = L.declare_function "plus_list" add_list_t the_module
   in
 
-  let add_list data l_ptr llbuilder =
+  let add_list l_ptr llbuilder data =
 	let actuals = [| l_ptr; data|] in
-	  (L.build_call add_list_f actuals "plus_list" llbuilder)
+	  ignore (L.build_call add_list_f actuals "plus_list" llbuilder)
   in
 
-
+  let add_all_elements_into_list element_list l_ptr llbuilder = 
+    List.iter (add_list l_ptr llbuilder) element_list
+  in
 	(* Declare each global variable; remember its value in a map *)
 	let global_vars =
 		let global_var m (t, n) =
@@ -141,6 +143,8 @@ List
 			with Not_found -> StringMap.find n global_vars
 		in
 
+    let get_llvm_from_llvm_asttype_tuple (ltype,_) = ltype
+    in
 
 		(* Construct code for an expression; return its value/type tuple *)
 		let rec expr builder = function
@@ -148,7 +152,17 @@ List
 			| A.BoolLit b -> (L.const_int i1_t (if b then 1 else 0), A.Bool)
 			| A.Noexpr -> (L.const_int i32_t 0, A.Void)
 			| A.Id s -> (L.build_load (fst (lookup s)) s builder, (snd (lookup s)))
-			| A.ListP typ -> (create_list typ builder, typ)
+      | A.ListLiteral el -> 
+        let listLiteral_type = snd (expr builder (List.hd el))
+        in
+        let listPtr = create_list listLiteral_type builder
+        in 
+          ignore(add_all_elements_into_list 
+          (List.map get_llvm_from_llvm_asttype_tuple (List.map (expr builder) el)) 
+          listPtr
+          builder)
+          ;(listPtr, listLiteral_type)
+          
 			| A.Binop (e1, op, e2) ->
 				let (e1', t1') = expr builder e1
 				and (e2', t2') = expr builder e2 in
@@ -174,7 +188,7 @@ List
 					| A.Not     -> L.build_not) e' "tmp" builder, t')
 			| A.Assign (s, e) -> 
           let (e', t') = expr builder e in
-						ignore (L.build_store e' (fst (lookup s)) builder); (e', t')
+           ignore (L.build_store e' (fst (lookup s)) builder); (e', t')
       | A.Call ("print", [e]) | A.Call ("printb", [e]) ->
 				 (L.build_call printf_func [| int_format_str ; (fst (expr builder e)) |]
 			   "printf" builder, (snd (expr builder e)))
