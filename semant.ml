@@ -155,7 +155,7 @@ let check (globals, functions) =
 
     (* Type of each variable (global, formal, or local *)
     let symbols = List.fold_left (fun m (t, n) -> StringMap.add n t m)
-	StringMap.empty (globals @ func.formals @ func.locals )
+	   StringMap.empty (globals @ func.formals @ func.locals )
     in
 
     let type_of_identifier s =
@@ -170,7 +170,7 @@ let check (globals, functions) =
 
     (* Return the type of an expression or throw an exception *)
     let rec expr = function
-	Literal _ -> Int
+	      Literal _ -> Int
       | BoolLit _ -> Bool
       | FloatLit _ -> Float
       | StringLit _ -> String
@@ -188,42 +188,43 @@ let check (globals, functions) =
         checkAddAdd tp (Failure ("illegal next operation " ^ string_of_typ tp ^
              " ++ "))
       | Binop(e1, op, e2) as e -> let t1 = expr e1 and t2 = expr e2 in
-	(match op with
-    (* Add | Sub | Mult | Div when t1 = Int && t2 = Int -> Int
-  | Add | Sub | Mult | Div when t1 = Float && t2 = Float -> Float
-  | Add | Sub | Mult | Div when t1 = Float && t2 = Int -> Float
-  | Add | Sub | Mult | Div when t1 = Int && t2 = Float -> Float
-  | *) 
-    Add | Sub | Mult | Div when (t1 = Edge || t1 = Int) && (t2 = Edge || t2 = Int) -> Int
-  | Add | Sub | Mult | Div when (t1 = Edge || t1 = Float) && (t2 = Float || t2 = Int) -> Float
-  | Add when t1 = String && t2 = String -> String
-  | Mod when t1 = Int && t2 = Int -> Int
-	| Equal | Neq when t1 = t2 -> Bool 
-  | Equal | Neq when t1 = Null_t -> Bool
-        (* match t2 with 
-          List _ -> Bool
-        | Set _ -> Bool
-        | Node -> Bool
-        |  _ -> raise (Failure ("illegal Equal/Not Equal Comparison with null " ^ string_of_typ t2 ^ " = null")) *)
-  | Equal | Neq when t2 = Null_t -> Bool
-        (* match t1 with 
-          List _ -> Bool
-        | Set _ -> Bool
-        | Node -> Bool
-        |  _ -> raise (Failure ("illegal Equal/Not Equal Comparison with null " ^ string_of_typ t1 ^ " = null")) *)
-	| Less | Leq | Greater | Geq when (t1 = Int || t1 = Float) && (t1 = Float || t2 = Int) -> Bool
-	| And | Or when t1 = Bool && t2 = Bool -> Bool
-        | _ -> raise (Failure ("illegal binary operator " ^
-              string_of_typ t1 ^ " " ^ string_of_op op ^ " " ^
-              string_of_typ t2 ^ " in " ^ string_of_expr e))
+      	(match op with
+            Add | Sub | Mult | Div when t1 = Int && t2 = Int -> Int
+          | Add | Sub | Mult | Div when t1 = Float && t2 = Float -> Float
+          | Add | Sub | Mult | Div when t1 = Float && t2 = Int -> Float
+          | Add | Sub | Mult | Div when t1 = Int && t2 = Float -> Float
+          | *) 
+            Add | Sub | Mult | Div when (t1 = Edge || t1 = Int) && (t2 = Edge || t2 = Int) -> Int
+          | Add | Sub | Mult | Div when (t1 = Edge || t1 = Float) && (t2 = Float || t2 = Int) -> Float
+          | Add when t1 = String && t2 = String -> String
+          | Add when t1 = Bool && t2 = Bool -> Bool
+          | Mod when t1 = Int && t2 = Int -> Int
+        	| Equal | Neq when t1 = t2 -> Bool 
+          | Equal | Neq when t1 = Null_t -> Bool
+                (* match t2 with 
+                  List _ -> Bool
+                | Set _ -> Bool
+                | Node -> Bool
+                |  _ -> raise (Failure ("illegal Equal/Not Equal Comparison with null " ^ string_of_typ t2 ^ " = null")) *)
+          | Equal | Neq when t2 = Null_t -> Bool
+                (* match t1 with 
+                  List _ -> Bool
+                | Set _ -> Bool
+                | Node -> Bool
+                |  _ -> raise (Failure ("illegal Equal/Not Equal Comparison with null " ^ string_of_typ t1 ^ " = null")) *)
+        	| Less | Leq | Greater | Geq when (t1 = Int || t1 = Float) && (t1 = Float || t2 = Int) -> Bool
+        	| And | Or when t1 = Bool && t2 = Bool -> Bool
+          | _ -> raise (Failure ("illegal binary operator " ^
+                      string_of_typ t1 ^ " " ^ string_of_op op ^ " " ^
+                      string_of_typ t2 ^ " in " ^ string_of_expr e))
         )
       | Unop(op, e) as ex -> let t = expr e in
-	 (match op with
-	   Neg when t = Int -> Int
-   | Neg when t = Float -> Float
-	 | Not when t = Bool -> Bool
-         | _ -> raise (Failure ("illegal unary operator " ^ string_of_uop op ^
-	  		   string_of_typ t ^ " in " ^ string_of_expr ex)))
+      	 (match op with
+      	   Neg when t = Int -> Int
+         | Neg when t = Float -> Float
+      	 | Not when t = Bool -> Bool
+               | _ -> raise (Failure ("illegal unary operator " ^ string_of_uop op ^
+      	  		   string_of_typ t ^ " in " ^ string_of_expr ex)))
       | Noexpr -> Void
       | Subscript(var, e) as ex -> let varType = type_of_identifier var 
                              and rt = expr e in
@@ -300,7 +301,7 @@ let check (globals, functions) =
 
     (* Verify a statement or throw an exception *)
     let rec stmt = function
-	Block sl -> let rec check_block = function
+	     Block sl -> let rec check_block = function
            [Return _ as s] -> stmt s
          | Return _ :: _ -> raise (Failure "nothing may follow a return")
          | Block sl :: ss -> check_block (sl @ ss)
