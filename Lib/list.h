@@ -1,8 +1,10 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <stdarg.h>
-#include <stdbool.h>
+//#include <stdio.h>
+//#include <stdlib.h>
+//#include <stdint.h>
+//#include <stdarg.h>
+//#include <stdbool.h>
+#include "config.h"
+#include "cast.c"
 
 
 #ifndef TUSIMPLELIB_LIST_H
@@ -15,6 +17,7 @@ struct List {
     void **value;
     int32_t currPos;
 };
+
 
 
 // Functions for list

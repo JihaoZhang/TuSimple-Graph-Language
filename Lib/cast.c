@@ -1,7 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <stdbool.h>
 #include "cast.h"
 
 
@@ -43,3 +39,7 @@ void* boolTovoid(bool value) {
 void* stringTovoid(char* value) {
     return (void*) value;
 }
+
+//int main() {
+//    return 0;
+//}

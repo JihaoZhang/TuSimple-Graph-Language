@@ -1,14 +1,14 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <stdbool.h>
-#include <string.h>
+//#include <stdio.h>
+//#include <stdlib.h>
+//#include <stdint.h>
+//#include <stdbool.h>
+//#include <string.h>
+#include "config.h"
 
-
-#define INT 0
-#define FLOAT 1
-#define BOOL 2
-#define STRING 3
+//#define INT 0
+//#define FLOAT 1
+//#define BOOL 2
+//#define STRING 3
 
 
 #ifndef TUSIMPLELIB_CAST_H
