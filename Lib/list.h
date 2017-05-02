@@ -9,12 +9,12 @@
 #define TUSIMPLELIB_LIST_H
 
 
-struct List {
-    int32_t size;
-    int32_t type;
-    void **value;
-    int32_t currPos;
-};
+// struct List {
+//     int32_t size;
+//     int32_t type;
+//     void **value;
+//     int32_t currPos;
+// };
 
 
 

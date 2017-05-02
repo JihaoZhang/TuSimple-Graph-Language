@@ -367,77 +367,77 @@ int test_int_set_iterate_2(void **data) {
 }
 
 
-int main() {
+// int main() {
 
-    // Test function: create_set, get_set_type
-    printf("%s\n", "TEST: create_set");
-    struct Set *intSet = create_set(INT);
-    printf("%d\n", intSet->type);
-    printf("%d\n", intSet->data->type);
-    printf("%d\n", intSet->size);
-    printf("%d\n", get_set_type(intSet));
+//     // Test function: create_set, get_set_type
+//     printf("%s\n", "TEST: create_set");
+//     struct Set *intSet = create_set(INT);
+//     printf("%d\n", intSet->type);
+//     printf("%d\n", intSet->data->type);
+//     printf("%d\n", intSet->size);
+//     printf("%d\n", get_set_type(intSet));
 
-    struct Set *stringSet = create_set(STRING);
-    printf("%d\n", stringSet->type);
-    printf("%d\n", stringSet->data->type);
-    printf("%d\n", stringSet->size);
-    printf("%d\n", get_set_type(stringSet));
-
-
-    // Test function: put_set, get_set_size
-    printf("%s\n", "TEST: put_set, get_set_size");
-    struct Set *intSet2 = create_set(INT);
-    intSet2 = put_set(intSet2, 1);
-    printf("%d\n", get_set_size(intSet2));
-    assert(get_set_size(intSet2) == 1);
-    intSet2 = put_set(intSet2, 2);
-    printf("%d\n", get_set_size(intSet2));
-    assert(get_set_size(intSet2) == 2);
-    intSet2 = put_set(intSet2, 3);
-    printf("%d\n", get_set_size(intSet2));
-    assert(get_set_size(intSet2) == 3);
-
-    struct Set *stringSet2 = create_set(STRING);
-    stringSet2 = put_set(stringSet2, "hello");
-    printf("%d\n", get_set_size(stringSet2));
-    assert(get_set_size(stringSet2) == 1);
-    stringSet2 = put_set(stringSet2, "world");
-    printf("%d\n", get_set_size(stringSet2));
-    assert(get_set_size(stringSet2) == 2);
-    printf("%d\n", check_set_element(stringSet2, "hello"));
-    printf("%d\n", check_set_element(stringSet2, "world"));
-    printf("%d\n", check_set_element(stringSet2, "columbia"));
+//     struct Set *stringSet = create_set(STRING);
+//     printf("%d\n", stringSet->type);
+//     printf("%d\n", stringSet->data->type);
+//     printf("%d\n", stringSet->size);
+//     printf("%d\n", get_set_type(stringSet));
 
 
-    // Test function: get_set_elements
-    printf("%s\n", "TEST: get_set_elements");
-    struct List *intList1 = get_set_elements(intSet2);
-    printf("%d\n", get_list_size(intList1));
-    struct List *stringList1 = get_set_elements(stringSet2);
-    printf("%d\n", get_list_size(stringList1));
+//     // Test function: put_set, get_set_size
+//     printf("%s\n", "TEST: put_set, get_set_size");
+//     struct Set *intSet2 = create_set(INT);
+//     intSet2 = put_set(intSet2, 1);
+//     printf("%d\n", get_set_size(intSet2));
+//     assert(get_set_size(intSet2) == 1);
+//     intSet2 = put_set(intSet2, 2);
+//     printf("%d\n", get_set_size(intSet2));
+//     assert(get_set_size(intSet2) == 2);
+//     intSet2 = put_set(intSet2, 3);
+//     printf("%d\n", get_set_size(intSet2));
+//     assert(get_set_size(intSet2) == 3);
+
+//     struct Set *stringSet2 = create_set(STRING);
+//     stringSet2 = put_set(stringSet2, "hello");
+//     printf("%d\n", get_set_size(stringSet2));
+//     assert(get_set_size(stringSet2) == 1);
+//     stringSet2 = put_set(stringSet2, "world");
+//     printf("%d\n", get_set_size(stringSet2));
+//     assert(get_set_size(stringSet2) == 2);
+//     printf("%d\n", check_set_element(stringSet2, "hello"));
+//     printf("%d\n", check_set_element(stringSet2, "world"));
+//     printf("%d\n", check_set_element(stringSet2, "columbia"));
 
 
-    // Test function: set_iterate
-    printf("%s\n", "TEST: set_iterate");
-    int status = set_iterate(intSet2, test_int_set_iterate);
-    status = set_iterate(intSet2, test_int_set_iterate_2);
-    status = set_iterate(intSet2, test_int_set_iterate);
+//     // Test function: get_set_elements
+//     printf("%s\n", "TEST: get_set_elements");
+//     struct List *intList1 = get_set_elements(intSet2);
+//     printf("%d\n", get_list_size(intList1));
+//     struct List *stringList1 = get_set_elements(stringSet2);
+//     printf("%d\n", get_list_size(stringList1));
 
 
-    // Test function: get_set_element_index
-    printf("%s\n", "TEST: get_set_element_index");
-    printf("%d\n", get_set_element_index(intSet2, 1));
-    printf("%d\n", get_set_element_index(intSet2, 2));
-    printf("%d\n", get_set_element_index(intSet2, 3));
-    printf("%d\n", get_set_element_index(intSet2, 4));
+//     // Test function: set_iterate
+//     printf("%s\n", "TEST: set_iterate");
+//     int status = set_iterate(intSet2, test_int_set_iterate);
+//     status = set_iterate(intSet2, test_int_set_iterate_2);
+//     status = set_iterate(intSet2, test_int_set_iterate);
 
 
-    // Test function: remove_set_element
-    printf("%s\n", "TEST: remove_set_element");
-    intSet2 = remove_set_element(intSet2, 2);
-    printf("%d\n", get_set_size(intSet2));
-    printf("%d\n", intSet2->data->currPos);
-    intSet2 = remove_set_element(intSet2, 3);
-    printf("%d\n", get_set_size(intSet2));
-    printf("%d\n", intSet2->data->currPos);
-}
+//     // Test function: get_set_element_index
+//     printf("%s\n", "TEST: get_set_element_index");
+//     printf("%d\n", get_set_element_index(intSet2, 1));
+//     printf("%d\n", get_set_element_index(intSet2, 2));
+//     printf("%d\n", get_set_element_index(intSet2, 3));
+//     printf("%d\n", get_set_element_index(intSet2, 4));
+
+
+//     // Test function: remove_set_element
+//     printf("%s\n", "TEST: remove_set_element");
+//     intSet2 = remove_set_element(intSet2, 2);
+//     printf("%d\n", get_set_size(intSet2));
+//     printf("%d\n", intSet2->data->currPos);
+//     intSet2 = remove_set_element(intSet2, 3);
+//     printf("%d\n", get_set_size(intSet2));
+//     printf("%d\n", intSet2->data->currPos);
+// }

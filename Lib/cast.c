@@ -17,6 +17,10 @@ char* voidTostring(void* pointer) {
     return (char*) pointer;
 }
 
+struct Node* voidTonode(void* pointer) {
+    return (struct Node*) pointer;
+}
+
 
 void* intTovoid(int32_t value) {
     int* value_pointer = (int*)malloc(sizeof(int32_t));
@@ -37,6 +41,10 @@ void* boolTovoid(bool value) {
 }
 
 void* stringTovoid(char* value) {
+    return (void*) value;
+}
+
+void* nodeTovoid(struct Node* value) {
     return (void*) value;
 }
 

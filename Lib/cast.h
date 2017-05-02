@@ -4,6 +4,7 @@
 //#include <stdbool.h>
 //#include <string.h>
 #include "config.h"
+#include "utils.h"
 
 //#define INT 0
 //#define FLOAT 1
@@ -20,12 +21,14 @@ int32_t voidToint(void* pointer);
 double voidTofloat(void* pointer);
 bool voidTobool(void* pointer);
 char* voidTostring(void* pointer);
+struct Node* voidTonode(void* pointer);
 
 
 // Methods that convert other types to void
 void* intTovoid(int32_t value);
 void* floatTovoid(double value);
 void* boolTovoid(bool value);
-void* pointerTostring(char* value);
+void* stringTovoid(char* value);
+void* nodeTovoid(struct Node* value);
 
 #endif //TUSIMPLELIB_CAST_H

@@ -310,6 +310,7 @@ void *hashmap_get(struct hashmap *map, ...) {
 
     printf("Error! hashmap_get() : Key does not exist.\n");
     exit(1);
+    //return boolTovoid(false);
 }
 
 struct hashmap *hashmap_remove(struct hashmap *map, ...) {
