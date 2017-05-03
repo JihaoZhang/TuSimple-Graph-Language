@@ -336,117 +336,117 @@ void change_list_element(struct List* list, int index, ...) {
 }
 
 
-int main() {
-    // Test function: create_list
-    printf("%s\n", "TEST: create_list");
-    struct List *intList = create_list(0);
-    printf("%d\n", intList->type);
+// int main() {
+//     // Test function: create_list
+//     printf("%s\n", "TEST: create_list");
+//     struct List *intList = create_list(0);
+//     printf("%d\n", intList->type);
 
-    struct List *doubleList = create_list(1);
-    printf("%d\n", doubleList->type);
-
-
-    // Test function: plus_list
-    printf("%s\n", "TEST: plus_list");
-    struct List *intListTest = create_list(INT);
-    struct List *doubleListTest = create_list(FLOAT);
-    struct List *stringListTest = create_list(STRING);
-    intListTest = plus_list(intListTest, 10);
-    doubleListTest = plus_list(doubleListTest, 10.123);
-    char str1[12] = "Hello";
-    char str2[12] = "World";
-    stringListTest = plus_list(stringListTest, str1);
-    stringListTest = plus_list(stringListTest, str2);
-    printf("%s\n", voidTostring(pop_list_element(stringListTest)));
-    printf("%s\n", voidTostring(pop_list_element(stringListTest)));
+//     struct List *doubleList = create_list(1);
+//     printf("%d\n", doubleList->type);
 
 
-
-    // Test function: get_list_element, get_list_size
-    printf("%s\n", "TEST: get_list_element, get_list_size");
-    struct List *intListTest1;
-    intListTest1 = create_list(INT);
-    intListTest1 = plus_list(intListTest1, 10);
-    printf("%d\n", get_list_size(intListTest1));
-
-    intListTest1 = plus_list(intListTest1, 20);
-    printf("%d\n", get_list_size(intListTest1));
-
-    intListTest1 = plus_list(intListTest1, 30);
-    printf("%d\n", get_list_size(intListTest1));
-
-    printf("%d\n", intListTest1->type);
-    printf("%d\n", intListTest1->size);
-    void *intVoidPointerTest = get_list_element(intListTest1, 2);
-    int intTest = voidToint(intVoidPointerTest);
-    printf("%d\n", intTest);
+//     // Test function: plus_list
+//     printf("%s\n", "TEST: plus_list");
+//     struct List *intListTest = create_list(INT);
+//     struct List *doubleListTest = create_list(FLOAT);
+//     struct List *stringListTest = create_list(STRING);
+//     intListTest = plus_list(intListTest, 10);
+//     doubleListTest = plus_list(doubleListTest, 10.123);
+//     char str1[12] = "Hello";
+//     char str2[12] = "World";
+//     stringListTest = plus_list(stringListTest, str1);
+//     stringListTest = plus_list(stringListTest, str2);
+//     printf("%s\n", voidTostring(pop_list_element(stringListTest)));
+//     printf("%s\n", voidTostring(pop_list_element(stringListTest)));
 
 
-    // Test function: pop_list_element
-    printf("%s\n", "TEST: pop_list_element");
-    struct List *intListTest2;
-    intListTest2 = create_list(INT);
-    intListTest2 = plus_list(intListTest2, 10);
-    intListTest2 = plus_list(intListTest2, 20);
-    intListTest2 = plus_list(intListTest2, 30);
-    printf("%d\n", voidToint(pop_list_element(intListTest2)));
-    printf("%d\n", voidToint(pop_list_element(intListTest2)));
-    printf("%d\n", voidToint(pop_list_element(intListTest2)));
-    intListTest2 = plus_list(intListTest2, 10);
-    intListTest2 = plus_list(intListTest2, 20);
-    intListTest2 = plus_list(intListTest2, 30);
+
+//     // Test function: get_list_element, get_list_size
+//     printf("%s\n", "TEST: get_list_element, get_list_size");
+//     struct List *intListTest1;
+//     intListTest1 = create_list(INT);
+//     intListTest1 = plus_list(intListTest1, 10);
+//     printf("%d\n", get_list_size(intListTest1));
+
+//     intListTest1 = plus_list(intListTest1, 20);
+//     printf("%d\n", get_list_size(intListTest1));
+
+//     intListTest1 = plus_list(intListTest1, 30);
+//     printf("%d\n", get_list_size(intListTest1));
+
+//     printf("%d\n", intListTest1->type);
+//     printf("%d\n", intListTest1->size);
+//     void *intVoidPointerTest = get_list_element(intListTest1, 2);
+//     int intTest = voidToint(intVoidPointerTest);
+//     printf("%d\n", intTest);
 
 
-    // Test function: remove_list_element
-    printf("%s\n", "TEST: remove_list_element");
-    struct List *intListTest3;
-    intListTest3 = create_list(INT);
-    intListTest3 = plus_list(intListTest3, 10);
-    intListTest3 = plus_list(intListTest3, 20);
-    intListTest3 = plus_list(intListTest3, 30);
-    printf("%d\n", get_list_size(intListTest3));
-    printf("%d\n", voidToint(remove_list_element(intListTest3, 0)));
-    printf("%d\n", get_list_size(intListTest3));
-    printf("%d\n", voidToint(remove_list_element(intListTest3, 0)));
-    printf("%d\n", get_list_size(intListTest3));
-    printf("%d\n", voidToint(remove_list_element(intListTest3, 0)));
-    printf("%d\n", get_list_size(intListTest3));
-    intListTest3 = plus_list(intListTest3, 40);
+//     // Test function: pop_list_element
+//     printf("%s\n", "TEST: pop_list_element");
+//     struct List *intListTest2;
+//     intListTest2 = create_list(INT);
+//     intListTest2 = plus_list(intListTest2, 10);
+//     intListTest2 = plus_list(intListTest2, 20);
+//     intListTest2 = plus_list(intListTest2, 30);
+//     printf("%d\n", voidToint(pop_list_element(intListTest2)));
+//     printf("%d\n", voidToint(pop_list_element(intListTest2)));
+//     printf("%d\n", voidToint(pop_list_element(intListTest2)));
+//     intListTest2 = plus_list(intListTest2, 10);
+//     intListTest2 = plus_list(intListTest2, 20);
+//     intListTest2 = plus_list(intListTest2, 30);
 
 
-    // Test function: check_list_element
-    printf("%s\n", "TEST: check_list_element");
-    printf("%d\n", check_list_element(intListTest2, 10));
-    assert(check_list_element(intListTest2, 10) == 1);
-    printf("%d\n", check_list_element(intListTest2, 20));
-    assert(check_list_element(intListTest2, 20) == 1);
-    printf("%d\n", check_list_element(intListTest2, 30));
-    assert(check_list_element(intListTest2, 30) == 1);
-    printf("%d\n", check_list_element(intListTest2, 40));
-    assert(check_list_element(intListTest2, 40) == 0);
-
-    struct List* stringListTest2 = create_list(STRING);
-    stringListTest2 = plus_list(stringListTest2, "hello");
-    stringListTest2 = plus_list(stringListTest2, "world");
-    printf("%s\n", voidTostring(get_list_element(stringListTest2, 1)));
-    printf("%d\n", check_list_element(stringListTest2, "hello"));
-    printf("%d\n", check_list_element(stringListTest2, "world"));
-    printf("%d\n", check_list_element(stringListTest2, "columbia"));
+//     // Test function: remove_list_element
+//     printf("%s\n", "TEST: remove_list_element");
+//     struct List *intListTest3;
+//     intListTest3 = create_list(INT);
+//     intListTest3 = plus_list(intListTest3, 10);
+//     intListTest3 = plus_list(intListTest3, 20);
+//     intListTest3 = plus_list(intListTest3, 30);
+//     printf("%d\n", get_list_size(intListTest3));
+//     printf("%d\n", voidToint(remove_list_element(intListTest3, 0)));
+//     printf("%d\n", get_list_size(intListTest3));
+//     printf("%d\n", voidToint(remove_list_element(intListTest3, 0)));
+//     printf("%d\n", get_list_size(intListTest3));
+//     printf("%d\n", voidToint(remove_list_element(intListTest3, 0)));
+//     printf("%d\n", get_list_size(intListTest3));
+//     intListTest3 = plus_list(intListTest3, 40);
 
 
-    // Test function: concat_list
-    printf("TEST: concat_list\n");
-    printf("%d\n", get_list_size(intListTest2));
-    printf("%d\n", get_list_size(intListTest3));
-    struct List* concatListTest = concat_list(intListTest2, intListTest3);
-    printf("%d\n", get_list_size(concatListTest));
+//     // Test function: check_list_element
+//     printf("%s\n", "TEST: check_list_element");
+//     printf("%d\n", check_list_element(intListTest2, 10));
+//     assert(check_list_element(intListTest2, 10) == 1);
+//     printf("%d\n", check_list_element(intListTest2, 20));
+//     assert(check_list_element(intListTest2, 20) == 1);
+//     printf("%d\n", check_list_element(intListTest2, 30));
+//     assert(check_list_element(intListTest2, 30) == 1);
+//     printf("%d\n", check_list_element(intListTest2, 40));
+//     assert(check_list_element(intListTest2, 40) == 0);
+
+//     struct List* stringListTest2 = create_list(STRING);
+//     stringListTest2 = plus_list(stringListTest2, "hello");
+//     stringListTest2 = plus_list(stringListTest2, "world");
+//     printf("%s\n", voidTostring(get_list_element(stringListTest2, 1)));
+//     printf("%d\n", check_list_element(stringListTest2, "hello"));
+//     printf("%d\n", check_list_element(stringListTest2, "world"));
+//     printf("%d\n", check_list_element(stringListTest2, "columbia"));
 
 
-    // Test function: change_list_element
-    printf("%s\n", "TEST: change_list_element");
-    printf("%d\n", voidToint(get_list_element(intListTest2, 0)));
-    change_list_element(intListTest2, 0, 100);
-    printf("%d\n", voidToint(get_list_element(intListTest2, 0)));
+//     // Test function: concat_list
+//     printf("TEST: concat_list\n");
+//     printf("%d\n", get_list_size(intListTest2));
+//     printf("%d\n", get_list_size(intListTest3));
+//     struct List* concatListTest = concat_list(intListTest2, intListTest3);
+//     printf("%d\n", get_list_size(concatListTest));
 
-    return 0;
-}
+
+//     // Test function: change_list_element
+//     printf("%s\n", "TEST: change_list_element");
+//     printf("%d\n", voidToint(get_list_element(intListTest2, 0)));
+//     change_list_element(intListTest2, 0, 100);
+//     printf("%d\n", voidToint(get_list_element(intListTest2, 0)));
+
+//     return 0;
+// }

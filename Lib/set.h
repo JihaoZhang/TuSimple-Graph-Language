@@ -13,7 +13,7 @@
 //     struct List *data;
 // };
 
-typedef int (*Func)(void **);
+typedef int (*Func2)(void **);
 
 struct Set *create_set(int type);
 
@@ -27,7 +27,7 @@ struct Set *remove_set_element(struct Set *set, ...);
 
 struct List *get_set_elements(struct Set *set);
 
-int set_iterate(struct Set *set, Func f);
+int set_iterate(struct Set *set, Func2 f);
 
 int32_t get_set_type(struct Set *set);
 

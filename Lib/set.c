@@ -315,7 +315,7 @@ struct List *get_set_elements(struct Set *set) {
     return list;
 }
 
-int set_iterate(struct Set *set, Func f) {
+int set_iterate(struct Set *set, Func2 f) {
     // Corner case
     if (set == NULL) {
         printf("Error! set_iterate : Set does not exist.\n");
