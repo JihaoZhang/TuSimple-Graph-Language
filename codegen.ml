@@ -29,13 +29,13 @@ let translate (globals, functions) =
   and i1_t   = L.i1_type   context
   and void_t = L.void_type context 
   and list_t = L.pointer_type (match L.type_by_name llm "struct.List" with
-	None -> raise (Failure "struct.List doesn't defined.")
+	  None -> raise (Failure "struct.List doesn't defined.")
   | Some x -> x)
-  and set_t = L.pointer_type (match L.type_by_name llm "struct.Set" with
+  and set_t = (match L.type_by_name llm "struct.Set" with
     None -> raise (Failure "struct.Set doesn't defined.")
   | Some x -> x)
-  and map_t = L.pointer_type (match L.type_by_name llm "struct.HashMap" with
-    None -> raise (Failure "struct.HashMap doesn't defined.")
+  and map_t = (match L.type_by_name llm "struct.hashmap" with
+    None -> raise (Failure "struct.hashmap doesn't defined.")
   | Some x -> x)
 
   in
@@ -45,19 +45,19 @@ let translate (globals, functions) =
 	| A.Bool -> i1_t
 	| A.Void -> void_t 
 	| A.List(_) -> list_t
-  	| A.Set(_) -> set_t
-  	| A.Map(_, _) -> map_t
+  | A.Set(_) -> set_t
+  | A.Map(_, _) -> map_t
   in
 
   let lconst_of_typ = function
-	A.Int -> L.const_int i32_t 0
+	  A.Int -> L.const_int i32_t 0
   | A.Float -> L.const_int i32_t 1
   | A.Bool -> L.const_int i32_t 2
   | A.String -> L.const_int i32_t 3
    (* | A.Node_t -> L.const_int i32_t 4
   | A.Graph_t -> L.const_int i32_t 5
   | A.Edge_t -> L.const_int i32_t 8
-  | A.List_Int_t -> list_t
+ | A.List_Int_t -> list_t
   | A.Dict_String_t -> dict_t *)
   | _ -> raise (Failure ("[Error] Type Not Found for lconst_of_typ."))
 
@@ -66,7 +66,16 @@ let translate (globals, functions) =
 List
 *)
 
-  let get_list_element_t = L.function_type void_t [| list_t ; i32_t |]
+  let remove_list_element_t = L.function_type void_t [|list_t; i32_t|]
+  in 
+  let remove_list_element_f = L.declare_function "remove_list_element" remove_list_element_t the_module
+  in
+  let remove_list_element list_ptr llbuilder = 
+  		let actuals = [|list_ptr; 1|] in(
+  			L.build_call remove_list_element_f actuals "remove_list_element" llbuilder
+  		)
+  in
+  let get_list_element_t = L.function_type (L.pointer_type i32_t) [| list_t ; i32_t |]
   in 
   let get_list_element_f = L.declare_function "get_list_element" get_list_element_t the_module
   in
@@ -196,6 +205,8 @@ List
 				and (e2', t2') = expr builder e2 in
 				((match op with
 					A.Add when t1' = A.Int    -> L.build_add
+		| A.AddAdd s -> let (var', typ) = lookup var in
+		  remove_list_element (L.build_load var' var builder) builder; (var',typ)
         | A.Add when t1' = A.Bool   -> L.build_and 
 				| A.Sub     -> L.build_sub
 				| A.Mult    -> L.build_mul
