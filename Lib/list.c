@@ -70,6 +70,9 @@ struct List *plus_list(struct List *list, ...) {
             data = nodeTovoid(va_arg(arg_ptr, struct Node*));
             break;
 
+        case GRAPH:
+            data = graphTovoid(va_arg(arg_ptr, struct Graph*));
+
         default:
             break;
     }
@@ -99,8 +102,9 @@ void *get_list_element(struct List *list, int index) {
 int get_list_size(struct List *list) {
     // Corner case
     if (list == NULL) {
-        printf("Error! get_list_size() : List does not exist. \n");
-        exit(1);
+        // printf("Error! get_list_size() : List does not exist. \n");
+        // exit(1);
+        return 0;
     }
 
     return list->currPos;
@@ -139,6 +143,12 @@ struct List *concat_list(struct List *list1, struct List *list2) {
         case NODE:
             for (i = 0; i < size2; i++) {
                 list1 = plus_list(list1, voidTonode(list2->value + i));
+            }
+            break;
+
+        case GRAPH:
+            for (i = 0; i < size2; i++) {
+                list1 = plus_list(list1, voidTograph(list2->value + i));
             }
             break;
 
@@ -220,6 +230,10 @@ bool check_list_element(struct List *list, ...) {
             target = nodeTovoid(va_arg(args_ptr, struct Node*));
             break;
 
+        case GRAPH:
+            target = graphTovoid(va_arg(args_ptr, struct Graph*));
+            break;
+
         default:
             break;
     }
@@ -264,12 +278,62 @@ bool check_list_element(struct List *list, ...) {
                 }
                 break;
 
+            case GRAPH:
+                if (strcmp(voidTograph(target)->name, voidTograph(*(list->value + i))->name) == 0) {
+                    exist = 1;
+                    return exist;
+                }
+                break;
+
             default:
                 break;
         }
     }
 
     return exist;
+}
+
+void change_list_element(struct List* list, int index, ...) {
+    if (list == NULL) {
+        printf("%s\n", "Error! change_list_element : List does not exist!");
+        exit(1);
+    }
+
+    va_list args_ptr;
+    va_start(args_ptr, index);
+
+    switch (list->type) {
+        case INT:
+            *(list->value + index) = intTovoid(va_arg(args_ptr, int));
+            break;
+
+        case FLOAT:
+            *(list->value + index) = floatTovoid(va_arg(args_ptr, double));
+            break;
+
+        case BOOL:
+            *(list->value + index) = boolTovoid(va_arg(args_ptr, bool));
+            break;
+
+        case STRING:
+            *(list->value + index) = stringTovoid(va_arg(args_ptr, char*));
+            break;
+
+        case NODE:
+            *(list->value + index) = nodeTovoid(va_arg(args_ptr, struct Node*));
+            break;
+
+        case GRAPH:
+            *(list->value + index) = va_arg(args_ptr, struct Graph*);
+            break;
+
+        default:
+            break;
+    }
+
+    va_end(args_ptr);
+
+    return;
 }
 
 
@@ -377,6 +441,13 @@ bool check_list_element(struct List *list, ...) {
 //     printf("%d\n", get_list_size(intListTest3));
 //     struct List* concatListTest = concat_list(intListTest2, intListTest3);
 //     printf("%d\n", get_list_size(concatListTest));
+
+
+//     // Test function: change_list_element
+//     printf("%s\n", "TEST: change_list_element");
+//     printf("%d\n", voidToint(get_list_element(intListTest2, 0)));
+//     change_list_element(intListTest2, 0, 100);
+//     printf("%d\n", voidToint(get_list_element(intListTest2, 0)));
 
 //     return 0;
 // }

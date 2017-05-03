@@ -15,9 +15,10 @@
 // };
 
 struct Node* createNode(char* name, int32_t type, ...);
-void* getNodeValue(struct Node* node);
+char* getNodeValue(struct Node* node, int32_t type, ...);
+char* getNodeName(struct Node* node);
 void addNodeEdge(struct Node* node1, struct Node* node2, double weight);
-char* nameIterNode(struct Node* node, int index);
+struct Node* iterNode(struct Node* node, int index);
 double weightIterNode(struct Node* node, int index);
 
 #endif

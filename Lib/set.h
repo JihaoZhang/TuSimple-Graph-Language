@@ -1,23 +1,19 @@
 #ifndef TUSIMPLELIB_SET_H
 #define TUSIMPLELIB_SET_H
 
-
 #include "config.h"
-#include "list.c"
+#include "list.h"
 
 #define SET_MISSING -1
 #define SET_OK 1
 
+// struct Set {
+//     int32_t type;
+//     int32_t size;
+//     struct List *data;
+// };
 
-struct Set {
-    int32_t type;
-    int32_t size;
-    struct List *data;
-};
-
-
-typedef int (*Func)(void **);
-
+typedef int (*Func2)(void **);
 
 struct Set *create_set(int type);
 
@@ -31,7 +27,7 @@ struct Set *remove_set_element(struct Set *set, ...);
 
 struct List *get_set_elements(struct Set *set);
 
-int set_iterate(struct Set *set, Func f);
+int set_iterate(struct Set *set, Func2 f);
 
 int32_t get_set_type(struct Set *set);
 

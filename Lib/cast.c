@@ -21,6 +21,10 @@ struct Node* voidTonode(void* pointer) {
     return (struct Node*) pointer;
 }
 
+struct Graph* voidTograph(void* pointer) {
+    return (struct Graph*) pointer;
+}
+
 
 void* intTovoid(int32_t value) {
     int* value_pointer = (int*)malloc(sizeof(int32_t));
@@ -45,5 +49,9 @@ void* stringTovoid(char* value) {
 }
 
 void* nodeTovoid(struct Node* value) {
+    return (void*) value;
+}
+
+void* graphTovoid(struct Graph* value) {
     return (void*) value;
 }

@@ -3,10 +3,12 @@
 //#include <stdint.h>
 //#include <stdarg.h>
 //#include <stdbool.h>
-#include "config.h"
 
 #ifndef TUSIMPLELIB_LIST_H
 #define TUSIMPLELIB_LIST_H
+
+
+#include "config.h"
 
 
 // struct List {
@@ -36,5 +38,7 @@ void *remove_list_element(struct List *list, int index);
 int get_list_size(struct List *list);
 
 bool check_list_element(struct List *list, ...);
+
+void change_list_element(struct List* list, int index, ...);
 
 #endif //TUSIMPLELIB_LIST_H

@@ -14,7 +14,7 @@
 #include <string.h>
 #include <assert.h>
 #include <math.h>
-#include "cast.c"
+#include "cast.h"
 
 
 #define INT 0
@@ -22,6 +22,7 @@
 #define BOOL 2
 #define STRING 3
 #define NODE 4
+#define GRAPH 5
 
 
 #endif //LIB_CONFIG_H
