@@ -17,6 +17,7 @@ module A = Ast
 
 module StringMap = Map.Make(String)
 
+
 let translate (globals, functions) =
   let context = L.global_context () in
   let llctx = L.global_context () in
@@ -30,12 +31,12 @@ let translate (globals, functions) =
   and list_t = L.pointer_type (match L.type_by_name llm "struct.List" with
 	  None -> raise (Failure "struct.List doesn't defined.")
   | Some x -> x)
-(*   and set_t = (match L.type_by_name llm "struct.Set" with
+  and set_t = (match L.type_by_name llm "struct.Set" with
     None -> raise (Failure "struct.Set doesn't defined.")
   | Some x -> x)
   and map_t = (match L.type_by_name llm "struct.HashMap" with
-    None -> raise (Failure "struct.Set doesn't defined.")
-  | Some x -> x) *)
+    None -> raise (Failure "struct.HashMap doesn't defined.")
+  | Some x -> x)
 
   in
 
@@ -44,8 +45,8 @@ let translate (globals, functions) =
 	| A.Bool -> i1_t
 	| A.Void -> void_t 
 	| A.List(_) -> list_t
-(*   | A.Set(_) -> set_t
-  | A.Map(_, _) -> map_t *)
+  | A.Set(_) -> set_t
+  | A.Map(_, _) -> map_t
   in
 
   let lconst_of_typ = function
@@ -64,6 +65,20 @@ let translate (globals, functions) =
 (*
 List
 *)
+
+
+  let concat_list_t = L.var_arg_function_type list_t [| list_t ; list_t |]
+  in
+
+  let concat_list_f = L.declare_function "concat_list" concat_list_t the_module
+  in
+
+  let concat_list l1_ptr l2_ptr llbuilder = 
+    let actuals = [|l1_ptr; l2_ptr|] in (
+      L.build_call concat_list_f actuals "concat_list" llbuilder
+    )
+
+  in
 
   let create_list_t  = L.function_type list_t [| i32_t |]
   in
@@ -189,6 +204,12 @@ List
 			| A.Assign (s, e) -> 
           let (e', t') = expr builder e in
            ignore (L.build_store e' (fst (lookup s)) builder); (e', t')
+      | A.AddAssign (var, e) -> 
+          let (var', typ) =  lookup var and (s', t') = expr builder e in
+          ((match typ with
+          | A.List _ -> concat_list (L.build_load var' var builder) s' builder
+          | _ -> L.build_store s' var' builder), typ)
+
       | A.Call ("print", [e]) | A.Call ("printb", [e]) ->
 				 (L.build_call printf_func [| int_format_str ; (fst (expr builder e)) |]
 			   "printf" builder, (snd (expr builder e)))

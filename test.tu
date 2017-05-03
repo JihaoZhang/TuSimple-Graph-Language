@@ -8,6 +8,7 @@ int main(){
   node n3;
   float e;
   string s;
+  graph g;
   list @{int} l1;
   list @{list @{int}} l2;
   list @{node} l3; 
@@ -16,13 +17,15 @@ int main(){
  @{1, 2, 3};
  @{a, c, d};
   l1 = @{1, 2, 3};
+  l2 = l1;
+  l1 = @{4, 5, 6};
   l2 = @{l1};
   l3 += @{a, c, d};
   l1 += @{4, 5, 6};
   s1 += @{a, c, d};
   map1 += l3;
   map1 += s1;
-  map1 += @{n1, n2, n3};  
+  g += @{n1, n2, n3};
   map1[n1];
   map1[n1] = 1;
  /* l1 = {a, c , d}; illegal assignment list@{int} = list@{node} in l1 = {a, c, d} */
