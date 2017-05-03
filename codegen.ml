@@ -123,14 +123,23 @@ List
     List.iter (add_list l_ptr llbuilder) element_list
   in
  (* cast *)
- let voidToInt_t = L.function_type i32_t [|L.pointer_type i8_t|]
+let voidToInt_t = L.function_type i32_t [|L.pointer_type i8_t|]
 in
 let voidToInt_f = L.declare_function "voidToint" voidToInt_t the_module
 in
 let voidToInt v_ptr llbuilder = 
-let actuals = [|v_ptr|] in 
-L.build_call voidToInt_f actuals "voidToint" llbuilder
+	let actuals = [|v_ptr|] in  
+	L.build_call voidToInt_f actuals "voidTofloat" llbuilder
 in
+let voidTofloat_t = L.function_type i32_t [|L.pointer_type i8_t|]
+in
+let voidTofloat_f = L.declare_function "voidTofloat" voidTofloat_t the_module
+in
+let voidTofloat v_ptr llbuilder = 
+	let actuals = [|v_ptr|] in  
+	L.build_call voidTofloat_f actuals "voidTofloat" llbuilder
+in
+
 	(* Declare each global variable; remember its value in a map *)
 	let global_vars =
 		let global_var m (t, n) =
@@ -210,6 +219,7 @@ in
       	let elementPtr = get_list_element (L.build_load var' var builder) s' builder
       in match typeList with
       | A.Int -> voidToInt elementPtr builder
+      | A.Float -> voidTofloat elementPtr builder
       | _ -> raise (Failure (" undefined operator[] "))
       )
       | _ -> raise (Failure (" undefined operator[] "))), typ)
