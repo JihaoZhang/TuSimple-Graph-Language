@@ -66,7 +66,16 @@ let translate (globals, functions) =
 List
 *)
 
-
+  let get_list_element_t = L.function_type void_t [| list_t ; i32_t |]
+  in 
+  let get_list_element_f = L.declare_function "get_list_element" get_list_element_t the_module
+  in
+  let get_list_element list_ptr i llbuilder = 
+    let actuals =[|list_ptr; i|] in (
+      L.build_call get_list_element_f actuals "get_list_element" llbuilder
+    )
+  in
+ 
   let concat_list_t = L.var_arg_function_type list_t [| list_t ; list_t |]
   in
 
@@ -177,7 +186,11 @@ List
           listPtr
           builder)
           ;(listPtr, listLiteral_type)
-          
+      | A.Subscript (var, e) -> let (var', typ) = lookup var and (s', t') = expr builder e in
+      ((match typ with
+      | A.List _ -> get_list_element (L.build_load var' var builder) s' builder
+      | _ -> raise (Failure (" undefined operator[] "))), typ)
+
 			| A.Binop (e1, op, e2) ->
 				let (e1', t1') = expr builder e1
 				and (e2', t2') = expr builder e2 in
@@ -208,7 +221,7 @@ List
           let (var', typ) =  lookup var and (s', t') = expr builder e in
           ((match typ with
           | A.List _ -> concat_list (L.build_load var' var builder) s' builder
-          | _ -> L.build_store s' var' builder), typ)
+          | _ -> raise (Failure (" undefined += "))), typ)
 
       | A.Call ("print", [e]) | A.Call ("printb", [e]) ->
 				 (L.build_call printf_func [| int_format_str ; (fst (expr builder e)) |]
