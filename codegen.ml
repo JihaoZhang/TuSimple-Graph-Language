@@ -66,12 +66,12 @@ let translate (globals, functions) =
 List
 *)
 
-  let remove_list_element_t = L.function_type void_t [|list_t; i32_t|]
+  let remove_list_element_t = L.function_type (L.pointer_type i32_t) [|list_t; i32_t|]
   in 
   let remove_list_element_f = L.declare_function "remove_list_element" remove_list_element_t the_module
   in
   let remove_list_element list_ptr llbuilder = 
-  		let actuals = [|list_ptr; 1|] in(
+  		let actuals = [|list_ptr; L.const_int i32_t 0|] in(
   			L.build_call remove_list_element_f actuals "remove_list_element" llbuilder
   		)
   in
@@ -199,14 +199,13 @@ List
       ((match typ with
       | A.List _ -> get_list_element (L.build_load var' var builder) s' builder
       | _ -> raise (Failure (" undefined operator[] "))), typ)
-
+      | A.AddAdd var -> let (var', typ) = lookup var in
+		  remove_list_element (L.build_load var' var builder) builder; (var',typ)
 			| A.Binop (e1, op, e2) ->
 				let (e1', t1') = expr builder e1
 				and (e2', t2') = expr builder e2 in
 				((match op with
 					A.Add when t1' = A.Int    -> L.build_add
-		| A.AddAdd s -> let (var', typ) = lookup var in
-		  remove_list_element (L.build_load var' var builder) builder; (var',typ)
         | A.Add when t1' = A.Bool   -> L.build_and 
 				| A.Sub     -> L.build_sub
 				| A.Mult    -> L.build_mul
@@ -231,7 +230,7 @@ List
       | A.AddAssign (var, e) -> 
           let (var', typ) =  lookup var and (s', t') = expr builder e in
           ((match typ with
-          | A.List _ -> concat_list (L.build_load var' var builder) s' builder
+          | A.List _ -> concat_list (L.build_load var' var builder) s' builder 
           | _ -> raise (Failure (" undefined += "))), typ)
 
       | A.Call ("print", [e]) | A.Call ("printb", [e]) ->
