@@ -308,8 +308,9 @@ void *hashmap_get(struct hashmap *map, ...) {
         index = (index + 1) % map->tableSize;
     }
 
-    printf("Error! hashmap_get() : Key does not exist.\n");
-    exit(1);
+    // printf("Error! hashmap_get() : Key does not exist.\n");
+    // exit(1);
+    return NULL;
     //return boolTovoid(false);
 }
 
