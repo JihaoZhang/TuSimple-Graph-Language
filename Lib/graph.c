@@ -19,7 +19,7 @@ void print_graph(struct Graph* g){
 	for (int i=0;i<size;i++){
 		struct Node* n = iterGraph(g, i);
 		// printf("%d: %s -> \n", i+1, n->name);
-		printf("%s ->\n", n->name);
+		printf("%s : %f ->\n", n->name, voidTofloat(n->value));
 		int w_size = get_list_size(n->nodes);
 		// printf("w_size : %d\n", w_size);
 		for (int j=0;j<w_size;j++){
@@ -92,9 +92,13 @@ struct Node* iterGraph(struct Graph* graph, int index){
 // }
 
 struct Node* findGraphNode(struct Graph* graph, char* nodeName){
-	int index = voidToint(hashmap_get(graph->hashmap, nodeName));
-	// printf("%d\n", index);
-	return iterGraph(graph, index);
+	void* tmp;
+	if ((tmp=hashmap_get(graph->hashmap, nodeName))!=NULL){
+		int index = voidToint(tmp);
+		return iterGraph(graph, index);
+	} else {
+		return NULL;
+	}
 }
 
 /* --- built-in function --- */
@@ -110,36 +114,49 @@ struct Node* init_tag(struct Graph* g){
 	}
 }
 
+// the type of nodes must be FLOAT
 struct Node* reduce(struct Graph* g, struct Node* n0){
 	struct Node* n = findGraphNode(g, n0->name);
+	double v_n = 0;
+	getNodeValue(n, n->type, &v_n);
+
 	int size = get_list_size(n->nodes);
 	for (int i=0;i<size;i++){
-		struct Node* m = iterNode(g, i);
-		
+		struct Node* m = iterNode(n, i);
+		double v_m = 0, tmp;
+		getNodeValue(m, m->type, &v_m);
+		if ((tmp = v_n + weightIterNode(n, i)) < v_m){
+			m->value = floatTovoid(tmp);
+		}
 	}
 }
 
+// the type of nodes must be FLOAT
 struct Node* expand(struct Graph* g, struct Node* n0){
 	struct Node* n = findGraphNode(g, n0->name);
+	double v_n = 0;
+	getNodeValue(n, n->type, &v_n);
+
 	int size = get_list_size(n->nodes);
 	for (int i=0;i<size;i++){
-		struct Node* m = iterNode(g, i);
-		// 
+		struct Node* m = iterNode(n, i);
+		double v_m = 0, tmp;
+		getNodeValue(m, m->type, &v_m);
+		if ((tmp = v_n + weightIterNode(n, i)) > v_m){
+			m->value = floatTovoid(tmp);
+		}
 	}
 }
 
 struct Graph* combine(struct Graph* g1, struct Graph* g2){
-	struct Set* s = create_set(NODE);
-	int size1 = get_list_size(g1->nodes);
-	for (int i=0;i<size1;i++){
-		put_set(s, iterGraph(g1, i));
-	}
 	int size2 = get_list_size(g2->nodes);
 	for (int i=0;i<size2;i++){
-		put_set(s, iterGraph(g2, i));
+		struct Node* n = iterGraph(g2, i);
+		if (findGraphNode(g1, n)==NULL){
+			addGraphNode(g1, n);
+		}
 	}
-	struct List* l = get_set_elements(s);
-	// create graph
+	return g1;
 }
 
 struct List* component(struct Graph* g){
@@ -218,7 +235,16 @@ struct Graph* assign(struct Graph* g, char* lambda){
 }
 
 struct Graph* reverse(struct Graph* g){
-
+	// struct Graph* r_g = createGraph("reversed");
+	// int size = get_list_size(g->nodes);
+	// for (int i=0;i<size;i++){
+	// 	struct Node* n = iterGraph(g, i);
+	// 	struct Node* new_n = createNode(n->name, n->type, n->value);
+	// 	int size2 = get_list_size(n->nodes);
+	// 	for (int j=0;j<size2;j++){
+	// 		addNodeEdge(new_n, )
+	// 	}
+	// }
 }
 
 /* please do not use getNodeName() in this .c */
@@ -236,13 +262,23 @@ int main(){
 	addNodeEdge(n1, n3, 11.1);
 	addNodeEdge(n3, n4, 12.2);
 	addNodeEdge(n3, n2, 13.3);
-	// print_graph(g);
-	/*
-	init_tag(g);
 	print_graph(g);
-	*/
-	struct List* l = dfs(g, n1);
-	print_list(l);
+
+	struct Graph* g2 = createGraph("g2");
+	struct Node* n5 = createNode("n5", FLOAT, 5.1);
+	struct Node* n6 = createNode("n6", FLOAT, 6.1);
+	struct Node* n7 = createNode("n7", FLOAT, 7.1);
+	struct Node* n8 = createNode("n8", FLOAT, 8.1);
+	addGraphNode(g2, n5);
+	addGraphNode(g2, n6);
+	addGraphNode(g2, n7);
+	addGraphNode(g2, n8);
+	addNodeEdge(n5, n6, 14.4);
+	addNodeEdge(n6, n7, 15.5);
+	addNodeEdge(n7, n8, 16.6);
+	// print_graph(g2);
+	combine(g, g2);
+	// print_graph(g);
 
 	return 0;
 }
