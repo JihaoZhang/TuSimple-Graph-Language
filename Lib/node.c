@@ -29,16 +29,33 @@ struct Node* createNode(char* name, int32_t type, ...) {
   	return new;
 }
 
-void* getNodeValue(struct Node* node) {
+char* getNodeValue(struct Node* node, int32_t type, ...) {
 	if (node == NULL) {
 		printf("Node does not exist.\n");
 		return NULL;
 	}
-	// if (type!=node->type){
-	// 	printf("Node is not matching input type\n");
-	// 	return NULL;
-	// }
-	return node->value;
+	
+	va_list ap;
+	va_start(ap, type);
+	switch (type) {
+		case INT:
+			printf("INT\n");
+			(*va_arg(ap, int*)) = voidToint(node->value);
+			break;
+		case FLOAT:
+			(*va_arg(ap, double*)) = voidTofloat(node->value);
+			break;
+		case BOOL:
+			(*va_arg(ap, bool*)) = voidTobool(node->value);
+			break;
+		case STRING:
+			return voidTostring(node->value);
+		default:
+			break;
+	}
+  	va_end(ap);
+
+	return "";
 }
 
 char* getNodeName(struct Node* node) {
@@ -84,84 +101,18 @@ double weightIterNode(struct Node* node, int index){
 	}
 }
 
-
 // int main(){
 
-// 	struct Node *a = createNode("a", INT, 13);
-// 	printf("%d\n", voidToint(getNodeValue(a)));
+// 	struct Node *a = createNode("a", FLOAT, 3.24);
+// 	double x = 0;
 // 	printf("%s\n", getNodeName(a));
+// 	getNodeValue(a, FLOAT, &x);
+// 	printf("%f\n", x);
 
-// 	// printf("TEST : List of Node\n");
-// 	// struct Node *node1 = createNode("node1", INT, 1);
-// 	// struct Node *node2 = createNode("node2", INT, 2);
-// 	// struct List *nodeListTest1 = create_list(4);
-// 	// printf("%d\n", nodeListTest1->type);
-// 	// printf("%d\n", get_list_size(nodeListTest1));
-// 	// plus_list(nodeListTest1, node1);
-// 	// printf("%d\n", get_list_size(nodeListTest1));
-
-// 	// struct Node *node3 = get_list_element(nodeListTest1, 0);
-// 	// printf("%s\n", getNodeName(node3));
-
-// 	struct Node *b = createNode("b", INT, 11);
-// 	addNodeEdge(a, b, 1.11);
-// 	printf("%s\n", getNodeName(iterNode(a, 0)));
-// 	printf("%f\n", weightIterNode(a, 0));
-
-// 	printf("ADD NODE C\n");
-// 	struct Node *c = createNode("c", BOOL, false);
-// 	printf("%d\n", voidTobool(c->value));
-// 	addNodeEdge(a, c, 2);
-// 	printf("%s\n", getNodeName(iterNode(a, 1)));
-// 	// printf("%f\n", voidTobool(getNodeValue(iterNode(a, 1))));
-// 	printf("%d\n", voidTobool(iterNode(a, 1)->value));
-
-
-// 	// struct Node *a = createNode("a", INT, 13);
-//  // 	printf("%d\n", voidToint(getNodeValue(a)));
-//  // 	printf("%s\n", getNodeName(a));
-
-//  // 	 // struct Node *node3 = get_list_element(nodeListTest1, 0);
-//  // 	// printf("%s\n", getNodeName(node3));
-
-//  // 	struct Node *b = createNode("b", INT, 11);
-//  // 	addNodeEdge(a, b, 1.11);
-//  // 	printf("%s\n", getNodeName(iterNode(a, 0)));
-//  // 	printf("%f\n", weightIterNode(a, 0));
-
-//  // 	struct Node *c = createNode("c", BOOL, false);
-//  // 	addNodeEdge(a, c, 2);
-//  // 	printf("%s\n", getNodeName(iterNode(a, 1)));
-//  // 	printf("%f\n", voidTobool(getNodeValue(iterNode(a, 1))));
-
-
-// 	// struct Node *a = createNode("a", INT, 13);
-// 	// printf("%d\n", voidToint(getNodeValue(a)));
-// 	// printf("%s\n", getNodeName(a));
-
-// 	// printf("TEST : List of Node\n");
-// 	// struct Node *node1 = createNode("node1", INT, 1);
-// 	// struct Node *node2 = createNode("node2", INT, 2);
-// 	// struct List *nodeListTest1 = create_list(4);
-// 	// printf("%d\n", nodeListTest1->type);
-// 	// printf("%d\n", get_list_size(nodeListTest1));
-// 	// plus_list(nodeListTest1, node1);
-// 	// printf("%d\n", get_list_size(nodeListTest1));
-
-// 	// struct Node *node3 = get_list_element(nodeListTest1, 0);
-// 	// printf("%s\n", getNodeName(node3));
-
-
-// 	// struct Node *boolNodeTest = createNode("boolNodeTest", BOOL, true);
-// 	// printf("%d\n", voidTobool(getNodeValue(boolNodeTest)));
-// 	// struct Node *b = createNode("b", INT, 11);
-// 	// addNodeEdge(a, b, 1.11);
-// 	// printf("%s\n", nameIterNode(a, 0));
-// 	// printf("%f\n", weightIterNode(a, 0));
-
-// 	// struct Node *c = createNode("c", BOOL, false);
-// 	// addNodeEdge(a, c, 2);
-// 	// printf("%s\n", nameIterNode(a, 1));
+// 	struct Node *b = createNode("b", STRING, "Hello!");
+// 	printf("%s\n", getNodeName(b));
+// 	char* y = getNodeValue(b, STRING, y);
+// 	printf("%s\n", y);
 
 // 	return 0;
 // }
