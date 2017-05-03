@@ -122,6 +122,90 @@ List
   let add_all_elements_into_list element_list l_ptr llbuilder = 
     List.iter (add_list l_ptr llbuilder) element_list
   in
+
+(* Hashmap *)
+	let create_hashmap_t = L.function_type map_t [| i32_t; i32_t |]
+	in
+
+	let create_hashmap_f = L.declare_function "create_hashmap" create_hashmap_t the_module
+	in
+	let create_hashmap kType vType llbuilder =
+		let actuals = [| kType; vType |] in
+			ignore(L.build_call create_hashmap_f actuals "create_hashmap" llbuilder)
+	in
+
+	let hashmap_put_t = L.var_arg_function_type map_t [| map_t |]
+	in
+
+	let hashmap_put_f = L.declare_function "hashmap_put" hashmap_put_t the_module
+	in
+
+	let hashmap_put m_ptr llbuilder data = 
+		let actuals = [| m_ptr; data |] in
+			ignore(L.build_call hashmap_put_f actuals "hashmap_put" llbuilder)
+	in
+
+	let hashmap_remove_t = L.var_arg_function_type map_t [| map_t |]
+	in
+
+	let hashmap_remove_f = L.declare_function "hashmap_remove" hashmap_put_t the_module
+	in
+
+	let hashmap_remove m_ptr llbuilder data =
+		let actuals = [| m_ptr; data |] in
+			ignore(L.build_call hashmap_remove_f actuals "hashmap_remove" llbuilder)
+	in
+
+	let hashmap_get_t = L.var_arg_function_type (L.pointer_type i8_t) [| map_t |]
+	in
+
+	let hashmap_get_f = L.declare_function "hashmap_get" hashmap_get_t the_module
+	in
+
+	let hashmap_get m_ptr llbuilder data =
+		let actuals = [| m_ptr; data |] in
+			ignore(L.build_call hashmap_get_f actuals "hashmap_get" llbuilder)
+	in
+
+(* Set *)
+	let create_set_t = L.function_type set_t [| i32_t |]
+	in
+
+	let create_set_f = L.declare_function "create_set" create_set_t the_module
+	in
+
+	let create_set typ llbuilder =
+		let actuals = [| typ |] in
+			ignore(L.build_call create_set_f actuals "create_set" llbuilder)
+	in
+
+	let put_set_t = L.var_arg_function_type set_t [| set_t |]
+	in
+
+	let put_set_f = L.declare_function "put_set" put_set_t the_module
+	in
+
+	let put_set s_ptr llbuilder data =
+
+
+	let remove_set_element_t = L.var_arg_function_type set_t [| set_t |]
+	in
+
+	let remove_set_element_f = L.declare_function "remove_set_element" put_set_t the_module
+	in
+
+	let remove_set_element s_ptr llbuilder data =
+
+
+	let get_set_elements_t = L.var_arg_function_type list_t [| set_t |]
+	in
+
+	let get_set_elements_f = L.declare_function "get_set_elements" put_set_t the_module
+	in
+
+	let get_set_elements s_ptr llbuilder data =
+	
+
  (* cast *)
  let voidToInt_t = L.function_type i32_t [|L.pointer_type i8_t|]
 in
