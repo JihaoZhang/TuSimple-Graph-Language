@@ -193,8 +193,7 @@ let check (globals, functions) =
           | Add | Sub | Mult | Div when t1 = Float && t2 = Float -> Float
           | Add | Sub | Mult | Div when t1 = Float && t2 = Int -> Float
           | Add | Sub | Mult | Div when t1 = Int && t2 = Float -> Float
-          | *) 
-            Add | Sub | Mult | Div when (t1 = Edge || t1 = Int) && (t2 = Edge || t2 = Int) -> Int
+          | Add | Sub | Mult | Div when (t1 = Edge || t1 = Int) && (t2 = Edge || t2 = Int) -> Int
           | Add | Sub | Mult | Div when (t1 = Edge || t1 = Float) && (t2 = Float || t2 = Int) -> Float
           | Add when t1 = String && t2 = String -> String
           | Add when t1 = Bool && t2 = Bool -> Bool
@@ -223,7 +222,7 @@ let check (globals, functions) =
       	   Neg when t = Int -> Int
          | Neg when t = Float -> Float
       	 | Not when t = Bool -> Bool
-               | _ -> raise (Failure ("illegal unary operator " ^ string_of_uop op ^
+         | _ -> raise (Failure ("illegal unary operator " ^ string_of_uop op ^
       	  		   string_of_typ t ^ " in " ^ string_of_expr ex)))
       | Noexpr -> Void
       | Subscript(var, e) as ex -> let varType = type_of_identifier var 
@@ -292,7 +291,10 @@ let check (globals, functions) =
                 " expected " ^ string_of_typ ft ^ " in " ^ string_of_expr e))))
              fd.formals actuals;
            fd.typ
-       | DotCall(dname, fname, actuals) as call -> Int
+       | DotCall(dname, fname, actuals) as call -> let typ = type_of_identifier dname in
+         (match typ with
+            Node -> Node
+          | _ -> raise (Failure ("unsupported method call")))
     in
 
     let check_bool_expr e = if expr e != Bool

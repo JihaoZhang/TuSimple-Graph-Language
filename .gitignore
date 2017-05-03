@@ -4,3 +4,6 @@ _build/
 *.exe
 *.ll
 *.json
+*.s
+*.o
+*.ext
