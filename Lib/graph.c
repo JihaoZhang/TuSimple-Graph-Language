@@ -73,7 +73,6 @@ struct Node* init_tag(struct Graph* g){
 		struct Node* n = iterGraph(g, i);
 		int w_size = get_list_size(n->nodes);
 		for (int j=0;j<w_size;j++){
-			// weightIterNode(n, j);
 			change_list_element(n->weight, j, 0);
 		}
 	}
@@ -176,13 +175,15 @@ void print_graph(struct Graph* g){
 	int size = get_list_size(g->nodes);
 	for (int i=0;i<size;i++){
 		struct Node* n = iterGraph(g, i);
-		printf("%d: %s -> \n", i+1, n->name);
+		// printf("%d: %s -> \n", i+1, n->name);
+		printf("%s ->\n", n->name);
 		int w_size = get_list_size(n->nodes);
-		printf("w_size : %d\n", w_size);
+		// printf("w_size : %d\n", w_size);
 		for (int j=0;j<w_size;j++){
-			printf("EXE HERE, j = %d\n", j);
+			// printf("EXE HERE, j = %d\n", j);
+			// struct Node* m = voidTonode(get_list_element(n->nodes, j));
 			struct Node* m = iterNode(n, j);
-			printf("( %s, %f) ", , weightIterNode(n, j));
+			printf("( %s, %f) ", m->name, weightIterNode(n, j));
 		}
 		printf("\n");
 	}
@@ -202,14 +203,11 @@ int main(){
 	addNodeEdge(n2, n3, 12.2);
 	addNodeEdge(n3, n4, 13.3);
 	print_graph(g);
-
-	// printf("%f\n", weightIterNode(iterGraph(g, 0), 0));
-	// init_tag(g);
-	// print_graph(g);
-	// printf("%f\n", weightIterNode(iterGraph(g, 0), 0));
-
-	// struct List* l_bfs = bfs(g, n1);
-	// print_list(l_bfs);
+	/*
+	init_tag(g);
+	print_graph(g);
+	*/
+	
 
 	return 0;
 }
