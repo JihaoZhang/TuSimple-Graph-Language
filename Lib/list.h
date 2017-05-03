@@ -3,10 +3,12 @@
 //#include <stdint.h>
 //#include <stdarg.h>
 //#include <stdbool.h>
-#include "config.h"
 
 #ifndef TUSIMPLELIB_LIST_H
 #define TUSIMPLELIB_LIST_H
+
+
+#include "config.h"
 
 
 // struct List {
