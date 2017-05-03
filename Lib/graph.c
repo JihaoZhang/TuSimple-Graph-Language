@@ -66,26 +66,46 @@ struct Node* findGraphNode(struct Graph* graph, char* nodeName){
 }
 
 struct Node* init_tag(struct Graph* g){
-	int size = get_list_size(graph->nodes);
+	int size = get_list_size(g->nodes);
 	for (int i=0;i<size;i++){
 		struct Node* n = iterGraph(g, i);
-		int w_size = get_list_size(graph->nodes);
+		int w_size = get_list_size(g->nodes);
 		for (int j=0;j<size;j++){
 			// weightIterNode(n, j);
 		}
 	}
 }
 
-struct Node* reduce(struct Graph* g, struct Node* n){
-	
+struct Node* reduce(struct Graph* g, struct Node* n0){
+	struct Node* n = findGraphNode(g, n0->name);
+	int size = get_list_size(n->nodes);
+	for (int i=0;i<size;i++){
+		struct Node* m = iterNode(g, i);
+		// 
+	}
 }
 
-struct Node* expand(struct Graph* g, struct Node* n){
-
+struct Node* expand(struct Graph* g, struct Node* n0){
+	struct Node* n = findGraphNode(g, n0->name);
+	int size = get_list_size(n->nodes);
+	for (int i=0;i<size;i++){
+		struct Node* m = iterNode(g, i);
+		// 
+	}
 }
 
 struct Graph* combine(struct Graph* g1, struct Graph* g2){
-
+	struct Set* s = create_set(NODE);
+	int size1 = get_list_size(g1->nodes);
+	for (int i=0;i<size1;i++){
+		put_set(s, iterGraph(g1, i));
+	}
+	int size2 = get_list_size(g2->nodes);
+	for (int i=0;i<size2;i++){
+		put_set(s, iterGraph(g2, i));
+	}
+	struct List* l = get_set_elements(s);
+	// create graph
 }
 
 struct List* component(struct Graph* g){
@@ -93,23 +113,43 @@ struct List* component(struct Graph* g){
 }
 
 struct List* bfs(struct Graph* g, struct Node* n){
+	struct List* l = create_list(NODE);
+	struct Set* visited = create_set(NODE);
 
+	plus_list(l, n);
+	put_set(visited, n);
+
+	while (get_list_size(l)!=0){
+		struct Node* n = get_list_element(l, 0);
+		int size = get_list_size(n->nodes);
+		for (int i=0;i<size;i++){
+			struct Node* m = iterNode(n, i);
+			if (check_set_element(visited, m)==false){
+				plus_list(l, m);
+				put_set(visited, m);
+			}
+		}
+		remove_list_element(l, 0);
+	}
+	return l;
 }
 
 struct List* dfs(struct Graph* g, struct Node* n){
+	struct List* l = create_list(NODE);
+	struct Map* m = create_hashmap(NODE, INT);
+
 
 }
 
-struct Node* find(struct Node* n, char* lambda){
+struct Node* find(struct Graph* g, struct Node* n, char* lambda){
 
 }
 
-struct List* find_path(struct Node* n1, struct Node* n2){
+struct List* find_path(struct Graph* g, struct Node* n1, struct Node* n2){
 
 }
 
 struct Graph* assign(struct Graph* g, char* lambda){
-
 }
 
 struct Graph* reverse(struct Graph* g){
@@ -117,33 +157,31 @@ struct Graph* reverse(struct Graph* g){
 }
 
 /* please do not use getNodeName() in this .c */
+void print_list(struct List* l){
+	int size = get_list_size(l);
+	for (int i=0;i<size;i++){
+		struct Node* n = get_list_element(l, i);
+		printf("%s ", n->name);
+	}
+	printf("\n");
+}
 
 int main(){
 	struct Graph* g = createGraph("g");
-	struct Node* floatNode1 = createNode("floatNode1", FLOAT, 1.1);
-	// struct Node* stringNode1 = createNode("stringNode1", STRING, "hello");
-	// struct Node* stringNode2 = createNode("stringNode2", STRING, "world");
-	// addNodeEdge(stringNode1, stringNode2, 2);
-	// addGraphNode(g, floatNode1);
-	// addGraphNode(g, stringNode1);
-	// addGraphNode(g, stringNode2);
-	// printf("%d\n", floatNode1->type);
-	// printf("%d\n", stringNode1->type);
-	// printf("%d\n", stringNode2->type);
+	struct Node* n1 = createNode("1", FLOAT, 1.1);
+	struct Node* n2 = createNode("2", FLOAT, 2.1);
+	struct Node* n3 = createNode("3", FLOAT, 3.1);
+	struct Node* n4 = createNode("4", FLOAT, 4.1);
+	addGraphNode(g, n1);
+	addGraphNode(g, n2);
+	addGraphNode(g, n3);
+	addGraphNode(g, n4);
+	addNodeEdge(n1, n2, 1);
+	addNodeEdge(n2, n3, 1);
+	addNodeEdge(n3, n4, 1);
 
-	// printf("Graph -> Nodes Length: %d\n", g->nodes->currPos);
-	// printf("Graph Type: %d\n", g->nodes->type);
-	// printf("%d\n", voidTonode(get_list_element(g->nodes, 0))->type);
-	// struct Node* iterGraphNodeTest1 = iterGraph(g, 0);
-	// struct Node* iterGraphNodeTest2 = iterGraph(g, 1);
-	// struct Node* iterGraphNodeTest3 = iterGraph(g, 2);
-	// printf("%s\n", iterGraphNodeTest1->name);
-	// printf("%s\n", iterGraphNodeTest2->name);
-	// printf("%s\n", voidTostring(getNodeValue(iterGraphNodeTest2)));
-
-	// struct Node* stringNode3 = findGraphNode(g, "stringNode1");
-	// printf("%s\n", stringNode3->name);
-	// printf("%d\n", stringNode3->type);
+	struct List* l_bfs = bfs(g, n1);
+	print_list(l_bfs);
 
 	return 0;
 }
