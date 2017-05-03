@@ -47,7 +47,3 @@ void* stringTovoid(char* value) {
 void* nodeTovoid(struct Node* value) {
     return (void*) value;
 }
-
-//int main() {
-//    return 0;
-//}
