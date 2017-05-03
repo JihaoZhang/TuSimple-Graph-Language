@@ -102,8 +102,9 @@ void *get_list_element(struct List *list, int index) {
 int get_list_size(struct List *list) {
     // Corner case
     if (list == NULL) {
-        printf("Error! get_list_size() : List does not exist. \n");
-        exit(1);
+        // printf("Error! get_list_size() : List does not exist. \n");
+        // exit(1);
+        return 0;
     }
 
     return list->currPos;

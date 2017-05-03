@@ -18,12 +18,12 @@ void addGraphNode(struct Graph* graph, struct Node* node){
 		graph->nodes = create_list(NODE);
 		// graph->weight = create_list(LIST);
 	}
-	printf("Graph List Type: %d\n", graph->nodes->type);
-	printf("addGraphNode: %s\n", node->name);
+	// printf("Graph List Type: %d\n", graph->nodes->type);
+	// printf("addGraphNode: %s\n", node->name);
 	plus_list(graph->nodes, node);
 	// plus_list(graph->weight, node->weight);
-	printf("%s\n", node->name);
-	printf("%d\n", get_list_size(graph->nodes)-1);
+	// printf("%s\n", node->name);
+	// printf("%d\n", get_list_size(graph->nodes)-1);
 	graph->hashmap = hashmap_put(graph->hashmap, node->name, get_list_size(graph->nodes)-1);
 }
 
@@ -61,17 +61,20 @@ struct Node* iterGraph(struct Graph* graph, int index){
 
 struct Node* findGraphNode(struct Graph* graph, char* nodeName){
 	int index = voidToint(hashmap_get(graph->hashmap, nodeName));
-	printf("%d\n", index);
+	// printf("%d\n", index);
 	return iterGraph(graph, index);
 }
+
+/* --- built-in function --- */
 
 struct Node* init_tag(struct Graph* g){
 	int size = get_list_size(g->nodes);
 	for (int i=0;i<size;i++){
 		struct Node* n = iterGraph(g, i);
-		int w_size = get_list_size(g->nodes);
-		for (int j=0;j<size;j++){
+		int w_size = get_list_size(n->nodes);
+		for (int j=0;j<w_size;j++){
 			// weightIterNode(n, j);
+			change_list_element(n->weight, j, 0);
 		}
 	}
 }
@@ -113,6 +116,8 @@ struct List* component(struct Graph* g){
 }
 
 struct List* bfs(struct Graph* g, struct Node* n){
+	// printf("g: %s\n", g->name);
+	// printf("n: %s\n", n->name);
 	struct List* l = create_list(NODE);
 	struct Set* visited = create_set(NODE);
 
@@ -136,7 +141,7 @@ struct List* bfs(struct Graph* g, struct Node* n){
 
 struct List* dfs(struct Graph* g, struct Node* n){
 	struct List* l = create_list(NODE);
-	struct Map* m = create_hashmap(NODE, INT);
+	struct Map* m = create_hashmap(STRING, INT);
 
 
 }
@@ -166,6 +171,23 @@ void print_list(struct List* l){
 	printf("\n");
 }
 
+void print_graph(struct Graph* g){
+	printf("Printing graph %s :\n", g->name);
+	int size = get_list_size(g->nodes);
+	for (int i=0;i<size;i++){
+		struct Node* n = iterGraph(g, i);
+		printf("%d: %s -> \n", i+1, n->name);
+		int w_size = get_list_size(n->nodes);
+		printf("w_size : %d\n", w_size);
+		for (int j=0;j<w_size;j++){
+			printf("EXE HERE, j = %d\n", j);
+			struct Node* m = iterNode(n, j);
+			printf("( %s, %f) ", , weightIterNode(n, j));
+		}
+		printf("\n");
+	}
+}
+
 int main(){
 	struct Graph* g = createGraph("g");
 	struct Node* n1 = createNode("1", FLOAT, 1.1);
@@ -176,12 +198,18 @@ int main(){
 	addGraphNode(g, n2);
 	addGraphNode(g, n3);
 	addGraphNode(g, n4);
-	addNodeEdge(n1, n2, 1);
-	addNodeEdge(n2, n3, 1);
-	addNodeEdge(n3, n4, 1);
+	addNodeEdge(n1, n2, 11.1);
+	addNodeEdge(n2, n3, 12.2);
+	addNodeEdge(n3, n4, 13.3);
+	print_graph(g);
 
-	struct List* l_bfs = bfs(g, n1);
-	print_list(l_bfs);
+	// printf("%f\n", weightIterNode(iterGraph(g, 0), 0));
+	// init_tag(g);
+	// print_graph(g);
+	// printf("%f\n", weightIterNode(iterGraph(g, 0), 0));
+
+	// struct List* l_bfs = bfs(g, n1);
+	// print_list(l_bfs);
 
 	return 0;
 }
