@@ -1160,7 +1160,7 @@ struct Node* createNode(char* name, int32_t type, ...) {
   	return new;
 }
 
-void* getNodeValue(struct Node* node) {
+char* getNodeValue(struct Node* node, int32_t type, ...) {
 	if (node == NULL) {
 		printf("Node does not exist.\n");
 		return NULL;

@@ -66,7 +66,7 @@ let translate (globals, functions) =
 List
 *)
 
-  let remove_list_element_t = L.function_type (L.pointer_type i32_t) [|list_t; i32_t|]
+  let remove_list_element_t = L.function_type (L.pointer_type i8_t) [|list_t; i32_t|]
   in 
   let remove_list_element_f = L.declare_function "remove_list_element" remove_list_element_t the_module
   in
@@ -75,7 +75,7 @@ List
   			L.build_call remove_list_element_f actuals "remove_list_element" llbuilder
   		)
   in
-  let get_list_element_t = L.function_type (L.pointer_type i32_t) [| list_t ; i32_t |]
+  let get_list_element_t = L.function_type (L.pointer_type i8_t) [| list_t ; i32_t |]
   in 
   let get_list_element_f = L.declare_function "get_list_element" get_list_element_t the_module
   in
@@ -122,6 +122,15 @@ List
   let add_all_elements_into_list element_list l_ptr llbuilder = 
     List.iter (add_list l_ptr llbuilder) element_list
   in
+ (* cast *)
+ let voidToInt_t = L.function_type i32_t [|L.pointer_type i8_t|]
+in
+let voidToInt_f = L.declare_function "voidToint" voidToInt_t the_module
+in
+let voidToInt v_ptr llbuilder = 
+let actuals = [|v_ptr|] in 
+L.build_call voidToInt_f actuals "voidToint" llbuilder
+in
 	(* Declare each global variable; remember its value in a map *)
 	let global_vars =
 		let global_var m (t, n) =
@@ -197,7 +206,12 @@ List
           ;(listPtr, listLiteral_type)
       | A.Subscript (var, e) -> let (var', typ) = lookup var and (s', t') = expr builder e in
       ((match typ with
-      | A.List _ -> get_list_element (L.build_load var' var builder) s' builder
+      | A.List typeList -> (
+      	let elementPtr = get_list_element (L.build_load var' var builder) s' builder
+      in match typeList with
+      | A.Int -> voidToInt elementPtr builder
+      | _ -> raise (Failure (" undefined operator[] "))
+      )
       | _ -> raise (Failure (" undefined operator[] "))), typ)
       | A.AddAdd var -> let (var', typ) = lookup var in
 		  remove_list_element (L.build_load var' var builder) builder; (var',typ)
