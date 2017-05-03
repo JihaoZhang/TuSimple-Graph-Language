@@ -186,25 +186,31 @@ List
 	in
 
 	let put_set s_ptr llbuilder data =
-
+		let actuals = [| s_ptr; data |] in
+			ignore(L.build_call put_set_f actuals "put_set" llbuilder)
+	in
 
 	let remove_set_element_t = L.var_arg_function_type set_t [| set_t |]
 	in
 
-	let remove_set_element_f = L.declare_function "remove_set_element" put_set_t the_module
+	let remove_set_element_f = L.declare_function "remove_set_element" remove_set_element_t the_module
 	in
 
 	let remove_set_element s_ptr llbuilder data =
-
+		let actuals = [| s_ptr; data |] in
+			ignore(L.build_call remove_set_element_f actuals "remove_set_element" llbuilder)
+	in
 
 	let get_set_elements_t = L.var_arg_function_type list_t [| set_t |]
 	in
 
-	let get_set_elements_f = L.declare_function "get_set_elements" put_set_t the_module
+	let get_set_elements_f = L.declare_function "get_set_elements" get_set_elements_t the_module
 	in
 
 	let get_set_elements s_ptr llbuilder data =
-	
+		let actuals = [| s_ptr; data |] in
+			ignore(L.build_call get_set_elements_f actuals "get_set_elements" llbuilder)
+	in
 
  (* cast *)
 let voidToInt_t = L.function_type i32_t [|L.pointer_type i8_t|]
