@@ -29,12 +29,12 @@ let translate (globals, functions) =
   and i1_t   = L.i1_type   context
   and void_t = L.void_type context 
   and list_t = L.pointer_type (match L.type_by_name llm "struct.List" with
-	  None -> raise (Failure "struct.List doesn't defined.")
+	None -> raise (Failure "struct.List doesn't defined.")
   | Some x -> x)
-  and set_t = (match L.type_by_name llm "struct.Set" with
+  and set_t = L.pointer_type (match L.type_by_name llm "struct.Set" with
     None -> raise (Failure "struct.Set doesn't defined.")
   | Some x -> x)
-  and map_t = (match L.type_by_name llm "struct.HashMap" with
+  and map_t = L.pointer_type (match L.type_by_name llm "struct.HashMap" with
     None -> raise (Failure "struct.HashMap doesn't defined.")
   | Some x -> x)
 
@@ -45,19 +45,19 @@ let translate (globals, functions) =
 	| A.Bool -> i1_t
 	| A.Void -> void_t 
 	| A.List(_) -> list_t
-  | A.Set(_) -> set_t
-  | A.Map(_, _) -> map_t
+  	| A.Set(_) -> set_t
+  	| A.Map(_, _) -> map_t
   in
 
   let lconst_of_typ = function
-	  A.Int -> L.const_int i32_t 0
+	A.Int -> L.const_int i32_t 0
   | A.Float -> L.const_int i32_t 1
   | A.Bool -> L.const_int i32_t 2
   | A.String -> L.const_int i32_t 3
    (* | A.Node_t -> L.const_int i32_t 4
   | A.Graph_t -> L.const_int i32_t 5
   | A.Edge_t -> L.const_int i32_t 8
- | A.List_Int_t -> list_t
+  | A.List_Int_t -> list_t
   | A.Dict_String_t -> dict_t *)
   | _ -> raise (Failure ("[Error] Type Not Found for lconst_of_typ."))
 
