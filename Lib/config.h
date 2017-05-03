@@ -22,6 +22,7 @@
 #define BOOL 2
 #define STRING 3
 #define NODE 4
+#define GRAPH 5
 
 
 #endif //LIB_CONFIG_H

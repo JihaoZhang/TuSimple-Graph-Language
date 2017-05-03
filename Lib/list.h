@@ -37,4 +37,6 @@ int get_list_size(struct List *list);
 
 bool check_list_element(struct List *list, ...);
 
+void change_list_element(struct List* list, int index, ...);
+
 #endif //TUSIMPLELIB_LIST_H
