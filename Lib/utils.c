@@ -1224,283 +1224,283 @@ int test_inttoint_hashmap_iterate_func(void* key, void* keyData, void* keyValue)
 }
 
 
-int main() {
-	// Test function: create_list
-    printf("%s\n", "TEST: create_list");
-    struct List *intList = create_list(0);
-    printf("%d\n", intList->type);
+// int main() {
+// 	// Test function: create_list
+//     printf("%s\n", "TEST: create_list");
+//     struct List *intList = create_list(0);
+//     printf("%d\n", intList->type);
 
-    struct List *doubleList = create_list(1);
-    printf("%d\n", doubleList->type);
-
-
-    // Test function: plus_list
-    printf("%s\n", "TEST: plus_list");
-    struct List *intListTest = create_list(INT);
-    struct List *doubleListTest = create_list(FLOAT);
-    struct List *stringListTest = create_list(STRING);
-    intListTest = plus_list(intListTest, 10);
-    doubleListTest = plus_list(doubleListTest, 10.123);
-    char str1[12] = "Hello";
-    char str2[12] = "World";
-    stringListTest = plus_list(stringListTest, str1);
-    stringListTest = plus_list(stringListTest, str2);
-    printf("%s\n", voidTostring(pop_list_element(stringListTest)));
-    printf("%s\n", voidTostring(pop_list_element(stringListTest)));
+//     struct List *doubleList = create_list(1);
+//     printf("%d\n", doubleList->type);
 
 
-
-    // Test function: get_list_element, get_list_size
-    printf("%s\n", "TEST: get_list_element, get_list_size");
-    struct List *intListTest1;
-    intListTest1 = create_list(INT);
-    intListTest1 = plus_list(intListTest1, 10);
-    printf("%d\n", get_list_size(intListTest1));
-
-    intListTest1 = plus_list(intListTest1, 20);
-    printf("%d\n", get_list_size(intListTest1));
-
-    intListTest1 = plus_list(intListTest1, 30);
-    printf("%d\n", get_list_size(intListTest1));
-
-    printf("%d\n", intListTest1->type);
-    printf("%d\n", intListTest1->size);
-    void *intVoidPointerTest = get_list_element(intListTest1, 2);
-    int intTest = voidToint(intVoidPointerTest);
-    printf("%d\n", intTest);
+//     // Test function: plus_list
+//     printf("%s\n", "TEST: plus_list");
+//     struct List *intListTest = create_list(INT);
+//     struct List *doubleListTest = create_list(FLOAT);
+//     struct List *stringListTest = create_list(STRING);
+//     intListTest = plus_list(intListTest, 10);
+//     doubleListTest = plus_list(doubleListTest, 10.123);
+//     char str1[12] = "Hello";
+//     char str2[12] = "World";
+//     stringListTest = plus_list(stringListTest, str1);
+//     stringListTest = plus_list(stringListTest, str2);
+//     printf("%s\n", voidTostring(pop_list_element(stringListTest)));
+//     printf("%s\n", voidTostring(pop_list_element(stringListTest)));
 
 
-    // Test function: pop_list_element
-    printf("%s\n", "TEST: pop_list_element");
-    struct List *intListTest2;
-    intListTest2 = create_list(INT);
-    intListTest2 = plus_list(intListTest2, 10);
-    intListTest2 = plus_list(intListTest2, 20);
-    intListTest2 = plus_list(intListTest2, 30);
-    printf("%d\n", voidToint(pop_list_element(intListTest2)));
-    printf("%d\n", voidToint(pop_list_element(intListTest2)));
-    printf("%d\n", voidToint(pop_list_element(intListTest2)));
-    intListTest2 = plus_list(intListTest2, 10);
-    intListTest2 = plus_list(intListTest2, 20);
-    intListTest2 = plus_list(intListTest2, 30);
+
+//     // Test function: get_list_element, get_list_size
+//     printf("%s\n", "TEST: get_list_element, get_list_size");
+//     struct List *intListTest1;
+//     intListTest1 = create_list(INT);
+//     intListTest1 = plus_list(intListTest1, 10);
+//     printf("%d\n", get_list_size(intListTest1));
+
+//     intListTest1 = plus_list(intListTest1, 20);
+//     printf("%d\n", get_list_size(intListTest1));
+
+//     intListTest1 = plus_list(intListTest1, 30);
+//     printf("%d\n", get_list_size(intListTest1));
+
+//     printf("%d\n", intListTest1->type);
+//     printf("%d\n", intListTest1->size);
+//     void *intVoidPointerTest = get_list_element(intListTest1, 2);
+//     int intTest = voidToint(intVoidPointerTest);
+//     printf("%d\n", intTest);
 
 
-    // Test function: remove_list_element
-    printf("%s\n", "TEST: remove_list_element");
-    struct List *intListTest3;
-    intListTest3 = create_list(INT);
-    intListTest3 = plus_list(intListTest3, 10);
-    intListTest3 = plus_list(intListTest3, 20);
-    intListTest3 = plus_list(intListTest3, 30);
-    printf("%d\n", get_list_size(intListTest3));
-    printf("%d\n", voidToint(remove_list_element(intListTest3, 0)));
-    printf("%d\n", get_list_size(intListTest3));
-    printf("%d\n", voidToint(remove_list_element(intListTest3, 0)));
-    printf("%d\n", get_list_size(intListTest3));
-    printf("%d\n", voidToint(remove_list_element(intListTest3, 0)));
-    printf("%d\n", get_list_size(intListTest3));
-    intListTest3 = plus_list(intListTest3, 40);
+//     // Test function: pop_list_element
+//     printf("%s\n", "TEST: pop_list_element");
+//     struct List *intListTest2;
+//     intListTest2 = create_list(INT);
+//     intListTest2 = plus_list(intListTest2, 10);
+//     intListTest2 = plus_list(intListTest2, 20);
+//     intListTest2 = plus_list(intListTest2, 30);
+//     printf("%d\n", voidToint(pop_list_element(intListTest2)));
+//     printf("%d\n", voidToint(pop_list_element(intListTest2)));
+//     printf("%d\n", voidToint(pop_list_element(intListTest2)));
+//     intListTest2 = plus_list(intListTest2, 10);
+//     intListTest2 = plus_list(intListTest2, 20);
+//     intListTest2 = plus_list(intListTest2, 30);
 
 
-    // Test function: check_list_element
-    printf("%s\n", "TEST: check_list_element");
-    printf("%d\n", check_list_element(intListTest2, 10));
-    assert(check_list_element(intListTest2, 10) == 1);
-    printf("%d\n", check_list_element(intListTest2, 20));
-    assert(check_list_element(intListTest2, 20) == 1);
-    printf("%d\n", check_list_element(intListTest2, 30));
-    assert(check_list_element(intListTest2, 30) == 1);
-    printf("%d\n", check_list_element(intListTest2, 40));
-    assert(check_list_element(intListTest2, 40) == 0);
-
-    struct List* stringListTest2 = create_list(STRING);
-    stringListTest2 = plus_list(stringListTest2, "hello");
-    stringListTest2 = plus_list(stringListTest2, "world");
-    printf("%s\n", voidTostring(get_list_element(stringListTest2, 1)));
-    printf("%d\n", check_list_element(stringListTest2, "hello"));
-    printf("%d\n", check_list_element(stringListTest2, "world"));
-    printf("%d\n", check_list_element(stringListTest2, "columbia"));
+//     // Test function: remove_list_element
+//     printf("%s\n", "TEST: remove_list_element");
+//     struct List *intListTest3;
+//     intListTest3 = create_list(INT);
+//     intListTest3 = plus_list(intListTest3, 10);
+//     intListTest3 = plus_list(intListTest3, 20);
+//     intListTest3 = plus_list(intListTest3, 30);
+//     printf("%d\n", get_list_size(intListTest3));
+//     printf("%d\n", voidToint(remove_list_element(intListTest3, 0)));
+//     printf("%d\n", get_list_size(intListTest3));
+//     printf("%d\n", voidToint(remove_list_element(intListTest3, 0)));
+//     printf("%d\n", get_list_size(intListTest3));
+//     printf("%d\n", voidToint(remove_list_element(intListTest3, 0)));
+//     printf("%d\n", get_list_size(intListTest3));
+//     intListTest3 = plus_list(intListTest3, 40);
 
 
-    // Test function: concat_list
-    printf("TEST: concat_list\n");
-    printf("%d\n", get_list_size(intListTest2));
-    printf("%d\n", get_list_size(intListTest3));
-    struct List* concatListTest = concat_list(intListTest2, intListTest3);
-    printf("%d\n", get_list_size(concatListTest));
+//     // Test function: check_list_element
+//     printf("%s\n", "TEST: check_list_element");
+//     printf("%d\n", check_list_element(intListTest2, 10));
+//     assert(check_list_element(intListTest2, 10) == 1);
+//     printf("%d\n", check_list_element(intListTest2, 20));
+//     assert(check_list_element(intListTest2, 20) == 1);
+//     printf("%d\n", check_list_element(intListTest2, 30));
+//     assert(check_list_element(intListTest2, 30) == 1);
+//     printf("%d\n", check_list_element(intListTest2, 40));
+//     assert(check_list_element(intListTest2, 40) == 0);
+
+//     struct List* stringListTest2 = create_list(STRING);
+//     stringListTest2 = plus_list(stringListTest2, "hello");
+//     stringListTest2 = plus_list(stringListTest2, "world");
+//     printf("%s\n", voidTostring(get_list_element(stringListTest2, 1)));
+//     printf("%d\n", check_list_element(stringListTest2, "hello"));
+//     printf("%d\n", check_list_element(stringListTest2, "world"));
+//     printf("%d\n", check_list_element(stringListTest2, "columbia"));
 
 
-    // Test function: create_hashmap
-    printf("%s\n", "TEST: create_hashmap");
-    struct hashmap *intToInt = create_hashmap(INT, INT);
-    struct hashmap *intToString = create_hashmap(INT, STRING);
-    printf("%d\n", intToInt->keyType);
-    printf("%d\n", intToInt->valueType);
-    printf("%d\n", intToString->keyType);
-    printf("%d\n", intToString->valueType);
+//     // Test function: concat_list
+//     printf("TEST: concat_list\n");
+//     printf("%d\n", get_list_size(intListTest2));
+//     printf("%d\n", get_list_size(intListTest3));
+//     struct List* concatListTest = concat_list(intListTest2, intListTest3);
+//     printf("%d\n", get_list_size(concatListTest));
 
 
-    // Test function: hashmap_hash_int
-    printf("%s\n", "TEST: hashmap_hash_int");
-    struct hashmap *intToIntTwo = create_hashmap(INT, INT);
-    printf("%d\n", hashmap_hash_int(intToIntTwo, "Hello"));
-    printf("%d\n", hashmap_hash_int(intToIntTwo, "World"));
+//     // Test function: create_hashmap
+//     printf("%s\n", "TEST: create_hashmap");
+//     struct hashmap *intToInt = create_hashmap(INT, INT);
+//     struct hashmap *intToString = create_hashmap(INT, STRING);
+//     printf("%d\n", intToInt->keyType);
+//     printf("%d\n", intToInt->valueType);
+//     printf("%d\n", intToString->keyType);
+//     printf("%d\n", intToString->valueType);
 
 
-    // Test function: hashmap_put
-    printf("%s\n", "TEST: hashmap_put");
-    struct hashmap *intToInt3 = create_hashmap(INT, INT);
-    intToInt3 = hashmap_put(intToInt3, 10, 99);
-    printf("%d\n", intToInt3->size);
-
-    intToInt3 = hashmap_put(intToInt3, 11, 88);
-    printf("%d\n", intToInt3->size);
-
-    struct hashmap *stringToInt1 = create_hashmap(STRING, INT);
-    printf("%d\n", stringToInt1->size);
-    stringToInt1 = hashmap_put(stringToInt1, "hello", 10);
-    printf("%d\n", stringToInt1->size);
-    stringToInt1 = hashmap_put(stringToInt1, "world", 11);
-    printf("%d\n", stringToInt1->size);
+//     // Test function: hashmap_hash_int
+//     printf("%s\n", "TEST: hashmap_hash_int");
+//     struct hashmap *intToIntTwo = create_hashmap(INT, INT);
+//     printf("%d\n", hashmap_hash_int(intToIntTwo, "Hello"));
+//     printf("%d\n", hashmap_hash_int(intToIntTwo, "World"));
 
 
-    // Test function: hashmap_length, hashmap_keytype, hashmap_valuetype
-    printf("%s\n", "TEST: hashmap_length, hashmap_keytype, hashmap_valuetype");
-    printf("%d\n", hashmap_length(stringToInt1));
-    printf("%d\n", hashmap_keytype(stringToInt1));
-    printf("%d\n", hashmap_valuetype(stringToInt1));
+//     // Test function: hashmap_put
+//     printf("%s\n", "TEST: hashmap_put");
+//     struct hashmap *intToInt3 = create_hashmap(INT, INT);
+//     intToInt3 = hashmap_put(intToInt3, 10, 99);
+//     printf("%d\n", intToInt3->size);
+
+//     intToInt3 = hashmap_put(intToInt3, 11, 88);
+//     printf("%d\n", intToInt3->size);
+
+//     struct hashmap *stringToInt1 = create_hashmap(STRING, INT);
+//     printf("%d\n", stringToInt1->size);
+//     stringToInt1 = hashmap_put(stringToInt1, "hello", 10);
+//     printf("%d\n", stringToInt1->size);
+//     stringToInt1 = hashmap_put(stringToInt1, "world", 11);
+//     printf("%d\n", stringToInt1->size);
 
 
-    // Test function: hashmap_hashkey
-    printf("%s\n", "TEST: hashmap_haskey");
-    printf("%d\n", hashmap_haskey(stringToInt1, "hello"));
-    printf("%d\n", hashmap_haskey(stringToInt1, "world"));
-    printf("%d\n", hashmap_haskey(stringToInt1, "columbia"));
-    printf("%d\n", hashmap_haskey(intToInt3, 10));
-    printf("%d\n", hashmap_haskey(intToInt3, 11));
-    printf("%d\n", hashmap_haskey(intToInt3, 12));
+//     // Test function: hashmap_length, hashmap_keytype, hashmap_valuetype
+//     printf("%s\n", "TEST: hashmap_length, hashmap_keytype, hashmap_valuetype");
+//     printf("%d\n", hashmap_length(stringToInt1));
+//     printf("%d\n", hashmap_keytype(stringToInt1));
+//     printf("%d\n", hashmap_valuetype(stringToInt1));
 
 
-    // Test function: hashmap_get
-    printf("%s\n", "TEST: hashmap_get");
-    printf("%d\n", voidToint(hashmap_get(stringToInt1, "hello")));
-    printf("%d\n", voidToint(hashmap_get(stringToInt1, "world")));
-    //printf("%d\n", voidToint(hashmap_get(stringToInt1, "columbia")));
-    printf("%d\n", voidToint(hashmap_get(intToInt3, 10)));
-    printf("%d\n", voidToint(hashmap_get(intToInt3, 11)));
-    //printf("%d\n", voidToint(hashmap_get(intToInt3, 12)));
+//     // Test function: hashmap_hashkey
+//     printf("%s\n", "TEST: hashmap_haskey");
+//     printf("%d\n", hashmap_haskey(stringToInt1, "hello"));
+//     printf("%d\n", hashmap_haskey(stringToInt1, "world"));
+//     printf("%d\n", hashmap_haskey(stringToInt1, "columbia"));
+//     printf("%d\n", hashmap_haskey(intToInt3, 10));
+//     printf("%d\n", hashmap_haskey(intToInt3, 11));
+//     printf("%d\n", hashmap_haskey(intToInt3, 12));
 
 
-    // Test function: hashmap_remove
-    printf("%s\n", "TEST: hashmap_remove");
-    stringToInt1 = hashmap_remove(stringToInt1, "hello");
-    assert(hashmap_length(stringToInt1) == 1);
-    stringToInt1 = hashmap_remove(stringToInt1, "world");
-    assert(hashmap_length(stringToInt1) == 0);
-    stringToInt1 = hashmap_put(stringToInt1, "hello", 10);
-    assert(hashmap_length(stringToInt1) == 1);
-    stringToInt1 = hashmap_put(stringToInt1, "world", 100);
-    assert(hashmap_length(stringToInt1) == 2);
-
-    intToInt3 = hashmap_remove(intToInt3, 10);
-    assert(hashmap_length(intToInt3) == 1);
-    intToInt3 = hashmap_put(intToInt3, 20, 100);
-    assert(hashmap_length(intToInt3) == 2);
+//     // Test function: hashmap_get
+//     printf("%s\n", "TEST: hashmap_get");
+//     printf("%d\n", voidToint(hashmap_get(stringToInt1, "hello")));
+//     printf("%d\n", voidToint(hashmap_get(stringToInt1, "world")));
+//     //printf("%d\n", voidToint(hashmap_get(stringToInt1, "columbia")));
+//     printf("%d\n", voidToint(hashmap_get(intToInt3, 10)));
+//     printf("%d\n", voidToint(hashmap_get(intToInt3, 11)));
+//     //printf("%d\n", voidToint(hashmap_get(intToInt3, 12)));
 
 
-    // Test function: hashmap_keys
-    struct List *stringKeysList = hashmap_keys(stringToInt1);
-    for (int i = 0; i < get_list_size(stringKeysList); i++) {
-        printf("%s\n", voidTostring(get_list_element(stringKeysList, i)));
-    }
-    struct List *intKeysList = hashmap_keys(intToInt3);
-    for (int i = 0; i < get_list_size(intKeysList); i++) {
-        printf("%d\n", voidToint(get_list_element(intKeysList, i)));
-    }
+//     // Test function: hashmap_remove
+//     printf("%s\n", "TEST: hashmap_remove");
+//     stringToInt1 = hashmap_remove(stringToInt1, "hello");
+//     assert(hashmap_length(stringToInt1) == 1);
+//     stringToInt1 = hashmap_remove(stringToInt1, "world");
+//     assert(hashmap_length(stringToInt1) == 0);
+//     stringToInt1 = hashmap_put(stringToInt1, "hello", 10);
+//     assert(hashmap_length(stringToInt1) == 1);
+//     stringToInt1 = hashmap_put(stringToInt1, "world", 100);
+//     assert(hashmap_length(stringToInt1) == 2);
+
+//     intToInt3 = hashmap_remove(intToInt3, 10);
+//     assert(hashmap_length(intToInt3) == 1);
+//     intToInt3 = hashmap_put(intToInt3, 20, 100);
+//     assert(hashmap_length(intToInt3) == 2);
 
 
-    // Test function: hashmap_iterate
-    struct hashmap* intToInt4 = create_hashmap(INT, INT);
-    intToInt4 = hashmap_put(intToInt4, 1, 10);
-    intToInt4 = hashmap_put(intToInt4, 2, 20);
-    intToInt4 = hashmap_put(intToInt4, 3, 30);
-    intToInt4 = hashmap_put(intToInt4, 4, 40);
-    intToInt4 = hashmap_put(intToInt4, 5, 50);
-    printf("%s\n", "TEST: hashmap_iterate");
-    int status = hashmap_iterate(intToInt4, test_inttoint_hashmap_iterate_func);
+//     // Test function: hashmap_keys
+//     struct List *stringKeysList = hashmap_keys(stringToInt1);
+//     for (int i = 0; i < get_list_size(stringKeysList); i++) {
+//         printf("%s\n", voidTostring(get_list_element(stringKeysList, i)));
+//     }
+//     struct List *intKeysList = hashmap_keys(intToInt3);
+//     for (int i = 0; i < get_list_size(intKeysList); i++) {
+//         printf("%d\n", voidToint(get_list_element(intKeysList, i)));
+//     }
 
 
-    // Test function: create_set, get_set_type
-    printf("%s\n", "TEST: create_set");
-    struct Set *intSet = create_set(INT);
-    printf("%d\n", intSet->type);
-    printf("%d\n", intSet->data->type);
-    printf("%d\n", intSet->size);
-    printf("%d\n", get_set_type(intSet));
-
-    struct Set *stringSet = create_set(STRING);
-    printf("%d\n", stringSet->type);
-    printf("%d\n", stringSet->data->type);
-    printf("%d\n", stringSet->size);
-    printf("%d\n", get_set_type(stringSet));
+//     // Test function: hashmap_iterate
+//     struct hashmap* intToInt4 = create_hashmap(INT, INT);
+//     intToInt4 = hashmap_put(intToInt4, 1, 10);
+//     intToInt4 = hashmap_put(intToInt4, 2, 20);
+//     intToInt4 = hashmap_put(intToInt4, 3, 30);
+//     intToInt4 = hashmap_put(intToInt4, 4, 40);
+//     intToInt4 = hashmap_put(intToInt4, 5, 50);
+//     printf("%s\n", "TEST: hashmap_iterate");
+//     int status = hashmap_iterate(intToInt4, test_inttoint_hashmap_iterate_func);
 
 
-    // Test function: put_set, get_set_size
-    printf("%s\n", "TEST: put_set, get_set_size");
-    struct Set *intSet2 = create_set(INT);
-    intSet2 = put_set(intSet2, 1);
-    printf("%d\n", get_set_size(intSet2));
-    assert(get_set_size(intSet2) == 1);
-    intSet2 = put_set(intSet2, 2);
-    printf("%d\n", get_set_size(intSet2));
-    assert(get_set_size(intSet2) == 2);
-    intSet2 = put_set(intSet2, 3);
-    printf("%d\n", get_set_size(intSet2));
-    assert(get_set_size(intSet2) == 3);
+//     // Test function: create_set, get_set_type
+//     printf("%s\n", "TEST: create_set");
+//     struct Set *intSet = create_set(INT);
+//     printf("%d\n", intSet->type);
+//     printf("%d\n", intSet->data->type);
+//     printf("%d\n", intSet->size);
+//     printf("%d\n", get_set_type(intSet));
 
-    struct Set *stringSet2 = create_set(STRING);
-    stringSet2 = put_set(stringSet2, "hello");
-    printf("%d\n", get_set_size(stringSet2));
-    assert(get_set_size(stringSet2) == 1);
-    stringSet2 = put_set(stringSet2, "world");
-    printf("%d\n", get_set_size(stringSet2));
-    assert(get_set_size(stringSet2) == 2);
-    printf("%d\n", check_set_element(stringSet2, "hello"));
-    printf("%d\n", check_set_element(stringSet2, "world"));
-    printf("%d\n", check_set_element(stringSet2, "columbia"));
+//     struct Set *stringSet = create_set(STRING);
+//     printf("%d\n", stringSet->type);
+//     printf("%d\n", stringSet->data->type);
+//     printf("%d\n", stringSet->size);
+//     printf("%d\n", get_set_type(stringSet));
 
 
-    // Test function: get_set_elements
-    printf("%s\n", "TEST: get_set_elements");
-    struct List *intList1 = get_set_elements(intSet2);
-    printf("%d\n", get_list_size(intList1));
-    struct List *stringList1 = get_set_elements(stringSet2);
-    printf("%d\n", get_list_size(stringList1));
+//     // Test function: put_set, get_set_size
+//     printf("%s\n", "TEST: put_set, get_set_size");
+//     struct Set *intSet2 = create_set(INT);
+//     intSet2 = put_set(intSet2, 1);
+//     printf("%d\n", get_set_size(intSet2));
+//     assert(get_set_size(intSet2) == 1);
+//     intSet2 = put_set(intSet2, 2);
+//     printf("%d\n", get_set_size(intSet2));
+//     assert(get_set_size(intSet2) == 2);
+//     intSet2 = put_set(intSet2, 3);
+//     printf("%d\n", get_set_size(intSet2));
+//     assert(get_set_size(intSet2) == 3);
+
+//     struct Set *stringSet2 = create_set(STRING);
+//     stringSet2 = put_set(stringSet2, "hello");
+//     printf("%d\n", get_set_size(stringSet2));
+//     assert(get_set_size(stringSet2) == 1);
+//     stringSet2 = put_set(stringSet2, "world");
+//     printf("%d\n", get_set_size(stringSet2));
+//     assert(get_set_size(stringSet2) == 2);
+//     printf("%d\n", check_set_element(stringSet2, "hello"));
+//     printf("%d\n", check_set_element(stringSet2, "world"));
+//     printf("%d\n", check_set_element(stringSet2, "columbia"));
 
 
-    // Test function: set_iterate
-    printf("%s\n", "TEST: set_iterate");
-    status = set_iterate(intSet2, test_int_set_iterate);
-    status = set_iterate(intSet2, test_int_set_iterate_2);
-    status = set_iterate(intSet2, test_int_set_iterate);
+//     // Test function: get_set_elements
+//     printf("%s\n", "TEST: get_set_elements");
+//     struct List *intList1 = get_set_elements(intSet2);
+//     printf("%d\n", get_list_size(intList1));
+//     struct List *stringList1 = get_set_elements(stringSet2);
+//     printf("%d\n", get_list_size(stringList1));
 
 
-    // Test function: get_set_element_index
-    printf("%s\n", "TEST: get_set_element_index");
-    printf("%d\n", get_set_element_index(intSet2, 1));
-    printf("%d\n", get_set_element_index(intSet2, 2));
-    printf("%d\n", get_set_element_index(intSet2, 3));
-    printf("%d\n", get_set_element_index(intSet2, 4));
+//     // Test function: set_iterate
+//     printf("%s\n", "TEST: set_iterate");
+//     status = set_iterate(intSet2, test_int_set_iterate);
+//     status = set_iterate(intSet2, test_int_set_iterate_2);
+//     status = set_iterate(intSet2, test_int_set_iterate);
 
 
-    // Test function: remove_set_element
-    printf("%s\n", "TEST: remove_set_element");
-    intSet2 = remove_set_element(intSet2, 2);
-    printf("%d\n", get_set_size(intSet2));
-    printf("%d\n", intSet2->data->currPos);
-    intSet2 = remove_set_element(intSet2, 3);
-    printf("%d\n", get_set_size(intSet2));
-    printf("%d\n", intSet2->data->currPos);
+//     // Test function: get_set_element_index
+//     printf("%s\n", "TEST: get_set_element_index");
+//     printf("%d\n", get_set_element_index(intSet2, 1));
+//     printf("%d\n", get_set_element_index(intSet2, 2));
+//     printf("%d\n", get_set_element_index(intSet2, 3));
+//     printf("%d\n", get_set_element_index(intSet2, 4));
 
-    return 0;
-}
+
+//     // Test function: remove_set_element
+//     printf("%s\n", "TEST: remove_set_element");
+//     intSet2 = remove_set_element(intSet2, 2);
+//     printf("%d\n", get_set_size(intSet2));
+//     printf("%d\n", intSet2->data->currPos);
+//     intSet2 = remove_set_element(intSet2, 3);
+//     printf("%d\n", get_set_size(intSet2));
+//     printf("%d\n", intSet2->data->currPos);
+
+//     return 0;
+// }
