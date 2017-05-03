@@ -66,6 +66,10 @@ struct List *plus_list(struct List *list, ...) {
             data = stringTovoid(va_arg(arg_ptr, char*));
             break;
 
+        case NODE:
+            data = nodeTovoid(va_arg(arg_ptr, struct Node*));
+            break;
+
         default:
             break;
     }
@@ -129,6 +133,12 @@ struct List *concat_list(struct List *list1, struct List *list2) {
         case STRING:
             for (i = 0; i < size2; i++) {
                 list1 = plus_list(list1, voidTostring(list2->value + i));
+            }
+            break;
+
+        case NODE:
+            for (i = 0; i < size2; i++) {
+                list1 = plus_list(list1, voidTonode(list2->value + i));
             }
             break;
 
@@ -206,6 +216,10 @@ bool check_list_element(struct List *list, ...) {
             target = stringTovoid(va_arg(args_ptr, char*));
             break;
 
+        case NODE:
+            target = nodeTovoid(va_arg(args_ptr, struct Node*));
+            break;
+
         default:
             break;
     }
@@ -238,6 +252,13 @@ bool check_list_element(struct List *list, ...) {
 
             case STRING:
                 if (strcmp(voidTostring(target), voidTostring(*(list->value + i))) == 0) {
+                    exist = 1;
+                    return exist;
+                }
+                break;
+
+            case NODE:
+                if (strcmp(voidTonode(target)->name, voidTonode(*(list->value + i))->name) == 0) {
                     exist = 1;
                     return exist;
                 }
