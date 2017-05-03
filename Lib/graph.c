@@ -35,13 +35,6 @@ void addGraphEdge(struct Graph* graph, struct Node* node1, struct Node* node2, d
 		addGraphNode(graph, node2);
 	}
 	addNodeEdge(node1, node2, weight);
-	// addNodeEdge(node1, node2, weight);
-	// if (node1->nodes==NULL){
-	// 	node1->nodes = create_list(STRING);
-	// 	node1->weight = create_list(FLOAT);
-	// }
-	// plus_list(node1->nodes, getNodeName(node2));
-	// plus_list(node1->weight, weight);
 }
 
 struct Node* iterGraph(struct Graph* graph, int index){
