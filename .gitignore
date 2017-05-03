@@ -5,5 +5,4 @@ _build/
 *.ll
 *.json
 *.s
-*.o
 *.ext
