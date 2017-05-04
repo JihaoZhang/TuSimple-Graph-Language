@@ -31,7 +31,7 @@ globalerror=0
 keep=0
 
 Usage() {
-    echo "Usage: testall.sh [options] [.mc files]"
+    echo "Usage: testall.sh [options] [.tu files]"
     echo "-k    Keep intermediate files"
     echo "-h    Print this help"
     exit 1
@@ -80,8 +80,8 @@ RunFail() {
 Check() {
     error=0
     basename=`echo $1 | sed 's/.*\\///
-                             s/.mc//'`
-    reffile=`echo $1 | sed 's/.mc$//'`
+                             s/.tu//'`
+    reffile=`echo $1 | sed 's/.tu$//'`
     basedir="`echo $1 | sed 's/\/[^\/]*$//'`/."
 
     echo -n "$basename..."
@@ -94,7 +94,7 @@ Check() {
     generatedfiles="$generatedfiles ${basename}.ll ${basename}.s ${basename}.exe ${basename}.out" &&
     Run "$TUSIMPLE" "<" $1 ">" "${basename}.ll" &&
     Run "$LLC" "${basename}.ll" ">" "${basename}.s" &&
-    Run "$CC" "-o" "${basename}.exe" "${basename}.s" "printbig.o" &&
+    Run "$CC" "-o" "${basename}.exe" "${basename}.s" "./Lib/utils.o" "printbig.o" &&
     Run "./${basename}.exe" > "${basename}.out" &&
     Compare ${basename}.out ${reffile}.out ${basename}.diff
 
@@ -115,8 +115,8 @@ Check() {
 CheckFail() {
     error=0
     basename=`echo $1 | sed 's/.*\\///
-                             s/.mc//'`
-    reffile=`echo $1 | sed 's/.mc$//'`
+                             s/.tu//'`
+    reffile=`echo $1 | sed 's/.tu$//'`
     basedir="`echo $1 | sed 's/\/[^\/]*$//'`/."
 
     echo -n "$basename..."
@@ -128,19 +128,19 @@ CheckFail() {
 
     generatedfiles="$generatedfiles ${basename}.err ${basename}.diff" &&
     RunFail "$TUSIMPLE" "<" $1 "2>" "${basename}.err" ">>" $globallog &&
-    Compare ${basename}.err ${reffile}.err ${basename}.diff
+    Compare ${basename}.err ${reffile}.out ${basename}.diff
 
     # Report the status and clean up the generated files
 
     if [ $error -eq 0 ] ; then
-	if [ $keep -eq 0 ] ; then
-	    rm -f $generatedfiles
-	fi
-	echo "OK"
-	echo "###### SUCCESS" 1>&2
+    if [ $keep -eq 0 ] ; then
+        rm -f $generatedfiles
+    fi
+    echo "OK"
+    echo "###### SUCCESS" 1>&2
     else
-	echo "###### FAILED" 1>&2
-	globalerror=$error
+    echo "###### FAILED" 1>&2
+    globalerror=$error
     fi
 }
 
@@ -157,13 +157,13 @@ done
 
 shift `expr $OPTIND - 1`
 
-# LLIFail() {
-#   echo "Could not find the LLVM interpreter \"$LLI\"."
-#   echo "Check your LLVM installation and/or modify the LLI variable in testall.sh"
-#   exit 1
-# }
+LLIFail() {
+  echo "Could not find the LLVM interpreter \"$LLI\"."
+  echo "Check your LLVM installation and/or modify the LLI variable in testall.sh"
+  exit 1
+}
 
-# which "$LLI" >> $globallog || LLIFail
+which "$LLI" >> $globallog || LLIFail
 
 if [ ! -f printbig.o ]
 then
@@ -182,16 +182,16 @@ fi
 for file in $files
 do
     case $file in
-	*test-*)
-	    Check $file 2>> $globallog
-	    ;;
-	*fail-*)
-	    CheckFail $file 2>> $globallog
-	    ;;
-	*)
-	    echo "unknown file type $file"
-	    globalerror=1
-	    ;;
+    *test-*)
+        Check $file 2>> $globallog
+        ;;
+    *fail-*)
+        CheckFail $file 2>> $globallog
+        ;;
+    *)
+        echo "unknown file type $file"
+        globalerror=1
+        ;;
     esac
 done
 
