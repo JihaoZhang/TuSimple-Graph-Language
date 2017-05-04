@@ -131,6 +131,42 @@ List
 	  ignore (L.build_call add_list_f actuals "plus_list" llbuilder)
   in
 
+(*
+================================================================
+  Set
+================================================================
+*)
+
+let put_set_from_list_t = L.function_type set_t [| set_t; list_t |]
+in
+let put_set_from_list_f = L.declare_function "put_set_from_list" put_set_from_list_t the_module
+in
+let put_set_from_list s_ptr l_ptr llbuilder = 
+	let actuals = [| s_ptr; l_ptr |] in (
+		L.build_call put_set_from_list_f actuals "put_set_from_list" llbuilder
+	)
+in
+
+let create_set_t = L.function_type set_t [| i32_t |]
+in
+let create_set_f = L.declare_function "create_set" create_set_t the_module
+in 
+let create_set typ llbuilder = 
+	let actuals = [|lconst_of_typ typ|] in (
+		L.build_call create_set_f actuals "create_set" llbuilder
+	)
+in
+
+let add_set_t = L.var_arg_function_type set_t [| set_t |]
+in
+let add_set_f = L.declare_function "put_set" add_set_t the_module
+in
+let add_set l_ptr llbuilder data = 
+	let actuals = [|l_ptr; data|] in
+		ignore (L.build_call add_set_f actuals "plus_set" llbuilder)
+in 
+
+
   let add_all_elements_into_list element_list l_ptr llbuilder = 
     List.iter (add_list l_ptr llbuilder) element_list
   in
@@ -391,6 +427,8 @@ in
           let (var', typ) =  lookup var and (s', t') = expr builder e in
           ((match typ with
           | A.List _ -> concat_list (L.build_load var' var builder) s' builder 
+          | A.Set typeSet -> let temp_set = create_set typeSet builder in
+          		put_set_from_list (L.build_load var' var builder) s' builder
           | _ -> raise (Failure (" undefined += "))), typ)
 
       | A.Call ("print", [e]) | A.Call ("printb", [e]) ->
