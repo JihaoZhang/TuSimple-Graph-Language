@@ -443,19 +443,16 @@ in
           let (var', typ) =  lookup var and (s', t') = expr builder e in
           ((match typ with
           | A.List _ -> concat_list (L.build_load var' var builder) s' builder 
-<<<<<<< Updated upstream
-(*           | A.Set typeSet -> let temp_set = create_set typeSet builder in
- *)(*           		put_set_from_list (L.build_load var' var builder) s' builder
- *)          | _ -> raise (Failure (" undefined += "))), typ)
+          (* | A.Set typeSet -> let temp_set = create_set typeSet builder in
+           		put_set_from_list (L.build_load var' var builder) s' builder
+          *)|  _ -> raise (Failure (" undefined += "))), typ)
       | A.Null ->  (L.const_null list_t, A.List(A.Int))
-=======
-          | A.Set typeSet -> let temp_set = create_set typeSet builder in
+(*       | A.Set typeSet -> let temp_set = create_set typeSet builder in
           		put_set_from_list (L.build_load var' var builder) s' builder
-          | _ -> raise (Failure (" undefined += "))), typ)
+          | _ -> raise (Failure (" undefined += "), typ) *)
       | A.SingleEdge (n1, n2) ->
       		((let (n1', typ1) = lookup n1 and (n2', typ2) = lookup n2 in 
       		getEdgeValue (L.build_load n1' n1 builder) (L.build_load n2' n2 builder) builder) , A.Float)
->>>>>>> Stashed changes
       | A.Call ("print", [e]) | A.Call ("printb", [e]) ->
 				 (L.build_call printf_func [| int_format_str ; (fst (expr builder e)) |]
 			   "printf" builder, (snd (expr builder e)))

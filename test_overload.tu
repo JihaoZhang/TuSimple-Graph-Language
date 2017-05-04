@@ -5,18 +5,15 @@ int main(){
   bool d;
   list@{int} l1;
   set @{int} s1;
-<<<<<<< Updated upstream
   node n1;
-  new l1;
-  l1 = null;
-=======
+  //new l1;
   node node1;
   node node2;
 
+  new l1;
   node1->node2;
 
-
->>>>>>> Stashed changes
+  l1 = null;
   b = 1;
   d = true;
   a = b + b;
