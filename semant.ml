@@ -323,18 +323,40 @@ let check (globals, functions) =
             )
           | Set ele_type ->
             (match fname with
-                "get" -> Bool
-              | "remove" -> Bool
-              | "size" -> Bool
-              | "contain" -> Bool
-              | "gettype" -> Bool
+                "minimum" ->                   
+                  if actuals = [] then ele_type else raise (Failure ("Set minimum method error"))
+              | "maximum" -> 
+                  if actuals = [] then ele_type else raise (Failure ("Set minimum method error"))
+              | "length" -> 
+                  if actuals = [] then Int else raise (Failure ("Set length method error"))
+              | "contain" ->
+                  (match actuals with
+                      [x] when (expr x) = ele_type -> Bool
+                    | _ -> raise (Failure ("Set contain method error")))
+              | "gettype" -> 
+                  if actuals = [] then ele_type else raise (Failure ("Set gettype method error"))
               | _ -> raise (Failure ("Set has no such method"))
             )
           | Map (k_type, v_type) ->
             (match fname with
-                "get" -> Bool
-              | "length" -> Bool
-              | "haskey" -> Bool
+                "get" ->
+                  (match actuals with
+                      [x] when (expr x) = k_type -> v_type
+                    | _ -> raise (Failure ("Map get method error")))
+              | "keytype" -> 
+                  if actuals = [] then k_type else raise (Failure ("Map keytype method error"))
+              | "valuetype" -> 
+                  if actuals = [] then v_type else raise (Failure ("Map valuetype method error"))
+              | "length" -> 
+                  if actuals = [] then Int else raise (Failure ("Map length method error"))
+              | "haskey" -> 
+                  (match actuals with
+                      [x] when (expr x) = k_type -> Bool
+                    | _ -> raise (Failure ("Map haskey method error")))
+              | "remove" ->
+                    (match actuals with
+                      [x] when (expr x) = k_type -> Null_t
+                    | _ -> raise (Failure ("Map remove method error")))
               | _ -> raise (Failure ("Map has no such method"))
             )
           | Graph ->
