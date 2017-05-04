@@ -365,13 +365,13 @@ in
 				let (e1', t1') = expr builder e1
 				and (e2', t2') = expr builder e2 in
 				((match op with
-					A.Add when t1' = A.Int    -> L.build_add
-        | A.Add when t1' = A.Bool   -> L.build_and 
+					A.Add    -> L.build_add
 				| A.Sub     -> L.build_sub
 				| A.Mult    -> L.build_mul
 				| A.Div     -> L.build_sdiv
 				| A.And     -> L.build_and
 				| A.Or      -> L.build_or
+				| A.Mod -> L.build_srem
 				| A.Equal   -> L.build_icmp L.Icmp.Eq
 				| A.Neq     -> L.build_icmp L.Icmp.Ne
 				| A.Less    -> L.build_icmp L.Icmp.Slt
