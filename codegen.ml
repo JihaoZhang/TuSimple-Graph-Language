@@ -131,45 +131,6 @@ List
 	  ignore (L.build_call add_list_f actuals "plus_list" llbuilder)
   in
 
-(*
-================================================================
-  Set
-================================================================
-*)
-
-let put_set_from_list_t = L.function_type set_t [| set_t; list_t |]
-in
-let put_set_from_list_f = L.declare_function "put_set_from_list" put_set_from_list_t the_module
-in
-let put_set_from_list s_ptr l_ptr llbuilder = 
-	let actuals = [| s_ptr; l_ptr |] in (
-		L.build_call put_set_from_list_f actuals "put_set_from_list" llbuilder
-	)
-in
-
-let create_set_t = L.function_type set_t [| i32_t |]
-in
-let create_set_f = L.declare_function "create_set" create_set_t the_module
-in 
-let create_set typ llbuilder = 
-	let actuals = [|lconst_of_typ typ|] in (
-		L.build_call create_set_f actuals "create_set" llbuilder
-	)
-in
-
-let add_set_t = L.var_arg_function_type set_t [| set_t |]
-in
-let add_set_f = L.declare_function "put_set" add_set_t the_module
-in
-let add_set l_ptr llbuilder data = 
-	let actuals = [|l_ptr; data|] in
-		ignore (L.build_call add_set_f actuals "plus_set" llbuilder)
-in 
-
-
-  let add_all_elements_into_list element_list l_ptr llbuilder = 
-    List.iter (add_list l_ptr llbuilder) element_list
-  in
 
 (* Hashmap *)
 	let create_hashmap_t = L.function_type map_t [| i32_t; i32_t |]
@@ -215,50 +176,45 @@ in
 			L.build_call hashmap_get_f actuals "hashmap_get" llbuilder
 	in
 
-(* Set *)
-	let create_set_t = L.function_type set_t [| i32_t |]
-	in
+(*
+================================================================
+  Set
+================================================================
+*)
 
-	let create_set_f = L.declare_function "create_set" create_set_t the_module
-	in
+let put_set_from_list_t = L.function_type set_t [| set_t; list_t |]
+in
+let put_set_from_list_f = L.declare_function "put_set_from_list" put_set_from_list_t the_module
+in
+let put_set_from_list s_ptr l_ptr llbuilder = 
+	let actuals = [| s_ptr; l_ptr |] in (
+		L.build_call put_set_from_list_f actuals "put_set_from_list" llbuilder
+	)
+in
 
-	let create_set typ llbuilder =
-		let actuals = [| typ |] in
-			ignore(L.build_call create_set_f actuals "create_set" llbuilder)
-	in
+let create_set_t = L.function_type set_t [| i32_t |]
+in
+let create_set_f = L.declare_function "create_set" create_set_t the_module
+in 
+let create_set typ llbuilder = 
+	let actuals = [|lconst_of_typ typ|] in (
+		L.build_call create_set_f actuals "create_set" llbuilder
+	)
+in
 
-	let put_set_t = L.var_arg_function_type set_t [| set_t |]
-	in
+let add_set_t = L.var_arg_function_type set_t [| set_t |]
+in
+let add_set_f = L.declare_function "put_set" add_set_t the_module
+in
+let add_set l_ptr llbuilder data = 
+	let actuals = [|l_ptr; data|] in
+		ignore (L.build_call add_set_f actuals "plus_set" llbuilder)
+in 
 
-	let put_set_f = L.declare_function "put_set" put_set_t the_module
-	in
 
-	let put_set s_ptr llbuilder data =
-		let actuals = [| s_ptr; data |] in
-			ignore(L.build_call put_set_f actuals "put_set" llbuilder)
-	in
-
-	let remove_set_element_t = L.var_arg_function_type set_t [| set_t |]
-	in
-
-	let remove_set_element_f = L.declare_function "remove_set_element" remove_set_element_t the_module
-	in
-
-	let remove_set_element s_ptr llbuilder data =
-		let actuals = [| s_ptr; data |] in
-			ignore(L.build_call remove_set_element_f actuals "remove_set_element" llbuilder)
-	in
-
-	let get_set_elements_t = L.var_arg_function_type list_t [| set_t |]
-	in
-
-	let get_set_elements_f = L.declare_function "get_set_elements" get_set_elements_t the_module
-	in
-
-	let get_set_elements s_ptr llbuilder data =
-		let actuals = [| s_ptr; data |] in
-			L.build_call get_set_elements_f actuals "get_set_elements" llbuilder
-	in
+  let add_all_elements_into_list element_list l_ptr llbuilder = 
+    List.iter (add_list l_ptr llbuilder) element_list
+  in
 
 (*
 ================================================================
@@ -412,6 +368,10 @@ in
       | _ -> raise (Failure (" undefined operator[] "))
       )
       | _ -> raise (Failure (" undefined operator[] "))), typ)
+      | A.New id -> let (id', typ) = lookup id in 
+      	((match typ with 
+      	| A.List listType -> create_list listType builder
+      	| _ -> raise (Failure (" Type not found "))), typ)
       | A.AddAdd var -> let (var', typ) = lookup var in
 		  ignore(remove_list_element (L.build_load var' var builder) builder); (var',typ)
 			| A.Binop (e1, op, e2) ->
@@ -444,7 +404,6 @@ in
           let (var', typ) =  lookup var and (s', t') = expr builder e in
           ((match typ with
           | A.List _ -> concat_list (L.build_load var' var builder) s' builder 
-<<<<<<< HEAD
           | A.Int -> let e1' = L.build_load var' var builder
 				and (e2', t2') = expr builder e 
 				in
