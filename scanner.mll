@@ -71,6 +71,8 @@ rule token = parse
 | "false"  { FALSE }
 | "null"   { NULL }
 
+| "new" { NEW }
+
 | ['a'-'z' 'A'-'Z']['a'-'z' 'A'-'Z' '0'-'9' '_']* as lxm { ID(lxm) }
 | ['0'-'9']+ as lxm { LITERAL(int_of_string lxm) }
 | float as lxm { FLOAT_LITERAL(float_of_string lxm) }

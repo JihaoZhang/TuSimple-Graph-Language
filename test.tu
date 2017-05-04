@@ -14,7 +14,9 @@ int main(){
   list @{node} l3; 
   set @{node} s1;
   map @{node, int} map1;
-//  new map1;
+//  map @{list @{int}, list @{int}} m2; ERROR
+//  m2[@{1, 2}] = @{1, 2}; ERROR
+//  new map1; 
 // new l1;
 // new s1;
  @{1, 2, 3};
@@ -33,6 +35,9 @@ int main(){
   map1[n1] = 1;
  /* l1 = {a, c , d}; illegal assignment list@{int} = list@{node} in l1 = {a, c, d} */
  /* {1, 2, a}; Type Must be homogeneous in a list */
+ // a -> c = 1;
+ // a -> c = 2;
+ // print(a -> c);
   a -> @{n1, n2, n3} = @{1, 2, 3};
   a -- @{n1, n2, n3} = @{2, 3, 4};
   a -> c = 1;                                                   /*  single  directed edge */

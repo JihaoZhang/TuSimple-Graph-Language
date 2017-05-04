@@ -32,6 +32,7 @@ type expr =
   | DoubleLinkAssign of string * string * expr
   | SubscriptAssign of expr * expr
   | BatchSingleLinkAssign of string * expr * expr
+  | New of string
   | BatchDoubleLinkAssign of string * expr * expr
 
 type stmt =
@@ -82,6 +83,7 @@ let rec string_of_expr = function
   | Null -> "null"
   | Id(s) -> s
   | AddAdd(s) -> s ^ "++"
+  | New(s) -> "new " ^ s
   | Binop(e1, o, e2) ->
       string_of_expr e1 ^ " " ^ string_of_op o ^ " " ^ string_of_expr e2
   | Unop(o, e) -> string_of_uop o ^ string_of_expr e

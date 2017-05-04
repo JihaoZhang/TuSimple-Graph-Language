@@ -175,6 +175,17 @@ let check (globals, functions) =
       | FloatLit _ -> Float
       | StringLit _ -> String
       | Null -> Null_t
+      | New id -> let idTyp = type_of_identifier id
+      in 
+      let checkNew typ err = 
+        (match typ with
+        | Node -> Null_t
+        | List t -> Null_t
+        | Set t  -> Null_t
+        | Map(t1,t2)  -> Null_t
+        | Graph -> Null_t
+        | _ -> raise err)
+      in checkNew idTyp (Failure ("illegal new operation of " ^ string_of_typ idTyp))
       | ListLiteral el ->  let checkListLit el err = 
          match List.length el  with 
            0 -> raise (Failure ("can't define empty list in this way in TuSimple "))
