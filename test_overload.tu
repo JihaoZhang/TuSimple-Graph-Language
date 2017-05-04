@@ -9,11 +9,12 @@ int main(){
   node@{int} n1;
   node@{int} node1;
   node@{int} node2;
-
+  string str1;
   new l1;
   //new node1;
   new s1;
-
+  str1 = "hello"; 
+  printb(true);
   //node1->node2;
   l1 = null;
   f = 1.1;

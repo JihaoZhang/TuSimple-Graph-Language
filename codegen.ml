@@ -325,7 +325,7 @@ in
 			let add_local m (t, n) =
 				let local_var = L.build_alloca (ltype_of_typ t) n builder
 				in StringMap.add n (local_var, t) m in
-
+		
 			let formals = List.fold_left2 add_formal StringMap.empty fdecl.A.formals
 				(Array.to_list (L.params the_function)) in
 				List.fold_left add_local formals fdecl.A.locals in
@@ -343,6 +343,8 @@ in
 			  A.Literal i -> (L.const_int i32_t i, A.Int)
 			| A.FloatLit i -> (L.const_float float_t i, A.Float)
 			| A.BoolLit b -> (L.const_int i1_t (if b then 1 else 0), A.Bool)
+			| A.StringLit s -> (L.build_global_stringptr s s builder, A.String)
+		    | A.Null ->  (L.const_null list_t, A.List(A.Int))
 			| A.Noexpr -> (L.const_int i32_t 0, A.Void)
 			| A.Id s -> (L.build_load (fst (lookup s)) s builder, (snd (lookup s)))
       | A.ListLiteral el -> 
@@ -418,7 +420,6 @@ in
           		and (l1', t1') = expr builder e
           	in put_set_from_list s1 l1' builder
           | _ -> raise (Failure (" undefined += "))), typ)
-      | A.Null ->  (L.const_null list_t, A.List(A.Int))
       | A.SingleEdge (n1, n2) ->
       		((let (n1', typ1) = lookup n1 and (n2', typ2) = lookup n2 in 
       		getEdgeValue (L.build_load n1' n1 builder) (L.build_load n2' n2 builder) builder) , A.Float)
