@@ -1,0 +1,56 @@
+ACCEPT
+[program:
+  [decls:
+    [decls:]
+    [fdecl:
+      [datatype: [primitives: INT]]
+      ID
+      LPAREN
+      [formals_opt:]
+      RPAREN
+      LBRACE
+      [vdecl_list:
+        [vdecl_list:
+          [vdecl_list:
+            [vdecl_list:
+              [vdecl_list:
+                [vdecl_list:
+                  [vdecl_list:]
+                  [vdecl: [datatype: [primitives: INT]] ID SEMI]
+                ]
+                [vdecl: [datatype: [primitives: BOOL]] ID SEMI]
+              ]
+              [vdecl: [datatype: [primitives: FLOAT]] ID SEMI]
+            ]
+            [vdecl: [datatype: [primitives: STRING]] ID SEMI]
+          ]
+          [vdecl:
+            [datatype:
+              [primitives: VECTOR [primitives: INT] LBRACKET NUM_LIT RBRACKET]
+            ]
+            ID
+            SEMI
+          ]
+        ]
+        [vdecl:
+          [datatype:
+            [primitives:
+              MATRIX
+              [primitives: INT]
+              LBRACKET
+              NUM_LIT
+              COMMA
+              NUM_LIT
+              RBRACKET
+            ]
+          ]
+          ID
+          SEMI
+        ]
+      ]
+      [stmt_list: [stmt_list:] [stmt: RETURN [expr: NUM_LIT] SEMI]]
+      RBRACE
+    ]
+  ]
+  EOF
+]

@@ -1113,6 +1113,51 @@ int32_t get_set_size(struct Set *set) {
     return set->size;
 }
 
+struct Set *put_set_from_list(struct Set *set, struct List * list) {
+    if (set == NULL) {
+        printf("%s\n", "Error! put_set_from_list : Set does not exist.\n");
+        exit(1);
+    }
+    
+    int i;
+    switch (set->type) {
+        case INT:
+            for (i = 0; i < get_list_size(list); i++) {
+                set = put_set(set, voidToint(get_list_element(list, i)));
+            }
+            break;
+
+        case BOOL:
+            for (i = 0; i < get_list_size(list); i++) {
+                set = put_set(set, voidTobool(get_list_element(list, i)));
+            }
+            break;
+
+        case FLOAT:
+            for (i = 0; i < get_list_size(list); i++) {
+                set = put_set(set, voidTofloat(get_list_element(list, i)));
+            }
+            break;
+
+        case STRING:
+            for (i = 0; i < get_list_size(list); i++) {
+                set = put_set(set, voidTostring(get_list_element(list, i)));
+            }
+            break;
+
+        case NODE:
+            for (i = 0; i < get_list_size(list); i++) {
+                set = put_set(set, voidTonode(get_list_element(list, i)));
+            }
+            break;
+
+        default:
+            break;
+    }
+
+    return set;
+}
+
 int test_int_set_iterate(void **data) {
     printf("%s", "SET ELEMENT: ");
     printf("%d\n", voidToint(*data));

@@ -28,6 +28,8 @@ let translate (globals, functions) =
   and i8_t   = L.i8_type   context
   and i1_t   = L.i1_type   context
   and void_t = L.void_type context 
+  and float_t  = L.double_type context
+  and string_t  = L.pointer_type (L.i8_type context)
   and list_t = L.pointer_type (match L.type_by_name llm "struct.List" with
 	  None -> raise (Failure "struct.List doesn't defined.")
   | Some x -> x)
@@ -36,6 +38,12 @@ let translate (globals, functions) =
   | Some x -> x)
   and map_t = (match L.type_by_name llm "struct.hashmap" with
     None -> raise (Failure "struct.hashmap doesn't defined.")
+  | Some x -> x)
+  and node_t = (match L.type_by_name llm "struct.Node" with
+    None -> raise (Failure "struct.Node doesn't defined.")
+  | Some x -> x)
+  and graph_t = (match L.type_by_name llm "struct.Graph" with
+    None -> raise (Failure "struct.Graph doesn't defined.")
   | Some x -> x)
 
   in
@@ -47,6 +55,10 @@ let translate (globals, functions) =
 	| A.List(_) -> list_t
   | A.Set(_) -> set_t
   | A.Map(_, _) -> map_t
+  | A.String -> string_t
+  | A.Float -> float_t
+  | A.Node -> node_t
+  | A.Graph -> graph_t
   in
 
   let lconst_of_typ = function
@@ -119,6 +131,8 @@ List
 	  ignore (L.build_call add_list_f actuals "plus_list" llbuilder)
   in
 
+
+
   let add_all_elements_into_list element_list l_ptr llbuilder = 
     List.iter (add_list l_ptr llbuilder) element_list
   in
@@ -164,10 +178,26 @@ List
 
 	let hashmap_get m_ptr llbuilder data =
 		let actuals = [| m_ptr; data |] in
-			ignore(L.build_call hashmap_get_f actuals "hashmap_get" llbuilder)
+			L.build_call hashmap_get_f actuals "hashmap_get" llbuilder
 	in
 
-(* Set *)
+
+(*
+================================================================
+  Set
+================================================================
+*)
+
+	let put_set_from_list_t = L.function_type set_t [| set_t; list_t |]
+	in
+	let put_set_from_list_f = L.declare_function "put_set_from_list" put_set_from_list_t the_module
+	in
+	let put_set_from_list s_ptr l_ptr llbuilder = 
+		let actuals = [| s_ptr; l_ptr |] in (
+			L.build_call put_set_from_list_f actuals "put_set_from_list" llbuilder
+		)
+	in
+
 	let create_set_t = L.function_type set_t [| i32_t |]
 	in
 
@@ -175,7 +205,7 @@ List
 	in
 
 	let create_set typ llbuilder =
-		let actuals = [| typ |] in
+		let actuals = [| lconst_of_typ typ |] in
 			ignore(L.build_call create_set_f actuals "create_set" llbuilder)
 	in
 
@@ -209,27 +239,58 @@ List
 
 	let get_set_elements s_ptr llbuilder data =
 		let actuals = [| s_ptr; data |] in
-			ignore(L.build_call get_set_elements_f actuals "get_set_elements" llbuilder)
+			L.build_call get_set_elements_f actuals "get_set_elements" llbuilder
 	in
 
  (* cast *)
-let voidToInt_t = L.function_type i32_t [|L.pointer_type i8_t|]
-in
-let voidToInt_f = L.declare_function "voidToint" voidToInt_t the_module
-in
-let voidToInt v_ptr llbuilder = 
-	let actuals = [|v_ptr|] in  
-	L.build_call voidToInt_f actuals "voidTofloat" llbuilder
-in
-let voidTofloat_t = L.function_type i32_t [|L.pointer_type i8_t|]
-in
-let voidTofloat_f = L.declare_function "voidTofloat" voidTofloat_t the_module
-in
-let voidTofloat v_ptr llbuilder = 
-	let actuals = [|v_ptr|] in  
-	L.build_call voidTofloat_f actuals "voidTofloat" llbuilder
-in
-
+	let voidToInt_t = L.function_type i32_t [|L.pointer_type i8_t|]
+	in
+	let voidToInt_f = L.declare_function "voidToint" voidToInt_t the_module
+	in
+	let voidToInt v_ptr llbuilder = 
+		let actuals = [|v_ptr|] in  
+		L.build_call voidToInt_f actuals "voidToint" llbuilder
+	in
+	let voidTofloat_t = L.function_type float_t [|L.pointer_type i8_t|]
+	in
+	let voidTofloat_f = L.declare_function "voidTofloat" voidTofloat_t the_module
+	in
+	let voidTofloat v_ptr llbuilder = 
+		let actuals = [|v_ptr|] in  
+		L.build_call voidTofloat_f actuals "voidTofloat" llbuilder
+	in
+	let voidTobool_t = L.function_type i1_t [|L.pointer_type i8_t|]
+	in
+	let voidTobool_f = L.declare_function "voidTobool" voidTobool_t the_module
+	in
+	let voidTobool v_ptr llbuilder = 
+		let actuals = [|v_ptr|] in  
+		L.build_call voidTobool_f actuals "voidTobool" llbuilder
+	in
+	let voidTostring_t = L.function_type string_t [|L.pointer_type i8_t|]
+	in
+	let voidTostring_f = L.declare_function "voidTostring" voidTostring_t the_module
+	in
+	let voidTostring v_ptr llbuilder = 
+		let actuals = [|v_ptr|] in  
+		L.build_call voidTostring_f actuals "voidTostring" llbuilder
+	in
+	let voidTonode_t = L.function_type node_t [|L.pointer_type i8_t|]
+	in
+	let voidTonode_f = L.declare_function "voidTonode" voidTonode_t the_module
+	in
+	let voidTonode v_ptr llbuilder = 
+		let actuals = [|v_ptr|] in  
+		L.build_call voidTonode_f actuals "voidTonode" llbuilder
+	in
+	let voidTograph_t = L.function_type graph_t [|L.pointer_type i8_t|]
+	in
+	let voidTograph_f = L.declare_function "voidTograph" voidTograph_t the_module
+	in
+	let voidTograph v_ptr llbuilder = 
+		let actuals = [|v_ptr|] in  
+		L.build_call voidTograph_f actuals "voidTograph" llbuilder
+	in
 	(* Declare each global variable; remember its value in a map *)
 	let global_vars =
 		let global_var m (t, n) =
@@ -310,6 +371,9 @@ in
       in match typeList with
       | A.Int -> voidToInt elementPtr builder
       | A.Float -> voidTofloat elementPtr builder
+      | A.Bool -> voidTobool elementPtr builder
+      | A.Node -> voidTonode elementPtr builder
+      | A.Graph -> voidTograph elementPtr builder
       | _ -> raise (Failure (" undefined operator[] "))
       )
       | _ -> raise (Failure (" undefined operator[] "))), typ)
@@ -345,6 +409,8 @@ in
           let (var', typ) =  lookup var and (s', t') = expr builder e in
           ((match typ with
           | A.List _ -> concat_list (L.build_load var' var builder) s' builder 
+          | A.Set typeSet -> let temp_set = create_set typeSet builder in
+          		put_set_from_list (L.build_load var' var builder) s' builder
           | _ -> raise (Failure (" undefined += "))), typ)
 
       | A.Call ("print", [e]) | A.Call ("printb", [e]) ->

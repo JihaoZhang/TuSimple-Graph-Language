@@ -401,6 +401,50 @@ int32_t get_set_size(struct Set *set) {
     return set->size;
 }
 
+struct Set *put_set_from_list(struct Set *set, struct List * list) {
+    if (set == NULL) {
+        printf("%s\n", "Error! put_set_from_list : Set does not exist.\n");
+        exit(1);
+    }
+    
+    int i;
+    switch (set->type) {
+        case INT:
+            for (i = 0; i < get_list_size(list); i++) {
+                set = put_set(set, voidToint(get_list_element(list, i)));
+            }
+            break;
+
+        case BOOL:
+            for (i = 0; i < get_list_size(list); i++) {
+                set = put_set(set, voidTobool(get_list_element(list, i)));
+            }
+            break;
+
+        case FLOAT:
+            for (i = 0; i < get_list_size(list); i++) {
+                set = put_set(set, voidTofloat(get_list_element(list, i)));
+            }
+            break;
+
+        case STRING:
+            for (i = 0; i < get_list_size(list); i++) {
+                set = put_set(set, voidTostring(get_list_element(list, i)));
+            }
+            break;
+
+        case NODE:
+            for (i = 0; i < get_list_size(list); i++) {
+                set = put_set(set, voidTonode(get_list_element(list, i)));
+            }
+            break;
+
+        default:
+            break;
+    }
+
+    return set;
+}
 
 int test_int_set_iterate(void **data) {
     printf("%s", "SET ELEMENT: ");
@@ -489,4 +533,18 @@ int test_int_set_iterate_2(void **data) {
 //     intSet2 = remove_set_element(intSet2, 3);
 //     printf("%d\n", get_set_size(intSet2));
 //     printf("%d\n", intSet2->data->currPos);
+
+
+//     // Test function: put_set_from_list
+//     printf("%s\n", "TEST: put_set_from_list");
+//     struct List* testPutListSetList = create_list(0);
+//     testPutListSetList = plus_list(testPutListSetList, 10);
+//     testPutListSetList = plus_list(testPutListSetList, 20);
+//     testPutListSetList = plus_list(testPutListSetList, 30);
+//     struct Set* testPutListSet = create_set(0);
+//     testPutListSet = put_set_from_list(testPutListSet, testPutListSetList);
+//     printf("%d\n", testPutListSet->size);
+//     printf("%d\n", voidToint(get_list_element(testPutListSetList, 0)));
+//     printf("%d\n", voidToint(get_list_element(testPutListSetList ,1)));
+//     printf("%d\n", voidToint(get_list_element(testPutListSetList ,2)));
 // }
