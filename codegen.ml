@@ -132,14 +132,18 @@ List
   in
 
 
-(* Hashmap *)
+(*
+================================================================
+  Hashmap Methods
+================================================================
+*)
 	let create_hashmap_t = L.function_type map_t [| i32_t; i32_t |]
 	in
 
 	let create_hashmap_f = L.declare_function "create_hashmap" create_hashmap_t the_module
 	in
 	let create_hashmap kType vType llbuilder =
-		let actuals = [| kType; vType |] in
+		let actuals = [| lconst_of_typ kType; lconst_of_typ vType |] in
 			ignore(L.build_call create_hashmap_f actuals "create_hashmap" llbuilder)
 	in
 
@@ -221,6 +225,16 @@ in
   Node Methods
 ================================================================
 *)
+let createNode_t = L.function_type node_t [| string_t; i32_t |]
+in
+let createNode_f = L.declare_function "createNode" createNode_t the_module
+in
+let createNode s_ptr nodeType llbuilder = 
+	let actuals = [| s_ptr; lconst_of_typ nodeType |] in (
+		L.build_call createNode_f actuals "createNode" llbuilder
+	)
+in
+
 	let getEdgeValue_t = L.function_type float_t [| node_t; node_t |]
 	in
 	let getEdgeValue_f = L.declare_function "getEdgeValue" getEdgeValue_t the_module
@@ -232,7 +246,11 @@ in
 	in
 
 
- (* cast *)
+(*
+================================================================
+  Cast Methods
+================================================================
+*)
 let voidToInt_t = L.function_type i32_t [|L.pointer_type i8_t|]
 in
 let voidToInt_f = L.declare_function "voidToint" voidToInt_t the_module
@@ -372,6 +390,10 @@ in
       	((match typ with 
       	| A.List listType -> create_list listType builder
       	| A.Set setType -> create_set setType builder
+      	| A.Node nodeType -> let nodeName = L.build_global_stringptr id "" builder
+      in createNode nodeName nodeType builder
+      	(* let nodeName = L.const_string builder id in
+      	createNode nodeName nodeType builder *)
       	| _ -> raise (Failure (" Type not found "))), typ)
       | A.AddAdd var -> let (var', typ) = lookup var in
 		  ignore(remove_list_element (L.build_load var' var builder) builder); (var',typ)

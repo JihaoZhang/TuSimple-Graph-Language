@@ -9,10 +9,12 @@ int main(){
   node@{int} n1;
   node@{int} node1;
   node@{int} node2;
-
+  //map @{node, int} map1;
+  
   new l1;
-  //new node1;
   new s1;
+  new node1;
+  new node2;
 
   //node1->node2;
   l1 = null;
