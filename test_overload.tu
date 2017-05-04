@@ -6,6 +6,7 @@ int main(){
   list@{int} l1;
   set @{int} s1;
   node n1;
+  new l1;
   l1 = null;
   b = 1;
   d = true;

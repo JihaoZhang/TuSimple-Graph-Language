@@ -175,6 +175,17 @@ let check (globals, functions) =
       | FloatLit _ -> Float
       | StringLit _ -> String
       | Null -> Null_t
+      | New id -> let idTyp = type_of_identifier id
+      in 
+      let checkNew typ err = 
+        (match typ with
+        | Node -> Null_t
+        | List t -> Null_t
+        | Set t  -> Null_t
+        | Map(t1,t2)  -> Null_t
+        | Graph -> Null_t
+        | _ -> raise err)
+      in checkNew idTyp (Failure ("illegal new operation of " ^ string_of_typ idTyp))
       | ListLiteral el ->  let checkListLit el err = 
          match List.length el  with 
            0 -> raise (Failure ("can't define empty list in this way in TuSimple "))
@@ -293,65 +304,8 @@ let check (globals, functions) =
            fd.typ
        | DotCall(dname, fname, actuals) as call -> let typ = type_of_identifier dname in
          (match typ with
-            Node ->
-            (match fname with
-                "value" -> 
-                  if actuals = [] then Int else raise (Failure ("Node get method error"))
-              | "name" -> 
-                  if actuals = [] then String else raise (Failure ("Node name method error"))
-              | _ -> raise (Failure ("Node has no such method"))
-            )
-          | List ele_type -> 
-            (match fname with
-                "get" -> 
-                  (match actuals with
-                      [x] when (expr x) = Int -> ele_type
-                    | _ -> raise (Failure ("List get method error")))
-              | "pop" -> 
-                  if actuals = [] then Null_t else raise (Failure ("List pop method error"))
-              | "remove" ->                   
-                  (match actuals with
-                      [x] when (expr x) = Int -> Null_t
-                    | _ -> raise (Failure ("List remove method error")))
-              | "length" -> 
-                  if actuals = [] then Int else raise (Failure ("List length method error"))
-              | "cancat" ->                   
-                  (match actuals with
-                      [x] when (expr x) = List ele_type -> List ele_type
-                    | _ -> raise (Failure ("List cancatenate method error")))
-              | _ -> raise (Failure ("List has no such method"))
-            )
-          | Set ele_type ->
-            (match fname with
-                "get" -> Bool
-              | "remove" -> Bool
-              | "size" -> Bool
-              | "contain" -> Bool
-              | "gettype" -> Bool
-              | _ -> raise (Failure ("Set has no such method"))
-            )
-          | Map (k_type, v_type) ->
-            (match fname with
-                "get" -> Bool
-              | "length" -> Bool
-              | "haskey" -> Bool
-              | _ -> raise (Failure ("Map has no such method"))
-            )
-          | Graph ->
-            (match fname with
-                "bfs" -> Bool
-              | "dfs" -> Bool
-              | "find" -> Bool
-              | "find_path" -> Bool
-              | "reverse" -> Bool
-              | "combine" -> Bool
-              | "init_tag" -> Bool
-              | "component" -> Bool
-              | "reduce" -> Bool
-              | "expand" -> Bool
-              | _ -> raise (Failure ("Map has no such method"))
-            )
-          | _ -> raise (Failure ("unsupported type for method call")))
+            Node -> Node
+          | _ -> raise (Failure ("unsupported method call")))
     in
 
     let check_bool_expr e = if expr e != Bool

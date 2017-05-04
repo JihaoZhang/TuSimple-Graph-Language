@@ -14,7 +14,9 @@ int main(){
   list @{node} l3; 
   set @{node} s1;
   map @{node, int} map1;
-//  new map1;
+//  map @{list @{int}, list @{int}} m2; ERROR
+//  m2[@{1, 2}] = @{1, 2}; ERROR
+//  new map1; 
 // new l1;
 // new s1;
  @{1, 2, 3};
