@@ -260,6 +260,22 @@ in
 			L.build_call get_set_elements_f actuals "get_set_elements" llbuilder
 	in
 
+(*
+================================================================
+  Node Methods
+================================================================
+*)
+	let getEdgeValue_t = L.function_type float_t [| node_t; node_t |]
+	in
+	let getEdgeValue_f = L.declare_function "getEdgeValue" getEdgeValue_t the_module
+	in 
+	let getEdgeValue n1_ptr n2_ptr llbuilder =
+		let actuals = [| n1_ptr; n2_ptr |] in (
+			L.build_call getEdgeValue_f actuals "getEdgeValue" llbuilder
+		)
+	in
+
+
  (* cast *)
 let voidToInt_t = L.function_type i32_t [|L.pointer_type i8_t|]
 in
@@ -428,6 +444,7 @@ in
           let (var', typ) =  lookup var and (s', t') = expr builder e in
           ((match typ with
           | A.List _ -> concat_list (L.build_load var' var builder) s' builder 
+<<<<<<< HEAD
           | A.Int -> let e1' = L.build_load var' var builder
 				and (e2', t2') = expr builder e 
 				in
@@ -441,6 +458,9 @@ in
  *)(*           		put_set_from_list (L.build_load var' var builder) s' builder
  *)          | _ -> raise (Failure (" undefined += "))), typ)
       | A.Null ->  (L.const_null list_t, A.List(A.Int))
+      | A.SingleEdge (n1, n2) ->
+      		((let (n1', typ1) = lookup n1 and (n2', typ2) = lookup n2 in 
+      		getEdgeValue (L.build_load n1' n1 builder) (L.build_load n2' n2 builder) builder) , A.Float)
       | A.Call ("print", [e]) | A.Call ("printb", [e]) ->
 				 (L.build_call printf_func [| int_format_str ; (fst (expr builder e)) |]
 			   "printf" builder, (snd (expr builder e)))
