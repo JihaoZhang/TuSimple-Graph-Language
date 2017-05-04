@@ -101,18 +101,42 @@ double weightIterNode(struct Node* node, int index){
 	}
 }
 
+double getEdgeValue(struct Node* node1, struct Node* node2) {
+	int size1 = get_list_size(node1->weight);
+
+	for (int i = 0; i < size1; i++) {
+		if (strcmp(voidTonode(get_list_element(node1->nodes, i))->name, node2->name) == 0) {
+			// Found node
+			return voidTofloat(get_list_element(node1->weight, i));
+		}
+	}
+
+	printf("%s\n", "Error! getEdgeValue : Node not found!");
+	return 0;
+}
+
 // int main(){
 
-// 	struct Node *a = createNode("a", FLOAT, 3.24);
-// 	double x = 0;
-// 	printf("%s\n", getNodeName(a));
-// 	getNodeValue(a, FLOAT, &x);
-// 	printf("%f\n", x);
+// 	// struct Node *a = createNode("a", FLOAT, 3.24);
+// 	// double x = 0;
+// 	// printf("%s\n", getNodeName(a));
+// 	// getNodeValue(a, FLOAT, &x);
+// 	// printf("%f\n", x);
 
-// 	struct Node *b = createNode("b", STRING, "Hello!");
-// 	printf("%s\n", getNodeName(b));
-// 	char* y = getNodeValue(b, STRING, y);
-// 	printf("%s\n", y);
+// 	// struct Node *b = createNode("b", STRING, "Hello!");
+// 	// printf("%s\n", getNodeName(b));
+// 	// char* y = getNodeValue(b, STRING, y);
+// 	// printf("%s\n", y);
+
+// 	// Test function: getEdgeValue
+// 	struct Node *testIntNode1 = createNode("testIntNode1", INT, 0);
+// 	struct Node *testIntNode2 = createNode("testIntNode2", INT, 1);
+// 	struct Node *testIntNode3 = createNode("testIntNode3", INT, 2);
+// 	addNodeEdge(testIntNode1, testIntNode2, 5.6);
+// 	addNodeEdge(testIntNode1, testIntNode3, 7.8);
+// 	printf("%f\n", getEdgeValue(testIntNode1, testIntNode2));
+// 	printf("%f\n", getEdgeValue(testIntNode1, testIntNode3));
+// 	printf("%f\n", getEdgeValue(testIntNode2, testIntNode3));
 
 // 	return 0;
 // }
