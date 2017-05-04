@@ -1176,33 +1176,60 @@ int test_int_set_iterate_2(void **data) {
 	Node Methods
 ************************************/
 
-struct Node* createNode(char* name, int32_t type, ...) {
+struct Node* createNode(char* name, int32_t type) {
     struct Node* new = (struct Node*) malloc(sizeof(struct Node));
     new->name = name;
     new->type = type;
     new->nodes = NULL;
     new->weight = NULL;
 
+    switch (type) {
+        case INT:
+            // new->value = intTovoid(va_arg(ap, int));
+            new->value = 0;
+            break;
+        case FLOAT:
+            // new->value = floatTovoid(va_arg(ap, double));
+            new->value = 0;
+            break;
+        case BOOL:
+            // new->value = boolTovoid(va_arg(ap, bool));
+            new->value = 0;
+            break;
+        case STRING:
+            // new->value = stringTovoid(va_arg(ap, char*));
+            new->value = "";
+            break;
+        default:
+            break;
+    }
+
+    return new;
+}
+
+struct Node* setNodeValue(struct Node* node, int32_t type, ...) {
+
     va_list ap;
     va_start(ap, type);
     switch (type) {
         case INT:
-            new->value = intTovoid(va_arg(ap, int));
+            node->value = intTovoid(va_arg(ap, int));
             break;
         case FLOAT:
-            new->value = floatTovoid(va_arg(ap, double));
+            node->value = floatTovoid(va_arg(ap, double));
             break;
         case BOOL:
-            new->value = boolTovoid(va_arg(ap, bool));
+            node->value = boolTovoid(va_arg(ap, bool));
             break;
         case STRING:
-            new->value = stringTovoid(va_arg(ap, char*));
+            node->value = stringTovoid(va_arg(ap, char*));
+            break;
         default:
             break;
     }
     va_end(ap);
 
-    return new;
+    return node;
 }
 
 char* getNodeValue(struct Node* node, int32_t type, ...) {
@@ -1290,7 +1317,6 @@ double getEdgeValue(struct Node* node1, struct Node* node2) {
     printf("%s\n", "Error! getEdgeValue : Node not found!");
     return 0;
 }
-
 
 /************************************
 	Graph Methods

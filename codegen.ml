@@ -371,6 +371,7 @@ in
       | A.New id -> let (id', typ) = lookup id in 
       	((match typ with 
       	| A.List listType -> create_list listType builder
+      	| A.Set setType -> create_set setType builder
       	| _ -> raise (Failure (" Type not found "))), typ)
       | A.AddAdd var -> let (var', typ) = lookup var in
 		  ignore(remove_list_element (L.build_load var' var builder) builder); (var',typ)
@@ -413,9 +414,10 @@ in
 				and (e2', t2') = expr builder e 
 				in
 				L.build_fadd e1' e2' "tmp" builder
-(*           | A.Set typeSet -> let temp_set = create_set typeSet builder in
- *)(*           		put_set_from_list (L.build_load var' var builder) s' builder
- *)          | _ -> raise (Failure (" undefined += "))), typ)
+          | A.Set typeSet -> let s1 = L.build_load var' var builder 
+          		and (l1', t1') = expr builder e
+          	in put_set_from_list s1 l1' builder
+          | _ -> raise (Failure (" undefined += "))), typ)
       | A.Null ->  (L.const_null list_t, A.List(A.Int))
       | A.SingleEdge (n1, n2) ->
       		((let (n1', typ1) = lookup n1 and (n2', typ2) = lookup n2 in 

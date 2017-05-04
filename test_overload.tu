@@ -9,12 +9,15 @@ int main(){
   node@{int} n1;
   node@{int} node1;
   node@{int} node2;
-  new node1;
+
+  new l1;
+  //new node1;
+  new s1;
+
   //node1->node2;
   l1 = null;
   f = 1.1;
   f += 1.1;
-  new l1;
   b = 1;
   b += 1;
   d = true;
@@ -26,5 +29,5 @@ int main(){
   print(l1[1]);
 //  @{1, 2 ,3} + @{3, 4 ,5};
 
-//  s1 += @{1, 2, 3};
+  s1 += @{1, 2, 3};
 }
