@@ -157,13 +157,13 @@ done
 
 shift `expr $OPTIND - 1`
 
-LLIFail() {
-  echo "Could not find the LLVM interpreter \"$LLI\"."
-  echo "Check your LLVM installation and/or modify the LLI variable in testall.sh"
-  exit 1
-}
+# LLIFail() {
+#   echo "Could not find the LLVM interpreter \"$LLI\"."
+#   echo "Check your LLVM installation and/or modify the LLI variable in testall.sh"
+#   exit 1
+# }
 
-which "$LLI" >> $globallog || LLIFail
+# which "$LLI" >> $globallog || LLIFail
 
 if [ ! -f printbig.o ]
 then
@@ -176,7 +176,7 @@ if [ $# -ge 1 ]
 then
     files=$@
 else
-    files="tests/test-*.mc tests/fail-*.mc"
+    files="tests/test-*.tu tests/fail-*.tu"
 fi
 
 for file in $files
