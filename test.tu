@@ -14,6 +14,9 @@ int main(){
   list @{node} l3; 
   set @{node} s1;
   map @{node, int} map1;
+//  new map1;
+// new l1;
+// new s1;
  @{1, 2, 3};
  @{a, c, d};
   l1 = @{1, 2, 3};
