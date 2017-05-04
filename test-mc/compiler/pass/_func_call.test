@@ -1,0 +1,12 @@
+int main() {
+    int i;
+    i=4;
+    print_int(foo(i));
+    return 0;
+}
+
+int foo(int j) {
+    int i;
+    i = j + 6;
+    return i;
+}

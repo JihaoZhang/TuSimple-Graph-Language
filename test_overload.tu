@@ -4,6 +4,9 @@ int main(){
   bool c;
   bool d;
   list@{int} l1;
+  set @{int} s1;
+
+
   b = 1;
   d = true;
   a = b + b;
@@ -13,4 +16,6 @@ int main(){
   l1++;
   print(l1[1]);
 //  @{1, 2 ,3} + @{3, 4 ,5};
+
+  s1 += @{1, 2, 3};
 }

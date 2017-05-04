@@ -33,5 +33,7 @@ int32_t get_set_type(struct Set *set);
 
 int32_t get_set_size(struct Set *set);
 
+struct Set *put_set_from_list(struct Set *set, struct List * list);
+
 
 #endif //TUSIMPLELIB_SET_H
