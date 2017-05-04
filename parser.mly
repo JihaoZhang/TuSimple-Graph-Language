@@ -62,12 +62,12 @@ typ:
     INT { Int }
   | BOOL { Bool }
   | VOID { Void }
-  | NODE { Node }
   | FLOAT { Float }
   | STRING { String }
   | GRAPH { Graph }
   | LIST AT LBRACE typ RBRACE { List($4) }
   | SET AT LBRACE typ RBRACE { Set($4) }
+  | NODE AT LBRACE typ RBRACE { Node($4) }
   | MAP AT LBRACE typ COMMA typ RBRACE { Map($4, $6) }
 
 

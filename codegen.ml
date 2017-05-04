@@ -57,7 +57,7 @@ let translate (globals, functions) =
   | A.Map(_, _) -> map_t
   | A.String -> string_t
   | A.Float -> float_t
-  | A.Node -> node_t
+  | A.Node(_) -> node_t
   | A.Graph -> graph_t
   in
 
@@ -363,7 +363,7 @@ in
       | A.Int -> voidToInt elementPtr builder
       | A.Float -> voidTofloat elementPtr builder
       | A.Bool -> voidTobool elementPtr builder
-      | A.Node -> voidTonode elementPtr builder
+      | A.Node _ -> voidTonode elementPtr builder
       | A.Graph -> voidTograph elementPtr builder
       | _ -> raise (Failure (" undefined operator[] "))
       )

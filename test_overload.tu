@@ -6,15 +6,14 @@ int main(){
   float f;
   list@{int} l1;
   set @{int} s1;
-  node n1;
-//  new l1;
+  node@{int} n1;
+  node@{int} node1;
+  node@{int} node2;
+  new node1;
+  //node1->node2;
   l1 = null;
   f = 1.1;
   f += 1.1;
-  //new l1;
-  node node1;
-  node node2;
-  //node1->node2;
   new l1;
   b = 1;
   b += 1;
@@ -27,5 +26,5 @@ int main(){
   print(l1[1]);
 //  @{1, 2 ,3} + @{3, 4 ,5};
 
-  s1 += @{1, 2, 3};
+//  s1 += @{1, 2, 3};
 }

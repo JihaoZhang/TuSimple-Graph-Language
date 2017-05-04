@@ -5,7 +5,7 @@ type op = Add | Sub | Mult | Div | Equal | Neq | Less | Leq | Greater | Geq |
 
 type uop = Neg | Not
 
-type typ = Int | Bool | Void | Node | Float | String | List of typ | Set of typ | Map of typ * typ | Graph | Edge | Null_t
+type typ = Int | Bool | Void | Node of typ | Float | String | List of typ | Set of typ | Map of typ * typ | Graph | Edge | Null_t
 
 type bind = typ * string
 
@@ -121,7 +121,7 @@ let rec string_of_typ = function
     Int -> "int"
   | Bool -> "bool"
   | Void -> "void"
-  | Node -> "node"
+  | Node(t1) -> "node" ^ "@{" ^ string_of_typ t1 ^ "}"
   | Float -> "float"
   | String -> "string"
   | List(t1) -> "list" ^ "@{" ^ string_of_typ t1 ^ "}"
