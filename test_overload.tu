@@ -5,18 +5,15 @@ int main(){
   bool d;
   list@{int} l1;
   set @{int} s1;
-<<<<<<< Updated upstream
   node n1;
-  new l1;
-  l1 = null;
-=======
+  //new l1;
+  //l1 = null;
   node node1;
   node node2;
 
-  node1->node2;
+  //node1->node2;
 
-
->>>>>>> Stashed changes
+  new l1;
   b = 1;
   d = true;
   a = b + b;
@@ -27,5 +24,5 @@ int main(){
   print(l1[1]);
 //  @{1, 2 ,3} + @{3, 4 ,5};
 
-//  s1 += @{1, 2, 3};
+  s1 += @{1, 2, 3};
 }
