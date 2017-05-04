@@ -369,6 +369,7 @@ in
 		(* Construct code for an expression; return its value/type tuple *)
 		let rec expr builder = function
 			  A.Literal i -> (L.const_int i32_t i, A.Int)
+			| A.FloatLit i -> (L.const_float float_t i, A.Float)
 			| A.BoolLit b -> (L.const_int i1_t (if b then 1 else 0), A.Bool)
 			| A.Noexpr -> (L.const_int i32_t 0, A.Void)
 			| A.Id s -> (L.build_load (fst (lookup s)) s builder, (snd (lookup s)))
@@ -427,6 +428,15 @@ in
           let (var', typ) =  lookup var and (s', t') = expr builder e in
           ((match typ with
           | A.List _ -> concat_list (L.build_load var' var builder) s' builder 
+          | A.Int -> let e1' = L.build_load var' var builder
+				and (e2', t2') = expr builder e 
+				in
+				L.build_add e1' e2' "tmp" builder
+          | A.Float  -> 
+          		let e1' = L.build_load var' var builder
+				and (e2', t2') = expr builder e 
+				in
+				L.build_fadd e1' e2' "tmp" builder
 (*           | A.Set typeSet -> let temp_set = create_set typeSet builder in
  *)(*           		put_set_from_list (L.build_load var' var builder) s' builder
  *)          | _ -> raise (Failure (" undefined += "))), typ)

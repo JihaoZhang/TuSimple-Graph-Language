@@ -99,7 +99,7 @@ let check (globals, functions) =
   in
 
   let checkAddAdd tp err =
-    if tp = Int || tp = Float || tp = Node
+    if tp = Int || tp = Float 
       then tp
     else match tp with
        List _ -> tp

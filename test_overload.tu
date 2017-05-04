@@ -3,12 +3,16 @@ int main(){
   int b;
   bool c;
   bool d;
+  float f;
   list@{int} l1;
   set @{int} s1;
   node n1;
-  new l1;
+//  new l1;
   l1 = null;
+  f = 1.1;
+  f += 1.1;
   b = 1;
+  b += 1;
   d = true;
   a = b + b;
   c = d + d;
