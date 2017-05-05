@@ -177,10 +177,10 @@ let check (globals, functions) =
       in 
       let checkNew typ err = 
         (match typ with
-        | Node t -> Null_t
-        | List t -> Null_t
-        | Set t  -> Null_t
-        | Map(t1,t2)  -> Null_t
+        | Node _ -> Null_t
+        | List _ -> Null_t
+        | Set _  -> Null_t
+        | Map(_,_)  -> Null_t
         | Graph -> Null_t
         | _ -> raise err)
       in checkNew idTyp (Failure ("illegal new operation of " ^ string_of_typ idTyp))
@@ -304,7 +304,7 @@ let check (globals, functions) =
                 " expected " ^ string_of_typ ft ^ " in " ^ string_of_expr e))))
              fd.formals actuals;
            fd.typ
-       | DotCall(dname, fname, actuals) as call -> let typ = type_of_identifier dname in
+       | DotCall(dname, fname, actuals) -> let typ = type_of_identifier dname in
          (match typ with
             Node typn ->
             (match fname with
@@ -312,6 +312,11 @@ let check (globals, functions) =
                   if actuals = [] then typn else raise (Failure ("Node get method error"))
               | "name" -> 
                   if actuals = [] then String else raise (Failure ("Node name method error"))
+              | "setvalue" -> 
+                  (match actuals with
+                      [x] when ((expr x) = Int) || ((expr x) = String) 
+                            || ((expr x) = Float) || ((expr x) = Bool) -> Null_t
+                    | _ -> raise (Failure ("Set setvalue method error")))
               | _ -> raise (Failure ("Node has no such method"))
             )
           | List ele_type -> 

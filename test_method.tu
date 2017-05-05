@@ -10,8 +10,13 @@ int main(){
 	new n1;
 	n1.value();
 	i = n1.value();
+	str = n1.name();
 	print(i);
+	n1.setvalue(i);
+	n1.setvalue(b);
+	n1.setvalue(str);
 	//n1.name();
+
 	//l1.get(i+i);
 	//l1.pop();
 	//l1.remove(i+i);

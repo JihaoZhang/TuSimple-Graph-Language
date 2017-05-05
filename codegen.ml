@@ -520,17 +520,17 @@ in
       	(match fname with
       		   "value" ->  (let nodeValuePtr = getNodeValue (L.build_load dname' dname builder) builder
       		in type_conversion n_type nodeValuePtr, n_type)
-      		| "name" -> (getNodeName dname' builder, A.String)
+      		| "name" -> (getNodeName (L.build_load dname' dname builder) builder, A.String)
       		| _ -> raise (Failure ("Error! Node has no such method")))
-(*        | A.List ele_type ->
+        (* | A.List ele_type ->
       	(match fname with 
       			"get" -> 
-      		  | "pop" ->
+       		  | "pop" ->
       		  | "remove" -> 
       		  | "length" -> 
       		  | "concat" -> 
-      		  | _ -> raise (Failure ("Error! List has no such method"))) *)
-(*      | A.Set ele_type ->
+      		  | _ -> raise (Failure ("Error! List has no such method"))) 
+       | A.Set ele_type ->
       	(match fname with
       		 	"minimum" ->
       		  | "maximum" ->
