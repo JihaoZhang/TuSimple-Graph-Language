@@ -235,7 +235,7 @@ let createNode s_ptr nodeType llbuilder =
 	)
 in
 
-let getEdgeValue_t = L.function_type float_t [| node_t; node_t |]
+let getEdgeValue_t = L.function_type i32_t [| node_t; node_t |]
 in
 let getEdgeValue_f = L.declare_function "getEdgeValue" getEdgeValue_t the_module
 in

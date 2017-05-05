@@ -19,7 +19,8 @@ int main(){
   new map1;
   new map2;
 //  node1 -- node2 = 3;
-  a = node1 -> node2;
+  node1 -> node2;
+  a = 100;
   print(a);
   str1 = "hello"; 
   printb(true);
@@ -38,9 +39,9 @@ int main(){
   l1 = @{1, 2, 3};
   l1 += @{4, 5, 6};
   l1++;
-  a--b = 3;
-  a->b;
-  a->b = 3;
+ // a--b = 3;
+ // a->b;
+ // a->b = 3;
 //  map1[1];
 //  l1[1] = 100;
   print(l1[1]);
