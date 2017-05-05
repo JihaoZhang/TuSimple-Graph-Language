@@ -71,22 +71,22 @@ let check (globals, functions) =
 
   let checkLinkAssign node1Type node2Type exprType err=
      if node1Type = node2Type 
-     then if node1Type = Node && node2Type = Node 
-            then if exprType = Int || exprType = Float
+     then match node1Type with
+     | Node(_) -> (if exprType = Int || exprType = Float
                  then Edge 
-                 else raise err
-            else raise err
+                 else raise err)
+     | _ -> raise err
      else raise err
   in
 
   let checkBatchLinkAssign t1 t2 t3 err = 
-    if t1 = Node
-    then match t2 with
+    match t1 with
+    | Node _ -> (match t2 with
           List _ -> (match t3 with
                     | List _-> Edge
                     | _ -> raise err)
-         | _ -> raise err
-    else raise err
+         | _ -> raise err)
+    | _ -> raise err
   in
 
   let checkSubscript varType rt err =
@@ -99,9 +99,7 @@ let check (globals, functions) =
   in
 
   let checkAddAdd tp err =
-    if tp = Int || tp = Float || tp = Node
-      then tp
-    else match tp with
+    match tp with
        List _ -> tp
       | _         -> raise err
   in
@@ -179,7 +177,7 @@ let check (globals, functions) =
       in 
       let checkNew typ err = 
         (match typ with
-        | Node -> Null_t
+        | Node t -> Null_t
         | List t -> Null_t
         | Set t  -> Null_t
         | Map(t1,t2)  -> Null_t
@@ -246,11 +244,11 @@ let check (globals, functions) =
         check_assign lt rt (Failure ("illegal assignment " ^ string_of_typ lt ^
 				     " = " ^ string_of_typ rt ^ " in " ^ 
 				     string_of_expr ex))
-      | SubscriptAssign(e1, e2) as ex -> let lt = expr e1 
+(*       | SubscriptAssign(e1, e2) as ex -> let lt = expr e1 
                                    and rt = expr e2 in
         check_assign lt rt (Failure ("illegal assignment " ^ string_of_typ lt ^
              " = " ^ string_of_typ rt ^ " in " ^ 
-             string_of_expr ex))                    
+             string_of_expr ex))   *)                  
       | AddAssign(var, e) as ex -> let lt = type_of_identifier var
                                    and rt = expr e in
         checkAddAssign lt rt
@@ -263,10 +261,14 @@ let check (globals, functions) =
                            string_of_typ rt ^ " in " ^ string_of_expr ex))
       | SingleEdge(e1, e2) as ex -> let lt = type_of_identifier e1
                                     and rt = type_of_identifier e2 in
-        if lt = Node && rt = Node
-        then Edge
-        else raise (Failure ("illegal get edge " ^ string_of_typ lt ^ " -> " ^
+        let err = (Failure ("illegal get edge " ^ string_of_typ lt ^ " -> " ^
                            string_of_typ rt ^ " in " ^ string_of_expr ex))
+      in
+        (match lt with
+        | Node _ -> (match rt with
+          | Node _ -> Edge
+          | _ -> raise err)
+        | _ -> raise err)
       | SingleLinkAssign(e1, e) as ex -> let tp1 = expr e1
                                          and tp2 = expr e in
         if tp1 = Edge && (tp2 = Int || tp2 = Float)

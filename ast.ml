@@ -5,7 +5,7 @@ type op = Add | Sub | Mult | Div | Equal | Neq | Less | Leq | Greater | Geq |
 
 type uop = Neg | Not
 
-type typ = Int | Bool | Void | Node | Float | String | List of typ | Set of typ | Map of typ * typ | Graph | Edge | Null_t
+type typ = Int | Bool | Void | Node of typ | Float | String | List of typ | Set of typ | Map of typ * typ | Graph | Edge | Null_t
 
 type bind = typ * string
 
@@ -30,8 +30,8 @@ type expr =
   | Noexpr
   | SingleLinkAssign of expr * expr
   | DoubleLinkAssign of string * string * expr
-  | SubscriptAssign of expr * expr
-  | BatchSingleLinkAssign of string * expr * expr
+(*   | SubscriptAssign of expr * expr
+ *)  | BatchSingleLinkAssign of string * expr * expr
   | New of string
   | BatchDoubleLinkAssign of string * expr * expr
 
@@ -88,8 +88,8 @@ let rec string_of_expr = function
       string_of_expr e1 ^ " " ^ string_of_op o ^ " " ^ string_of_expr e2
   | Unop(o, e) -> string_of_uop o ^ string_of_expr e
   | Assign(v, e) -> v ^ " = " ^ string_of_expr e
-  | SubscriptAssign(subscript, e) -> string_of_expr subscript ^ " = " ^ string_of_expr e
-  | AddAssign(v, e) -> v ^ " += " ^ string_of_expr e
+(*   | SubscriptAssign(subscript, e) -> string_of_expr subscript ^ " = " ^ string_of_expr e
+ *)  | AddAssign(v, e) -> v ^ " += " ^ string_of_expr e
   | MinusAssign(v, e) -> v ^ " -= " ^ string_of_expr e
   | SingleEdge(e1, e2) ->  e1 ^ " -> " ^  e2
   | SingleLinkAssign(e1 , e) -> string_of_expr e1 ^ " = " ^ string_of_expr e
@@ -121,7 +121,7 @@ let rec string_of_typ = function
     Int -> "int"
   | Bool -> "bool"
   | Void -> "void"
-  | Node -> "node"
+  | Node(t1) -> "node" ^ "@{" ^ string_of_typ t1 ^ "}"
   | Float -> "float"
   | String -> "string"
   | List(t1) -> "list" ^ "@{" ^ string_of_typ t1 ^ "}"

@@ -1,32 +1,59 @@
 #include "node.h"
 
-struct Node* createNode(char* name, int32_t type, ...) {
+struct Node* createNode(char* name, int32_t type) {
 	struct Node* new = (struct Node*) malloc(sizeof(struct Node));
-	new->name = name;
-	new->type = type;
-	new->nodes = NULL;
-	new->weight = NULL;
+	 new->name = name;
+	 new->type = type;
+	 new->nodes = NULL;
+	 new->weight = NULL;
+
+	 switch (type) {
+	 	case INT:
+	 		// new->value = intTovoid(va_arg(ap, int));
+	 		new->value = 0;
+	 		break;
+	 	case FLOAT:
+	 		// new->value = floatTovoid(va_arg(ap, double));
+	 		new->value = 0;
+	 		break;
+	 	case BOOL:
+	 		// new->value = boolTovoid(va_arg(ap, bool));
+	 		new->value = 0;
+	 		break;
+	 	case STRING:
+	 		// new->value = stringTovoid(va_arg(ap, char*));
+	 		new->value = "";
+	 		break;
+	 	default:
+	 		break;
+	 }
+
+  	return new;
+}
+
+struct Node* setNodeValue(struct Node* node, int32_t type, ...) {
 
 	va_list ap;
 	va_start(ap, type);
 	switch (type) {
 		case INT:
-			new->value = intTovoid(va_arg(ap, int));
+			node->value = intTovoid(va_arg(ap, int));
 			break;
 		case FLOAT:
-			new->value = floatTovoid(va_arg(ap, double));
+			node->value = floatTovoid(va_arg(ap, double));
 			break;
 		case BOOL:
-			new->value = boolTovoid(va_arg(ap, bool));
+			node->value = boolTovoid(va_arg(ap, bool));
 			break;
 		case STRING:
-			new->value = stringTovoid(va_arg(ap, char*));
+			node->value = stringTovoid(va_arg(ap, char*));
+			break;
 		default:
 			break;
 	}
   	va_end(ap);
 
-  	return new;
+  	return node;
 }
 
 char* getNodeValue(struct Node* node, int32_t type, ...) {
@@ -129,14 +156,27 @@ double getEdgeValue(struct Node* node1, struct Node* node2) {
 // 	// printf("%s\n", y);
 
 // 	// Test function: getEdgeValue
-// 	struct Node *testIntNode1 = createNode("testIntNode1", INT, 0);
-// 	struct Node *testIntNode2 = createNode("testIntNode2", INT, 1);
-// 	struct Node *testIntNode3 = createNode("testIntNode3", INT, 2);
-// 	addNodeEdge(testIntNode1, testIntNode2, 5.6);
-// 	addNodeEdge(testIntNode1, testIntNode3, 7.8);
-// 	printf("%f\n", getEdgeValue(testIntNode1, testIntNode2));
-// 	printf("%f\n", getEdgeValue(testIntNode1, testIntNode3));
-// 	printf("%f\n", getEdgeValue(testIntNode2, testIntNode3));
+// 	struct Node *testIntNode1 = createNode("testIntNode1", FLOAT);
+// 	struct Node *testIntNode2 = createNode("testIntNode2", STRING);
+// 	struct Node *testIntNode3 = createNode("testIntNode3", BOOL);
+// 	setNodeValue(testIntNode1, FLOAT, 1.11);
+// 	double x;
+// 	getNodeValue(testIntNode1, FLOAT, &x);
+// 	printf("x: %f\n", x);
+
+// 	setNodeValue(testIntNode2, STRING, "Yes");
+// 	char x1;
+// 	printf("x1: %s\n", getNodeValue(testIntNode2, STRING, x1));
+
+// 	setNodeValue(testIntNode3, BOOL, true);
+// 	bool x2;
+// 	getNodeValue(testIntNode3, BOOL, &x2);
+// 	printf("x2: %d\n", x2);
+// 	// addNodeEdge(testIntNode1, testIntNode2, 5.6);
+// 	// addNodeEdge(testIntNode1, testIntNode3, 7.8);
+// 	// printf("%f\n", getEdgeValue(testIntNode1, testIntNode2));
+// 	// printf("%f\n", getEdgeValue(testIntNode1, testIntNode3));
+// 	// printf("%f\n", getEdgeValue(testIntNode2, testIntNode3));
 
 // 	return 0;
 // }

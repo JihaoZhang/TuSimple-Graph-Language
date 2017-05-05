@@ -62,14 +62,14 @@ typ:
     INT { Int }
   | BOOL { Bool }
   | VOID { Void }
-  | NODE { Node }
   | FLOAT { Float }
   | STRING { String }
   | GRAPH { Graph }
   | LIST AT LBRACE typ RBRACE { List($4) }
   | SET AT LBRACE typ RBRACE { Set($4) }
+  | NODE AT LBRACE typ RBRACE { Node($4) }
   | MAP AT LBRACE typ COMMA typ RBRACE { Map($4, $6) }
-
+  
 
 vdecl_list:
     /* nothing */    { [] }
@@ -127,7 +127,6 @@ expr:
   | ID ADDASSIGN expr { AddAssign($1, $3) }
   | ID MINUSASSIGN expr { MinusAssign($1, $3) }
   | ID ASSIGN expr   { Assign($1, $3) }
-  | subscript ASSIGN expr { SubscriptAssign($1, $3) }
   | singleEdge ASSIGN expr { SingleLinkAssign($1, $3) }
   | ID DOUBLELINK ID ASSIGN expr { DoubleLinkAssign($1, $3, $5) }
   | ID LPAREN actuals_opt RPAREN { Call($1, $3) }

@@ -33,16 +33,16 @@ let translate (globals, functions) =
   and list_t = L.pointer_type (match L.type_by_name llm "struct.List" with
 	  None -> raise (Failure "struct.List doesn't defined.")
   | Some x -> x)
-  and set_t = (match L.type_by_name llm "struct.Set" with
+  and set_t = L.pointer_type (match L.type_by_name llm "struct.Set" with
     None -> raise (Failure "struct.Set doesn't defined.")
   | Some x -> x)
-  and map_t = (match L.type_by_name llm "struct.hashmap" with
+  and map_t = L.pointer_type (match L.type_by_name llm "struct.hashmap" with
     None -> raise (Failure "struct.hashmap doesn't defined.")
   | Some x -> x)
-  and node_t = (match L.type_by_name llm "struct.Node" with
+  and node_t = L.pointer_type (match L.type_by_name llm "struct.Node" with
     None -> raise (Failure "struct.Node doesn't defined.")
   | Some x -> x)
-  and graph_t = (match L.type_by_name llm "struct.Graph" with
+  and graph_t = L.pointer_type (match L.type_by_name llm "struct.Graph" with
     None -> raise (Failure "struct.Graph doesn't defined.")
   | Some x -> x)
 
@@ -57,7 +57,7 @@ let translate (globals, functions) =
   | A.Map(_, _) -> map_t
   | A.String -> string_t
   | A.Float -> float_t
-  | A.Node -> node_t
+  | A.Node(_) -> node_t
   | A.Graph -> graph_t
   in
 
@@ -131,6 +131,55 @@ List
 	  ignore (L.build_call add_list_f actuals "plus_list" llbuilder)
   in
 
+
+(*
+================================================================
+  Hashmap Methods
+================================================================
+*)
+	let create_hashmap_t = L.function_type map_t [| i32_t; i32_t |]
+	in
+
+	let create_hashmap_f = L.declare_function "create_hashmap" create_hashmap_t the_module
+	in
+	let create_hashmap kType vType llbuilder =
+		let actuals = [| lconst_of_typ kType; lconst_of_typ vType |] in
+			(L.build_call create_hashmap_f actuals "create_hashmap" llbuilder)
+	in
+
+	let hashmap_put_t = L.var_arg_function_type map_t [| map_t |]
+	in
+
+	let hashmap_put_f = L.declare_function "hashmap_put" hashmap_put_t the_module
+	in
+
+	let hashmap_put m_ptr llbuilder data = 
+		let actuals = [| m_ptr; data |] in
+			ignore(L.build_call hashmap_put_f actuals "hashmap_put" llbuilder)
+	in
+
+	let hashmap_remove_t = L.var_arg_function_type map_t [| map_t |]
+	in
+
+	let hashmap_remove_f = L.declare_function "hashmap_remove" hashmap_put_t the_module
+	in
+
+	let hashmap_remove m_ptr llbuilder data =
+		let actuals = [| m_ptr; data |] in
+			ignore(L.build_call hashmap_remove_f actuals "hashmap_remove" llbuilder)
+	in
+
+	let hashmap_get_t = L.var_arg_function_type (L.pointer_type i8_t) [| map_t |]
+	in
+
+	let hashmap_get_f = L.declare_function "hashmap_get" hashmap_get_t the_module
+	in
+
+	let hashmap_get m_ptr data llbuilder  =
+		let actuals = [| m_ptr; data |] in
+			L.build_call hashmap_get_f actuals "hashmap_get" llbuilder
+	in
+
 (*
 ================================================================
   Set
@@ -171,100 +220,21 @@ in
     List.iter (add_list l_ptr llbuilder) element_list
   in
 
-(* Hashmap *)
-	let create_hashmap_t = L.function_type map_t [| i32_t; i32_t |]
-	in
-
-	let create_hashmap_f = L.declare_function "create_hashmap" create_hashmap_t the_module
-	in
-	let create_hashmap kType vType llbuilder =
-		let actuals = [| kType; vType |] in
-			ignore(L.build_call create_hashmap_f actuals "create_hashmap" llbuilder)
-	in
-
-	let hashmap_put_t = L.var_arg_function_type map_t [| map_t |]
-	in
-
-	let hashmap_put_f = L.declare_function "hashmap_put" hashmap_put_t the_module
-	in
-
-	let hashmap_put m_ptr llbuilder data = 
-		let actuals = [| m_ptr; data |] in
-			ignore(L.build_call hashmap_put_f actuals "hashmap_put" llbuilder)
-	in
-
-	let hashmap_remove_t = L.var_arg_function_type map_t [| map_t |]
-	in
-
-	let hashmap_remove_f = L.declare_function "hashmap_remove" hashmap_put_t the_module
-	in
-
-	let hashmap_remove m_ptr llbuilder data =
-		let actuals = [| m_ptr; data |] in
-			ignore(L.build_call hashmap_remove_f actuals "hashmap_remove" llbuilder)
-	in
-
-	let hashmap_get_t = L.var_arg_function_type (L.pointer_type i8_t) [| map_t |]
-	in
-
-	let hashmap_get_f = L.declare_function "hashmap_get" hashmap_get_t the_module
-	in
-
-	let hashmap_get m_ptr llbuilder data =
-		let actuals = [| m_ptr; data |] in
-			L.build_call hashmap_get_f actuals "hashmap_get" llbuilder
-	in
-
-(* Set *)
-	let create_set_t = L.function_type set_t [| i32_t |]
-	in
-
-	let create_set_f = L.declare_function "create_set" create_set_t the_module
-	in
-
-	let create_set typ llbuilder =
-		let actuals = [| typ |] in
-			ignore(L.build_call create_set_f actuals "create_set" llbuilder)
-	in
-
-	let put_set_t = L.var_arg_function_type set_t [| set_t |]
-	in
-
-	let put_set_f = L.declare_function "put_set" put_set_t the_module
-	in
-
-	let put_set s_ptr llbuilder data =
-		let actuals = [| s_ptr; data |] in
-			ignore(L.build_call put_set_f actuals "put_set" llbuilder)
-	in
-
-	let remove_set_element_t = L.var_arg_function_type set_t [| set_t |]
-	in
-
-	let remove_set_element_f = L.declare_function "remove_set_element" remove_set_element_t the_module
-	in
-
-	let remove_set_element s_ptr llbuilder data =
-		let actuals = [| s_ptr; data |] in
-			ignore(L.build_call remove_set_element_f actuals "remove_set_element" llbuilder)
-	in
-
-	let get_set_elements_t = L.var_arg_function_type list_t [| set_t |]
-	in
-
-	let get_set_elements_f = L.declare_function "get_set_elements" get_set_elements_t the_module
-	in
-
-	let get_set_elements s_ptr llbuilder data =
-		let actuals = [| s_ptr; data |] in
-			L.build_call get_set_elements_f actuals "get_set_elements" llbuilder
-	in
-
 (*
 ================================================================
   Node Methods
 ================================================================
 *)
+let createNode_t = L.function_type node_t [| string_t; i32_t |]
+in
+let createNode_f = L.declare_function "createNode" createNode_t the_module
+in
+let createNode s_ptr nodeType llbuilder = 
+	let actuals = [| s_ptr; lconst_of_typ nodeType |] in (
+		L.build_call createNode_f actuals "createNode" llbuilder
+	)
+in
+
 	let getEdgeValue_t = L.function_type float_t [| node_t; node_t |]
 	in
 	let getEdgeValue_f = L.declare_function "getEdgeValue" getEdgeValue_t the_module
@@ -276,7 +246,11 @@ in
 	in
 
 
- (* cast *)
+(*
+================================================================
+  Cast Methods
+================================================================
+*)
 let voidToInt_t = L.function_type i32_t [|L.pointer_type i8_t|]
 in
 let voidToInt_f = L.declare_function "voidToint" voidToInt_t the_module
@@ -369,7 +343,7 @@ in
 			let add_local m (t, n) =
 				let local_var = L.build_alloca (ltype_of_typ t) n builder
 				in StringMap.add n (local_var, t) m in
-
+		
 			let formals = List.fold_left2 add_formal StringMap.empty fdecl.A.formals
 				(Array.to_list (L.params the_function)) in
 				List.fold_left add_local formals fdecl.A.locals in
@@ -381,11 +355,21 @@ in
 
     let get_llvm_from_llvm_asttype_tuple (ltype,_) = ltype
     in
-
+    let type_conversion typ elementPtr = match typ with
+       A.Int -> voidToInt elementPtr builder
+      | A.Float -> voidTofloat elementPtr builder
+      | A.Bool -> voidTobool elementPtr builder
+      | A.Node _ -> voidTonode elementPtr builder
+      | A.Graph -> voidTograph elementPtr builder
+      | _ -> raise (Failure (" undefined operator[] "))
+     in
 		(* Construct code for an expression; return its value/type tuple *)
 		let rec expr builder = function
 			  A.Literal i -> (L.const_int i32_t i, A.Int)
+			| A.FloatLit i -> (L.const_float float_t i, A.Float)
 			| A.BoolLit b -> (L.const_int i1_t (if b then 1 else 0), A.Bool)
+			| A.StringLit s -> (L.build_global_stringptr s s builder, A.String)
+		    | A.Null ->  (L.const_null list_t, A.List(A.Int))
 			| A.Noexpr -> (L.const_int i32_t 0, A.Void)
 			| A.Id s -> (L.build_load (fst (lookup s)) s builder, (snd (lookup s)))
       | A.ListLiteral el -> 
@@ -398,19 +382,39 @@ in
           listPtr
           builder)
           ;(listPtr, listLiteral_type)
+      | A.MinusAssign(var, e) -> 
+                let (var', typ) =  lookup var and (s', t') = expr builder e in
+          ((match typ with
+          | A.Int -> let e1' = L.build_load var' var builder
+				and (e2', t2') = expr builder e 
+				in
+				L.build_store (L.build_sub e1' e2' "tmp" builder) var' builder
+          | A.Float  -> 
+          		let e1' = L.build_load var' var builder
+				and (e2', t2') = expr builder e 
+				in
+				L.build_store (L.build_fsub e1' e2' "tmp" builder) var' builder), typ)
       | A.Subscript (var, e) -> let (var', typ) = lookup var and (s', t') = expr builder e in
       ((match typ with
       | A.List typeList -> (
       	let elementPtr = get_list_element (L.build_load var' var builder) s' builder
-      in match typeList with
-      | A.Int -> voidToInt elementPtr builder
-      | A.Float -> voidTofloat elementPtr builder
-      | A.Bool -> voidTobool elementPtr builder
-      | A.Node -> voidTonode elementPtr builder
-      | A.Graph -> voidTograph elementPtr builder
-      | _ -> raise (Failure (" undefined operator[] "))
+      in type_conversion typeList elementPtr
+      )
+      | A.Map(t1, t2) -> (
+      	let elementPtr = hashmap_get (L.build_load var' var builder) s' builder
+      	in type_conversion t2 elementPtr
       )
       | _ -> raise (Failure (" undefined operator[] "))), typ)
+      | A.New id -> let (id', typ) = lookup id in 
+      	((match typ with 
+      	| A.List listType -> create_list listType builder
+      	| A.Set setType -> create_set setType builder
+      	| A.Map(kType, vType) -> create_hashmap kType vType builder
+      	| A.Node nodeType -> let nodeName = L.build_global_stringptr id "" builder
+      in createNode nodeName nodeType builder
+      	(* let nodeName = L.const_string builder id in
+      	createNode nodeName nodeType builder *)
+      	| _ -> raise (Failure (" Type not found "))), typ)
       | A.AddAdd var -> let (var', typ) = lookup var in
 		  ignore(remove_list_element (L.build_load var' var builder) builder); (var',typ)
 			| A.Binop (e1, op, e2) ->
@@ -443,14 +447,27 @@ in
           let (var', typ) =  lookup var and (s', t') = expr builder e in
           ((match typ with
           | A.List _ -> concat_list (L.build_load var' var builder) s' builder 
-          (* | A.Set typeSet -> let temp_set = create_set typeSet builder in
-           		put_set_from_list (L.build_load var' var builder) s' builder
-          *)|  _ -> raise (Failure (" undefined += "))), typ)
-      | A.Null ->  (L.const_null list_t, A.List(A.Int))
-(*       | A.Set typeSet -> let temp_set = create_set typeSet builder in
-          		put_set_from_list (L.build_load var' var builder) s' builder
-          | _ -> raise (Failure (" undefined += "), typ) *)
-      | A.SingleEdge (n1, n2) ->
+          | A.Int -> let e1' = L.build_load var' var builder
+				and (e2', t2') = expr builder e 
+				in
+				L.build_store (L.build_add e1' e2' "tmp" builder) var' builder
+          | A.Float  -> 
+          		let e1' = L.build_load var' var builder
+				and (e2', t2') = expr builder e 
+				in
+				L.build_store (L.build_fadd e1' e2' "tmp" builder) var' builder
+          | A.Set typeSet -> let s1 = L.build_load var' var builder 
+          		and (l1', t1') = expr builder e
+          	in put_set_from_list s1 l1' builder
+          | _ -> raise (Failure (" undefined += "))), typ)
+(* 	 | A.SubscriptAssign(e1, e2) -> 
+	 (match e1 with
+	  A.Subscript(var, e) -> let (e1', t1') = expr builder e1 and (e2', t2') = expr builder e2 in
+           ignore (L.build_store e2' e1' builder); (e1', t1')) 
+	 | _ -> raise ((Failure ("illegal Subscript assignment"))) *)
+
+
+      | A.SingleEdge (n1, n2) -> 
       		((let (n1', typ1) = lookup n1 and (n2', typ2) = lookup n2 in 
       		getEdgeValue (L.build_load n1' n1 builder) (L.build_load n2' n2 builder) builder) , A.Float)
       | A.Call ("print", [e]) | A.Call ("printb", [e]) ->
