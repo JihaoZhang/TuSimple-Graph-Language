@@ -244,11 +244,11 @@ let check (globals, functions) =
         check_assign lt rt (Failure ("illegal assignment " ^ string_of_typ lt ^
 				     " = " ^ string_of_typ rt ^ " in " ^ 
 				     string_of_expr ex))
-      | SubscriptAssign(e1, e2) as ex -> let lt = expr e1 
+(*       | SubscriptAssign(e1, e2) as ex -> let lt = expr e1 
                                    and rt = expr e2 in
         check_assign lt rt (Failure ("illegal assignment " ^ string_of_typ lt ^
              " = " ^ string_of_typ rt ^ " in " ^ 
-             string_of_expr ex))                    
+             string_of_expr ex))   *)                  
       | AddAssign(var, e) as ex -> let lt = type_of_identifier var
                                    and rt = expr e in
         checkAddAssign lt rt

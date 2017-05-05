@@ -460,8 +460,12 @@ in
           		and (l1', t1') = expr builder e
           	in put_set_from_list s1 l1' builder
           | _ -> raise (Failure (" undefined += "))), typ)
-(* Deprecated feature      | A.SubscriptAssign(e1, e2) -> let (e1', t1') = expr builder e1 and (e2', t2') = expr builder e2 in
-           ignore (L.build_store e2' e1' builder); (e1', t1') *)
+(* 	 | A.SubscriptAssign(e1, e2) -> 
+	 (match e1 with
+	  A.Subscript(var, e) -> let (e1', t1') = expr builder e1 and (e2', t2') = expr builder e2 in
+           ignore (L.build_store e2' e1' builder); (e1', t1')) 
+	 | _ -> raise ((Failure ("illegal Subscript assignment"))) *)
+
 
       | A.SingleEdge (n1, n2) -> 
       		((let (n1', typ1) = lookup n1 and (n2', typ2) = lookup n2 in 

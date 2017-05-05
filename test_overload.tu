@@ -15,7 +15,7 @@ int main(){
   new l1;
   new s1;
   new node1;
- // new node2;  
+  new node2;  
   new map1;
   new map2;
   str1 = "hello"; 
@@ -35,6 +35,7 @@ int main(){
   l1 = @{1, 2, 3};
   l1 += @{4, 5, 6};
   l1++;
+//  map1[1];
 //  l1[1] = 100;
   print(l1[1]);
 //  @{1, 2 ,3} + @{3, 4 ,5};

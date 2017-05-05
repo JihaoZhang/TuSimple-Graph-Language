@@ -30,8 +30,8 @@ type expr =
   | Noexpr
   | SingleLinkAssign of expr * expr
   | DoubleLinkAssign of string * string * expr
-  | SubscriptAssign of expr * expr
-  | BatchSingleLinkAssign of string * expr * expr
+(*   | SubscriptAssign of expr * expr
+ *)  | BatchSingleLinkAssign of string * expr * expr
   | New of string
   | BatchDoubleLinkAssign of string * expr * expr
 
@@ -88,8 +88,8 @@ let rec string_of_expr = function
       string_of_expr e1 ^ " " ^ string_of_op o ^ " " ^ string_of_expr e2
   | Unop(o, e) -> string_of_uop o ^ string_of_expr e
   | Assign(v, e) -> v ^ " = " ^ string_of_expr e
-  | SubscriptAssign(subscript, e) -> string_of_expr subscript ^ " = " ^ string_of_expr e
-  | AddAssign(v, e) -> v ^ " += " ^ string_of_expr e
+(*   | SubscriptAssign(subscript, e) -> string_of_expr subscript ^ " = " ^ string_of_expr e
+ *)  | AddAssign(v, e) -> v ^ " += " ^ string_of_expr e
   | MinusAssign(v, e) -> v ^ " -= " ^ string_of_expr e
   | SingleEdge(e1, e2) ->  e1 ^ " -> " ^  e2
   | SingleLinkAssign(e1 , e) -> string_of_expr e1 ^ " = " ^ string_of_expr e

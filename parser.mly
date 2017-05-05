@@ -127,7 +127,6 @@ expr:
   | ID ADDASSIGN expr { AddAssign($1, $3) }
   | ID MINUSASSIGN expr { MinusAssign($1, $3) }
   | ID ASSIGN expr   { Assign($1, $3) }
-  | subscript ASSIGN expr { SubscriptAssign($1, $3) }
   | singleEdge ASSIGN expr { SingleLinkAssign($1, $3) }
   | ID DOUBLELINK ID ASSIGN expr { DoubleLinkAssign($1, $3, $5) }
   | ID LPAREN actuals_opt RPAREN { Call($1, $3) }
