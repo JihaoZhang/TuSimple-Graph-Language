@@ -118,37 +118,37 @@ struct List *concat_list(struct List *list1, struct List *list2) {
     switch (list1->type) {
         case INT:
             for (i = 0; i < size2; i++) {
-                list1 = plus_list(list1, voidToint(list2->value + i));
+                list1 = plus_list(list1, voidToint(*(list2->value + i)));
             }
             break;
 
         case BOOL:
             for (i = 0; i < size2; i++) {
-                list1 = plus_list(list1, voidTobool(list2->value + i));
+                list1 = plus_list(list1, voidTobool(*(list2->value + i)));
             }
             break;
 
         case FLOAT:
             for (i = 0; i < size2; i++) {
-                list1 = plus_list(list1, voidTofloat(list2->value + i));
+                list1 = plus_list(list1, voidTofloat(*(list2->value + i)));
             }
             break;
 
         case STRING:
             for (i = 0; i < size2; i++) {
-                list1 = plus_list(list1, voidTostring(list2->value + i));
+                list1 = plus_list(list1, voidTostring(*(list2->value + i)));
             }
             break;
 
         case NODE:
             for (i = 0; i < size2; i++) {
-                list1 = plus_list(list1, voidTonode(list2->value + i));
+                list1 = plus_list(list1, voidTonode(*(list2->value + i)));
             }
             break;
 
         case GRAPH:
             for (i = 0; i < size2; i++) {
-                list1 = plus_list(list1, voidTograph(list2->value + i));
+                list1 = plus_list(list1, voidTograph(*(list2->value + i)));
             }
             break;
 
@@ -437,11 +437,30 @@ void change_list_element(struct List* list, int index, ...) {
 
 //     // Test function: concat_list
 //     printf("TEST: concat_list\n");
-//     printf("%d\n", get_list_size(intListTest2));
-//     printf("%d\n", get_list_size(intListTest3));
-//     struct List* concatListTest = concat_list(intListTest2, intListTest3);
-//     printf("%d\n", get_list_size(concatListTest));
-
+//     // printf("%d\n", get_list_size(intListTest2));
+//     // printf("%d\n", get_list_size(intListTest3));
+//     // struct List* concatListTest = concat_list(intListTest2, intListTest3);
+//     // printf("%d\n", get_list_size(concatListTest));
+//     // printf("%d\n", get_list_element(concatListTest, 0));
+//     // printf("%d\n", get_list_element(concatListTest, 1));
+//     // printf("%d\n", get_list_element(concatListTest, 2));
+//     // printf("%d\n", get_list_element(concatListTest, 3));
+//     struct List* testConcatListList1 = create_list(INT);
+//     struct List* testConcatListList2 = create_list(INT);
+//     testConcatListList1 = plus_list(testConcatListList1, 1);
+//     testConcatListList1 = plus_list(testConcatListList1, 2);
+//     testConcatListList1 = plus_list(testConcatListList1, 3);
+//     testConcatListList2 = plus_list(testConcatListList2, 4);
+//     testConcatListList2 = plus_list(testConcatListList2, 5);
+//     testConcatListList2 = plus_list(testConcatListList2, 6);
+//     testConcatListList1 = concat_list(testConcatListList1, testConcatListList2);
+//     printf("%d\n", voidToint(get_list_element(testConcatListList1, 0)));
+//     printf("%d\n", voidToint(get_list_element(testConcatListList1, 1)));
+//     printf("%d\n", voidToint(get_list_element(testConcatListList1, 2)));
+//     printf("%d\n", voidToint(get_list_element(testConcatListList1, 3)));
+//     printf("%d\n", voidToint(get_list_element(testConcatListList1, 4)));
+//     printf("%d\n", voidToint(get_list_element(testConcatListList1, 5)));
+//     printf("%d\n", get_list_size(testConcatListList1));
 
 //     // Test function: change_list_element
 //     printf("%s\n", "TEST: change_list_element");
