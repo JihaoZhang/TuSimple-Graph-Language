@@ -1180,8 +1180,10 @@ struct Node* createNode(char* name, int32_t type) {
     struct Node* new = (struct Node*) malloc(sizeof(struct Node));
     new->name = name;
     new->type = type;
-    new->nodes = NULL;
-    new->weight = NULL;
+    // new->nodes = NULL;
+    // new->weight = NULL;
+    new->nodes = create_list(NODE);
+    new->weight = create_list(FLOAT);
 
     switch (type) {
         case INT:
@@ -1206,6 +1208,7 @@ struct Node* createNode(char* name, int32_t type) {
 
     return new;
 }
+
 
 struct Node* setNodeValue(struct Node* node, int32_t type, ...) {
 
@@ -1306,16 +1309,17 @@ double weightIterNode(struct Node* node, int index){
 
 double getEdgeValue(struct Node* node1, struct Node* node2) {
     fprintf(stderr, "%s\n", "start get edge value");
-    int size1 = get_list_size(node1->weight);
+    // printf("%d\n", get_list_size(node1->weight));
+    // int size1 = get_list_size(node1->weight);
 
-    for (int i = 0; i < size1; i++) {
-        if (strcmp(voidTonode(get_list_element(node1->nodes, i))->name, node2->name) == 0) {
-            // Found node
-            return voidTofloat(get_list_element(node1->weight, i));
-        }
-    }
+    // for (int i = 0; i < size1; i++) {
+    //     if (strcmp(voidTonode(get_list_element(node1->nodes, i))->name, node2->name) == 0) {
+    //         // Found node
+    //         return voidTofloat(get_list_element(node1->weight, i));
+    //     }
+    // }
 
-    printf("%s\n", "Error! getEdgeValue : Node not found!");
+    // printf("%s\n", "Error! getEdgeValue : Node not found!");
     return 0;
 }
 
