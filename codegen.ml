@@ -522,7 +522,7 @@ in
       		in type_conversion n_type nodeValuePtr, n_type)
       		| "name" -> (getNodeName (L.build_load dname' dname builder) builder, A.String)
       		| _ -> raise (Failure ("Error! Node has no such method")))
-        (* | A.List ele_type ->
+(*        | A.List ele_type ->
       	(match fname with 
       			"get" -> 
        		  | "pop" ->
@@ -547,7 +547,7 @@ in
       		  | "haskey" ->
       		  | "remove" ->
       		  | _ -> raise (Failure ("Error! Map has no such method")))
-      | A.Graph -> 
+       | A.Graph -> 
       	(match fname with 
       			"bfs" -> 
       		  | "dfs" ->
