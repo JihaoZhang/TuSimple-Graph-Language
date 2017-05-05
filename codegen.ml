@@ -175,7 +175,7 @@ List
 	let hashmap_get_f = L.declare_function "hashmap_get" hashmap_get_t the_module
 	in
 
-	let hashmap_get m_ptr llbuilder data =
+	let hashmap_get m_ptr data llbuilder  =
 		let actuals = [| m_ptr; data |] in
 			L.build_call hashmap_get_f actuals "hashmap_get" llbuilder
 	in
@@ -355,7 +355,14 @@ in
 
     let get_llvm_from_llvm_asttype_tuple (ltype,_) = ltype
     in
-
+    let type_conversion typ elementPtr = match typ with
+       A.Int -> voidToInt elementPtr builder
+      | A.Float -> voidTofloat elementPtr builder
+      | A.Bool -> voidTobool elementPtr builder
+      | A.Node _ -> voidTonode elementPtr builder
+      | A.Graph -> voidTograph elementPtr builder
+      | _ -> raise (Failure (" undefined operator[] "))
+     in
 		(* Construct code for an expression; return its value/type tuple *)
 		let rec expr builder = function
 			  A.Literal i -> (L.const_int i32_t i, A.Int)
@@ -375,17 +382,27 @@ in
           listPtr
           builder)
           ;(listPtr, listLiteral_type)
+      | A.MinusAssign(var, e) -> 
+                let (var', typ) =  lookup var and (s', t') = expr builder e in
+          ((match typ with
+          | A.Int -> let e1' = L.build_load var' var builder
+				and (e2', t2') = expr builder e 
+				in
+				L.build_store (L.build_sub e1' e2' "tmp" builder) var' builder
+          | A.Float  -> 
+          		let e1' = L.build_load var' var builder
+				and (e2', t2') = expr builder e 
+				in
+				L.build_store (L.build_fsub e1' e2' "tmp" builder) var' builder), typ)
       | A.Subscript (var, e) -> let (var', typ) = lookup var and (s', t') = expr builder e in
       ((match typ with
       | A.List typeList -> (
       	let elementPtr = get_list_element (L.build_load var' var builder) s' builder
-      in match typeList with
-      | A.Int -> voidToInt elementPtr builder
-      | A.Float -> voidTofloat elementPtr builder
-      | A.Bool -> voidTobool elementPtr builder
-      | A.Node _ -> voidTonode elementPtr builder
-      | A.Graph -> voidTograph elementPtr builder
-      | _ -> raise (Failure (" undefined operator[] "))
+      in type_conversion typeList elementPtr
+      )
+      | A.Map(t1, t2) -> (
+      	let elementPtr = hashmap_get (L.build_load var' var builder) s' builder
+      	in type_conversion t2 elementPtr
       )
       | _ -> raise (Failure (" undefined operator[] "))), typ)
       | A.New id -> let (id', typ) = lookup id in 
@@ -432,17 +449,20 @@ in
           | A.Int -> let e1' = L.build_load var' var builder
 				and (e2', t2') = expr builder e 
 				in
-				L.build_add e1' e2' "tmp" builder
+				L.build_store (L.build_add e1' e2' "tmp" builder) var' builder
           | A.Float  -> 
           		let e1' = L.build_load var' var builder
 				and (e2', t2') = expr builder e 
 				in
-				L.build_fadd e1' e2' "tmp" builder
+				L.build_store (L.build_fadd e1' e2' "tmp" builder) var' builder
           | A.Set typeSet -> let s1 = L.build_load var' var builder 
           		and (l1', t1') = expr builder e
           	in put_set_from_list s1 l1' builder
           | _ -> raise (Failure (" undefined += "))), typ)
-      | A.SingleEdge (n1, n2) ->
+(* Deprecated feature      | A.SubscriptAssign(e1, e2) -> let (e1', t1') = expr builder e1 and (e2', t2') = expr builder e2 in
+           ignore (L.build_store e2' e1' builder); (e1', t1') *)
+
+      | A.SingleEdge (n1, n2) -> 
       		((let (n1', typ1) = lookup n1 and (n2', typ2) = lookup n2 in 
       		getEdgeValue (L.build_load n1' n1 builder) (L.build_load n2' n2 builder) builder) , A.Float)
       | A.Call ("print", [e]) | A.Call ("printb", [e]) ->

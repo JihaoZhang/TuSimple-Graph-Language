@@ -69,7 +69,7 @@ typ:
   | SET AT LBRACE typ RBRACE { Set($4) }
   | NODE AT LBRACE typ RBRACE { Node($4) }
   | MAP AT LBRACE typ COMMA typ RBRACE { Map($4, $6) }
-
+  
 
 vdecl_list:
     /* nothing */    { [] }

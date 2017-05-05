@@ -99,9 +99,7 @@ let check (globals, functions) =
   in
 
   let checkAddAdd tp err =
-    if tp = Int || tp = Float 
-      then tp
-    else match tp with
+    match tp with
        List _ -> tp
       | _         -> raise err
   in
