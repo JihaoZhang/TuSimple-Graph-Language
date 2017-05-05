@@ -235,15 +235,15 @@ let createNode s_ptr nodeType llbuilder =
 	)
 in
 
-	let getEdgeValue_t = L.function_type float_t [| node_t; node_t |]
-	in
-	let getEdgeValue_f = L.declare_function "getEdgeValue" getEdgeValue_t the_module
-	in 
-	let getEdgeValue n1_ptr n2_ptr llbuilder =
-		let actuals = [| n1_ptr; n2_ptr |] in (
-			L.build_call getEdgeValue_f actuals "getEdgeValue" llbuilder
-		)
-	in
+let getEdgeValue_t = L.function_type float_t [| node_t; node_t |]
+in
+let getEdgeValue_f = L.declare_function "getEdgeValue" getEdgeValue_t the_module
+in
+let getEdgeValue n1_ptr n2_ptr llbuilder = 
+	let actuals = [| n1_ptr; n2_ptr |] in (
+		L.build_call getEdgeValue_f actuals "getEdgeValue" llbuilder
+	)
+in
 
 
 (*
