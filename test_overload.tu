@@ -49,6 +49,7 @@ int main(){
   print(l1[4]);
   print(l1[5]);
   prints("________");
+  
   l1++;
  // a--b = 3;
  // a->b;
