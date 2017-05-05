@@ -10,6 +10,7 @@ int main(){
   node@{int} node1;
   node@{int} node2;
   string str1;
+  string str2;
   map @{int, int} map1;
   map @{string, float} map2;
   new l1;
@@ -24,7 +25,7 @@ int main(){
   a = 100;
   print(a);
   str1 = "hello"; 
-  printb(true);
+  prints(str1);
   //node1->node2;
   l1 = null;
   f = 1.1;
@@ -39,6 +40,9 @@ int main(){
   c = d + d;
   l1 = @{1, 2, 3};
   l1 += @{4, 5, 6};
+  str2 = "l5";
+  prints(str2);
+  print(l1[4]);
   l1++;
  // a--b = 3;
  // a->b;

@@ -360,7 +360,8 @@ in
 		let builder = L.builder_at_end context (L.entry_block the_function) in
 
 		let int_format_str = L.build_global_stringptr "%d\n" "fmt" builder in
-		
+		let string_format_str = L.build_global_stringptr "%s\n" "fmt" builder
+		in
 		(* Construct the function's "locals": formal arguments and locally
 			 declared variables.  Allocate each on the stack, initialize their
 			 value, if appropriate, and remember their values in the "locals" map *)
@@ -476,7 +477,7 @@ in
       | A.AddAssign (var, e) -> 
           let (var', typ) =  lookup var and (s', t') = expr builder e in
           ((match typ with
-          | A.List _ -> L.build_store (concat_list (L.build_load var' var builder) var' builder) (fst (lookup var)) builder
+          | A.List _ -> L.build_store (concat_list (L.build_load var' var builder) s' builder) (fst (lookup var)) builder
           | A.Int -> let e1' = L.build_load var' var builder
 				and (e2', t2') = expr builder e 
 				in
@@ -521,15 +522,15 @@ in
       		in type_conversion n_type nodeValuePtr, n_type)
       		| "name" -> (getNodeName dname' builder, A.String)
       		| _ -> raise (Failure ("Error! Node has no such method")))
-(*       | A.List ele_type ->
+(*        | A.List ele_type ->
       	(match fname with 
       			"get" -> 
       		  | "pop" ->
       		  | "remove" -> 
       		  | "length" -> 
       		  | "concat" -> 
-      		  | _ -> raise (Failure ("Error! List has no such method")))
-      | A.Set ele_type ->
+      		  | _ -> raise (Failure ("Error! List has no such method"))) *)
+(*      | A.Set ele_type ->
       	(match fname with
       		 	"minimum" ->
       		  | "maximum" ->
@@ -560,9 +561,14 @@ in
       		  | "expand" ->
       		  | _ -> raise (Failure ("Error! Graph has no such method"))) *)
       	| _ -> raise (Failure ("Error! Do not support such type")))
-      | A.Call ("print", [e]) | A.Call ("printb", [e]) ->
-				 (L.build_call printf_func [| int_format_str ; (fst (expr builder e)) |]
+      | A.Call ("print", [e]) -> (L.build_call printf_func [| int_format_str ; (fst (expr builder e)) |]
 			   "printf" builder, (snd (expr builder e)))
+      | A.Call ("prints", [e]) ->
+				 (L.build_call printf_func [| string_format_str ; (fst (expr builder e)) |]
+			   "printf" builder, (snd (expr builder e)))
+(* 		| A.Call("prints",[e]) ->
+				 (L.build_call printf_func [| string_format_str ; (fst (expr builder e)) |]
+			   "printf" builder, (snd (expr builder e))) *)			
 			| A.Call ("printbig", [e]) ->
 				 (L.build_call printbig_func [| (fst (expr builder e)) |] 
          "printbig" builder, (snd (expr builder e)))
