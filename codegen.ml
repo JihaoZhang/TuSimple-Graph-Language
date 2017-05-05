@@ -521,15 +521,18 @@ in
       		in type_conversion n_type nodeValuePtr, n_type)
       		| "name" -> (getNodeName (L.build_load dname' dname builder) builder, A.String)
       		| _ -> raise (Failure ("Error! Node has no such method")))
-(*       | A.List ele_type ->
+      | A.List ele_type ->
       	(match fname with 
-      			"get" -> 
-      		  | "pop" ->
+      			"get" -> (let index = List.nth actuals 0 
+      		in let listElementPtr = get_list_element (L.build_load dname' dname builder) builder 
+      		in type_conversion ele_type listElementPtr, ele_type)
+
+(*       		  | "pop" ->
       		  | "remove" -> 
       		  | "length" -> 
-      		  | "concat" -> 
+      		  | "concat" ->  *)
       		  | _ -> raise (Failure ("Error! List has no such method")))
-      | A.Set ele_type ->
+(*       | A.Set ele_type ->
       	(match fname with
       		 	"minimum" ->
       		  | "maximum" ->
@@ -558,9 +561,9 @@ in
       		  | "component" ->
       		  | "reduce" ->
       		  | "expand" ->
-      		  | _ -> raise (Failure ("Error! Graph has no such method"))) *)
+      		  | _ -> raise (Failure ("Error! Graph has no such method")))
       	| _ -> raise (Failure ("Error! Do not support such type")))
-      | A.Call ("print", [e]) | A.Call ("printb", [e]) ->
+ *)      | A.Call ("print", [e]) | A.Call ("printb", [e]) ->
 				 (L.build_call printf_func [| int_format_str ; (fst (expr builder e)) |]
 			   "printf" builder, (snd (expr builder e)))
 			| A.Call ("printbig", [e]) ->
