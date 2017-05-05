@@ -73,7 +73,7 @@ let check (globals, functions) =
      if node1Type = node2Type 
      then match node1Type with
      | Node(_) -> (if exprType = Int || exprType = Float
-                 then Edge 
+                 then Int 
                  else raise err)
      | _ -> raise err
      else raise err
@@ -83,7 +83,7 @@ let check (globals, functions) =
     match t1 with
     | Node _ -> (match t2 with
           List _ -> (match t3 with
-                    | List _-> Edge
+                    | List _-> Int
                     | _ -> raise err)
          | _ -> raise err)
     | _ -> raise err
@@ -202,8 +202,8 @@ let check (globals, functions) =
           | Add | Sub | Mult | Div when t1 = Float && t2 = Float -> Float
           | Add | Sub | Mult | Div when t1 = Float && t2 = Int -> Float
           | Add | Sub | Mult | Div when t1 = Int && t2 = Float -> Float
-          | Add | Sub | Mult | Div when (t1 = Edge || t1 = Int) && (t2 = Edge || t2 = Int) -> Int
-          | Add | Sub | Mult | Div when (t1 = Edge || t1 = Float) && (t2 = Float || t2 = Int) -> Float
+          | Add | Sub | Mult | Div when (t1 = Int || t1 = Int) && (t2 = Int || t2 = Int) -> Int
+          | Add | Sub | Mult | Div when (t1 = Int || t1 = Float) && (t2 = Float || t2 = Int) -> Float
           | Add when t1 = String && t2 = String -> String
           | Add when t1 = Bool && t2 = Bool -> Bool
           | Mod when t1 = Int && t2 = Int -> Int
@@ -266,12 +266,12 @@ let check (globals, functions) =
       in
         (match lt with
         | Node _ -> (match rt with
-          | Node _ -> Edge
+          | Node _ -> Int
           | _ -> raise err)
         | _ -> raise err)
       | SingleLinkAssign(e1, e) as ex -> let tp1 = expr e1
                                          and tp2 = expr e in
-        if tp1 = Edge && (tp2 = Int || tp2 = Float)
+        if tp1 = Int && (tp2 = Int || tp2 = Float)
         then tp2
         else raise (Failure ("illegal single directed edge assignment " ^ string_of_typ tp1 ^ " = " 
                       ^ string_of_typ tp2 ^ " in " ^ string_of_expr ex))
@@ -306,8 +306,87 @@ let check (globals, functions) =
            fd.typ
        | DotCall(dname, fname, actuals) as call -> let typ = type_of_identifier dname in
          (match typ with
-            Node t -> Node(t)
-          | _ -> raise (Failure ("unsupported method call")))
+            Node _ ->
+            (match fname with
+                "value" -> 
+                  if actuals = [] then Int else raise (Failure ("Node get method error"))
+              | "name" -> 
+                  if actuals = [] then String else raise (Failure ("Node name method error"))
+              | _ -> raise (Failure ("Node has no such method"))
+            )
+          | List ele_type -> 
+            (match fname with
+                "get" -> 
+                  (match actuals with
+                      [x] when (expr x) = Int -> ele_type
+                    | _ -> raise (Failure ("List get method error")))
+              | "pop" -> 
+                  if actuals = [] then Null_t else raise (Failure ("List pop method error"))
+              | "remove" ->                   
+                  (match actuals with
+                      [x] when (expr x) = Int -> Null_t
+                    | _ -> raise (Failure ("List remove method error")))
+              | "length" -> 
+                  if actuals = [] then Int else raise (Failure ("List length method error"))
+              | "cancat" ->                   
+                  (match actuals with
+                      [x] when (expr x) = List ele_type -> List ele_type
+                    | _ -> raise (Failure ("List cancatenate method error")))
+              | _ -> raise (Failure ("List has no such method"))
+            )
+          | Set ele_type ->
+            (match fname with
+                "minimum" ->                   
+                  if actuals = [] then ele_type else raise (Failure ("Set minimum method error"))
+              | "maximum" -> 
+                  if actuals = [] then ele_type else raise (Failure ("Set minimum method error"))
+              | "length" -> 
+                  if actuals = [] then Int else raise (Failure ("Set length method error"))
+              | "contain" ->
+                  (match actuals with
+                      [x] when (expr x) = ele_type -> Bool
+                    | _ -> raise (Failure ("Set contain method error")))
+              | "gettype" -> 
+                  if actuals = [] then ele_type else raise (Failure ("Set gettype method error"))
+              | _ -> raise (Failure ("Set has no such method"))
+            )
+          | Map (k_type, v_type) ->
+            (match fname with
+                "get" ->
+                  (match actuals with
+                      [x] when (expr x) = k_type -> v_type
+                    | _ -> raise (Failure ("Map get method error")))
+              | "keytype" -> 
+                  if actuals = [] then k_type else raise (Failure ("Map keytype method error"))
+              | "valuetype" -> 
+                  if actuals = [] then v_type else raise (Failure ("Map valuetype method error"))
+              | "length" -> 
+                  if actuals = [] then Int else raise (Failure ("Map length method error"))
+              | "haskey" -> 
+                  (match actuals with
+                      [x] when (expr x) = k_type -> Bool
+                    | _ -> raise (Failure ("Map haskey method error")))
+              | "remove" ->
+                    (match actuals with
+                      [x] when (expr x) = k_type -> Null_t
+                    | _ -> raise (Failure ("Map remove method error")))
+              | _ -> raise (Failure ("Map has no such method"))
+            )
+          | Graph ->
+            (match fname with
+                "bfs" -> Bool
+              | "dfs" -> Bool
+              | "find" -> Bool
+              | "find_path" -> Bool
+              | "reverse" -> Bool
+              | "combine" -> Bool
+              | "init_tag" -> Bool
+              | "component" -> Bool
+              | "reduce" -> Bool
+              | "expand" -> Bool
+              | _ -> raise (Failure ("Map has no such method"))
+            )
+          | _ -> raise (Failure ("unsupported type for method call")))
     in
 
     let check_bool_expr e = if expr e != Bool
