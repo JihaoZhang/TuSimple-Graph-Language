@@ -10,11 +10,14 @@ int main(){
   node@{int} node1;
   node@{int} node2;
   string str1;
-  //map @{node, int} map1;
+  map @{int, int} map1;
+  map @{string, float} map2;
   new l1;
   new s1;
   new node1;
  // new node2;  
+  new map1;
+  new map2;
   str1 = "hello"; 
   printb(true);
   //node1->node2;

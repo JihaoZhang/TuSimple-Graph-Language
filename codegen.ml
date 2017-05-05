@@ -144,7 +144,7 @@ List
 	in
 	let create_hashmap kType vType llbuilder =
 		let actuals = [| lconst_of_typ kType; lconst_of_typ vType |] in
-			ignore(L.build_call create_hashmap_f actuals "create_hashmap" llbuilder)
+			(L.build_call create_hashmap_f actuals "create_hashmap" llbuilder)
 	in
 
 	let hashmap_put_t = L.var_arg_function_type map_t [| map_t |]
@@ -409,6 +409,7 @@ in
       	((match typ with 
       	| A.List listType -> create_list listType builder
       	| A.Set setType -> create_set setType builder
+      	| A.Map(kType, vType) -> create_hashmap kType vType builder
       	| A.Node nodeType -> let nodeName = L.build_global_stringptr id "" builder
       in createNode nodeName nodeType builder
       	(* let nodeName = L.const_string builder id in
