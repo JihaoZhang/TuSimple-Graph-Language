@@ -142,6 +142,7 @@ double getEdgeValue(struct Node* node1, struct Node* node2) {
 	return 0;
 }
 
+
 // int main(){
 
 // 	// struct Node *a = createNode("a", FLOAT, 3.24);

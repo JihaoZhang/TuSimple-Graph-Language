@@ -245,6 +245,16 @@ let getEdgeValue n1_ptr n2_ptr llbuilder =
 	)
 in
 
+let addNodeEdge_t = L.function_type i32_t [| node_t; node_t; i32_t |]
+in 
+let addNodeEdge_f = L.declare_function "addNodeEdge" addNodeEdge_t the_module
+in
+let addNodeEdge n1_ptr n2_ptr weight llbuilder = 
+	let actuals = [| n1_ptr; n2_ptr; weight |] in (
+		ignore(L.build_call addNodeEdge_f actuals "addNodeEdge" llbuilder)
+	)
+in
+
 
 (*
 ================================================================
@@ -469,7 +479,14 @@ in
 
       | A.SingleEdge (n1, n2) -> 
       		((let (n1', typ1) = lookup n1 and (n2', typ2) = lookup n2 in 
-      		getEdgeValue (L.build_load n1' n1 builder) (L.build_load n2' n2 builder) builder) , A.Float)
+      		getEdgeValue (L.build_load n1' n1 builder) (L.build_load n2' n2 builder) builder), A.Float)
+      | A.DoubleLinkAssign (var1, var2, e) ->
+    		(let (var1', typ1) = lookup var1 and (var2', typ2) = lookup var2 in
+    			let (s', t') = expr builder e in
+    			(* let node1 = (L.build_load var1' var1 builder) and node2 = (L.build_load var2' var2 builder)
+    		in addNodeEdge node1 node2 s'; addNodeEdge node2 node1 s'), A.Float) *)
+    		ignore(addNodeEdge (L.build_load var1' var1 builder) (L.build_load var2' var2 builder) s' builder);
+    		ignore(addNodeEdge (L.build_load var2' var2 builder) (L.build_load var1' var1 builder) s' builder)); (L.const_int i32_t 0, A.Float)
       | A.Call ("print", [e]) | A.Call ("printb", [e]) ->
 				 (L.build_call printf_func [| int_format_str ; (fst (expr builder e)) |]
 			   "printf" builder, (snd (expr builder e)))
