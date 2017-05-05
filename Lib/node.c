@@ -2,31 +2,31 @@
 
 struct Node* createNode(char* name, int32_t type) {
 	struct Node* new = (struct Node*) malloc(sizeof(struct Node));
-	new->name = name;
-	new->type = type;
-	new->nodes = NULL;
-	new->weight = NULL;
+	 new->name = name;
+	 new->type = type;
+	 new->nodes = NULL;
+	 new->weight = NULL;
 
-	switch (type) {
-		case INT:
-			// new->value = intTovoid(va_arg(ap, int));
-			new->value = 0;
-			break;
-		case FLOAT:
-			// new->value = floatTovoid(va_arg(ap, double));
-			new->value = 0;
-			break;
-		case BOOL:
-			// new->value = boolTovoid(va_arg(ap, bool));
-			new->value = 0;
-			break;
-		case STRING:
-			// new->value = stringTovoid(va_arg(ap, char*));
-			new->value = "";
-			break;
-		default:
-			break;
-	}
+	 switch (type) {
+	 	case INT:
+	 		// new->value = intTovoid(va_arg(ap, int));
+	 		new->value = 0;
+	 		break;
+	 	case FLOAT:
+	 		// new->value = floatTovoid(va_arg(ap, double));
+	 		new->value = 0;
+	 		break;
+	 	case BOOL:
+	 		// new->value = boolTovoid(va_arg(ap, bool));
+	 		new->value = 0;
+	 		break;
+	 	case STRING:
+	 		// new->value = stringTovoid(va_arg(ap, char*));
+	 		new->value = "";
+	 		break;
+	 	default:
+	 		break;
+	 }
 
   	return new;
 }

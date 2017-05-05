@@ -33,16 +33,16 @@ let translate (globals, functions) =
   and list_t = L.pointer_type (match L.type_by_name llm "struct.List" with
 	  None -> raise (Failure "struct.List doesn't defined.")
   | Some x -> x)
-  and set_t = (match L.type_by_name llm "struct.Set" with
+  and set_t = L.pointer_type (match L.type_by_name llm "struct.Set" with
     None -> raise (Failure "struct.Set doesn't defined.")
   | Some x -> x)
-  and map_t = (match L.type_by_name llm "struct.hashmap" with
+  and map_t = L.pointer_type (match L.type_by_name llm "struct.hashmap" with
     None -> raise (Failure "struct.hashmap doesn't defined.")
   | Some x -> x)
-  and node_t = (match L.type_by_name llm "struct.Node" with
+  and node_t = L.pointer_type (match L.type_by_name llm "struct.Node" with
     None -> raise (Failure "struct.Node doesn't defined.")
   | Some x -> x)
-  and graph_t = (match L.type_by_name llm "struct.Graph" with
+  and graph_t = L.pointer_type (match L.type_by_name llm "struct.Graph" with
     None -> raise (Failure "struct.Graph doesn't defined.")
   | Some x -> x)
 

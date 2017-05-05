@@ -14,7 +14,7 @@ int main(){
   new l1;
   new s1;
   new node1;
-  new node2;  
+ // new node2;  
   str1 = "hello"; 
   printb(true);
   //node1->node2;
