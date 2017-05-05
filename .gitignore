@@ -6,4 +6,3 @@ _build/
 *.json
 *.s
 *.ext
-*.out

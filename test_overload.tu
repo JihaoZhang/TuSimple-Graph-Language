@@ -18,6 +18,7 @@ int main(){
   new node2;  
   new map1;
   new map2;
+  node1 -> node2;
   str1 = "hello"; 
   printb(true);
   //node1->node2;
