@@ -21,9 +21,10 @@ int main(){
   new map2;
   node1 -> node2 = 128;
 //  node1 -- node2 = 3;
-// node1 -> node2;
+// node1 -> node2; 
   a = 100;
   print(a);
+// string cannot contain space and special chars 
   str1 = "hello"; 
   prints(str1);
   //node1->node2;
@@ -38,11 +39,16 @@ int main(){
   d = true;
   a = b + b;
   c = d + d;
+  prints("________");
   l1 = @{1, 2, 3};
   l1 += @{4, 5, 6};
-  str2 = "l5";
-  prints(str2);
+  print(l1[0]);
+  print(l1[1]);
+  print(l1[2]);
+  print(l1[3]);
   print(l1[4]);
+  print(l1[5]);
+  prints("________");
   l1++;
  // a--b = 3;
  // a->b;
