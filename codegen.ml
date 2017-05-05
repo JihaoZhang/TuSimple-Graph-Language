@@ -487,6 +487,12 @@ in
     		in addNodeEdge node1 node2 s'; addNodeEdge node2 node1 s'), A.Float) *)
     		ignore(addNodeEdge (L.build_load var1' var1 builder) (L.build_load var2' var2 builder) s' builder);
     		ignore(addNodeEdge (L.build_load var2' var2 builder) (L.build_load var1' var1 builder) s' builder)); (L.const_int i32_t 0, A.Float)
+      | SingleLinkAssign(e1, e) -> 
+      ((match e1 with
+      | A.SingleEdge(n1, n2) -> let (n1', typ1) = lookup n1 and (n2', typ2) = lookup n2 
+       in let(s', t') = expr builder e in 
+      ignore((addNodeEdge (L.build_load n1' n1 builder) (L.build_load n2' n2 builder) s' builder)); s'
+      | _ -> raise (Failure("illegal edge assignment. "))), A.Int)
       | A.Call ("print", [e]) | A.Call ("printb", [e]) ->
 				 (L.build_call printf_func [| int_format_str ; (fst (expr builder e)) |]
 			   "printf" builder, (snd (expr builder e)))

@@ -18,8 +18,9 @@ int main(){
   new node2;  
   new map1;
   new map2;
+  node1 -> node2 = 128;
 //  node1 -- node2 = 3;
-  node1 -> node2;
+// node1 -> node2;
   a = 100;
   print(a);
   str1 = "hello"; 
