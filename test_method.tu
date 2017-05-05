@@ -13,6 +13,8 @@ int main(){
 	str = n1.name();
 	print(i);
 	n1.setvalue(i);
+	n1.setvalue(b);
+	n1.setvalue(str);
 	//n1.name();
 
 	//l1.get(i+i);
