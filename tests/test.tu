@@ -1,5 +1,7 @@
-int main() {
-	int a;
-	a = 0.2;
-	return 0;
+int main()
+{
+ 	int i;
+ 	i = 20;
+  	add(i)
+  	return 0;
 }
