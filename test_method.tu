@@ -11,6 +11,7 @@ int main(){
 	n1.value();
 	i = n1.value();
 	print(i);
+	n1.setvalue(i);
 	//n1.name();
 	//l1.get(i+i);
 	//l1.pop();

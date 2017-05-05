@@ -312,6 +312,10 @@ let check (globals, functions) =
                   if actuals = [] then typn else raise (Failure ("Node get method error"))
               | "name" -> 
                   if actuals = [] then String else raise (Failure ("Node name method error"))
+              | "setvalve" -> 
+                  (match actuals with
+                      [x] when (expr x) = (Int || String || Float || Bool) -> Null_t
+                    | _ -> raise (Failure ("Set setvalue method error")))
               | _ -> raise (Failure ("Node has no such method"))
             )
           | List ele_type -> 
