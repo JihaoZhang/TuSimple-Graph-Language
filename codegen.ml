@@ -255,20 +255,40 @@ let addNodeEdge n1_ptr n2_ptr weight llbuilder =
 	)
 in
 
+let getNodeValue_t = L.function_type (L.pointer_type i8_t) [| node_t |]
+in
+let getNodeValue_f = L.declare_function "getNodeValue" getNodeValue_t the_module
+in
+let getNodeValue n_ptr llbuilder =
+	let actuals = [| n_ptr |] in (
+		L.build_call getNodeValue_f actuals "getNodeValue" llbuilder
+	)
+in
+
+let getNodeName_t = L.function_type string_t [| node_t |]
+in
+let getNodeName_f = L.declare_function "getNodeName" getNodeName_t the_module
+in
+let getNodeName n_ptr llbuilder = 
+	let actuals = [| n_ptr |] in (
+		L.build_call getNodeName_f actuals "getNodeName" llbuilder
+	)
+in
 
 (*
 ================================================================
   Cast Methods
 ================================================================
 *)
-let voidToInt_t = L.function_type i32_t [|L.pointer_type i8_t|]
+let voidToint_t = L.function_type i32_t [|L.pointer_type i8_t|]
 in
-let voidToInt_f = L.declare_function "voidToint" voidToInt_t the_module
+let voidToint_f = L.declare_function "voidToint" voidToint_t the_module
 in
-let voidToInt v_ptr llbuilder = 
+let voidToint v_ptr llbuilder = 
 	let actuals = [|v_ptr|] in  
-	L.build_call voidToInt_f actuals "voidToint" llbuilder
+	L.build_call voidToint_f actuals "voidToint" llbuilder
 in
+
 let voidTofloat_t = L.function_type float_t [|L.pointer_type i8_t|]
 in
 let voidTofloat_f = L.declare_function "voidTofloat" voidTofloat_t the_module
@@ -366,7 +386,7 @@ in
     let get_llvm_from_llvm_asttype_tuple (ltype,_) = ltype
     in
     let type_conversion typ elementPtr = match typ with
-       A.Int -> voidToInt elementPtr builder
+       A.Int -> voidToint elementPtr builder
       | A.Float -> voidTofloat elementPtr builder
       | A.Bool -> voidTobool elementPtr builder
       | A.Node _ -> voidTonode elementPtr builder
@@ -417,11 +437,11 @@ in
       | _ -> raise (Failure (" undefined operator[] "))), typ)
       | A.New id -> let (id', typ) = lookup id in 
       	((match typ with 
-      	| A.List listType -> create_list listType builder
-      	| A.Set setType -> create_set setType builder
-      	| A.Map(kType, vType) -> create_hashmap kType vType builder
+      	| A.List listType -> L.build_store (create_list listType builder) (fst (lookup id)) builder
+      	| A.Set setType -> L.build_store (create_set setType builder) (fst (lookup id)) builder
+      	| A.Map(kType, vType) -> L.build_store (create_hashmap kType vType builder) (fst (lookup id)) builder
       	| A.Node nodeType -> let nodeName = L.build_global_stringptr id "" builder
-      in createNode nodeName nodeType builder
+      in L.build_store (createNode nodeName nodeType builder) (fst (lookup id)) builder
       	(* let nodeName = L.const_string builder id in
       	createNode nodeName nodeType builder *)
       	| _ -> raise (Failure (" Type not found "))), typ)
@@ -493,6 +513,53 @@ in
        in let(s', t') = expr builder e in 
       ignore((addNodeEdge (L.build_load n1' n1 builder) (L.build_load n2' n2 builder) s' builder)); s'
       | _ -> raise (Failure("illegal edge assignment. "))), A.Int)
+      | A.DotCall (dname, fname, actuals) -> let (dname', dtype) = lookup dname in
+      (match dtype with
+      	A.Node n_type -> 
+      	(match fname with
+      		   "value" ->  (let nodeValuePtr = getNodeValue (L.build_load dname' dname builder) builder
+      		in type_conversion n_type nodeValuePtr, n_type)
+      		| "name" -> (getNodeName dname' builder, A.String)
+      		| _ -> raise (Failure ("Error! Node has no such method")))
+      (* | A.List ele_type ->
+      	(match fname with 
+      			"get" -> 
+      		  | "pop" ->
+      		  | "remove" -> 
+      		  | "length" -> 
+      		  | "concat" -> 
+      		  | _ -> raise (Failure ("Error! List has no such method")))
+      | A.Set ele_type ->
+      	(match fname with
+      		 	"minimum" ->
+      		  | "maximum" ->
+      		  | "length" ->
+      		  | "contain" ->
+      		  | "gettype" ->
+      		  | _ -> raise (Failure ("Error! Set has no such method")))
+      | A.Map (k_type, v_type) ->
+      	(match fname with
+      			"get" ->
+      		  | "keytype" ->
+      		  | "valuetype" ->
+      		  | "length" -> 
+      		  | "haskey" ->
+      		  | "remove" ->
+      		  | _ -> raise (Failure ("Error! Map has no such method")))
+      | A.Graph -> 
+      	(match fname with 
+      			"bfs" -> 
+      		  | "dfs" ->
+      		  | "find" ->
+      		  | "find_path" ->
+      		  | "reverse" ->
+      		  | "combine" ->
+      		  | "init_tag" ->
+      		  | "component" ->
+      		  | "reduce" ->
+      		  | "expand" ->
+      		  | _ -> raise (Failure ("Error! Graph has no such method"))) *)
+      	| _ -> raise (Failure ("Error! Do not support such type")))
       | A.Call ("print", [e]) | A.Call ("printb", [e]) ->
 				 (L.build_call printf_func [| int_format_str ; (fst (expr builder e)) |]
 			   "printf" builder, (snd (expr builder e)))

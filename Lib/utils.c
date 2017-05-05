@@ -1178,43 +1178,40 @@ int test_int_set_iterate_2(void **data) {
 
 struct Node* createNode(char* name, int32_t type) {
     struct Node* new = (struct Node*) malloc(sizeof(struct Node));
-    new->name = name;
-    new->type = type;
-    // new->nodes = NULL;
-    // new->weight = NULL;
-    new->nodes = create_list(NODE);
-    new->weight = create_list(FLOAT);
+     new->name = name;
+     new->type = type;
+     new->nodes = NULL;
+     new->weight = NULL;
 
-    switch (type) {
+     switch (type) {
         case INT:
             // new->value = intTovoid(va_arg(ap, int));
-            new->value = 0;
+            new->value = intTovoid(0);
             break;
         case FLOAT:
             // new->value = floatTovoid(va_arg(ap, double));
-            new->value = 0;
+            new->value = floatTovoid(0);
             break;
         case BOOL:
             // new->value = boolTovoid(va_arg(ap, bool));
-            new->value = 0;
+            new->value = boolTovoid(0);
             break;
         case STRING:
             // new->value = stringTovoid(va_arg(ap, char*));
-            new->value = "";
+            new->value = stringTovoid("");
             break;
         default:
             break;
-    }
+     }
 
     return new;
 }
 
-
-struct Node* setNodeValue(struct Node* node, int32_t type, ...) {
+struct Node* setNodeValue(struct Node* node, ...) {
 
     va_list ap;
-    va_start(ap, type);
-    switch (type) {
+    va_start(ap, node);
+    switch (node->type) {
         case INT:
             node->value = intTovoid(va_arg(ap, int));
             break;
@@ -1235,34 +1232,14 @@ struct Node* setNodeValue(struct Node* node, int32_t type, ...) {
     return node;
 }
 
-char* getNodeValue(struct Node* node, int32_t type, ...) {
+void* getNodeValue(struct Node* node) {
     if (node == NULL) {
-        printf("Node does not exist.\n");
+        printf("%s\n", "Error! : getNodeValue - Node does not exist!");
         return NULL;
     }
-    
-    va_list ap;
-    va_start(ap, type);
-    switch (type) {
-        case INT:
-            printf("INT\n");
-            (*va_arg(ap, int*)) = voidToint(node->value);
-            break;
-        case FLOAT:
-            (*va_arg(ap, double*)) = voidTofloat(node->value);
-            break;
-        case BOOL:
-            (*va_arg(ap, bool*)) = voidTobool(node->value);
-            break;
-        case STRING:
-            return voidTostring(node->value);
-        default:
-            break;
-    }
-    va_end(ap);
-
-    return "";
+    return node->value;
 }
+
 
 char* getNodeName(struct Node* node) {
     if (node == NULL) {
@@ -1308,8 +1285,6 @@ double weightIterNode(struct Node* node, int index){
 }
 
 double getEdgeValue(struct Node* node1, struct Node* node2) {
-    fprintf(stderr, "%s\n", "start get edge value");
-    // printf("%d\n", get_list_size(node1->weight));
     // int size1 = get_list_size(node1->weight);
 
     // for (int i = 0; i < size1; i++) {
@@ -1319,7 +1294,7 @@ double getEdgeValue(struct Node* node1, struct Node* node2) {
     //     }
     // }
 
-    // printf("%s\n", "Error! getEdgeValue : Node not found!");
+    printf("%s\n", "Error! getEdgeValue : Node not found!");
     return 0;
 }
 

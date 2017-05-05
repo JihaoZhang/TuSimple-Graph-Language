@@ -306,10 +306,10 @@ let check (globals, functions) =
            fd.typ
        | DotCall(dname, fname, actuals) as call -> let typ = type_of_identifier dname in
          (match typ with
-            Node _ ->
+            Node typn ->
             (match fname with
                 "value" -> 
-                  if actuals = [] then Int else raise (Failure ("Node get method error"))
+                  if actuals = [] then typn else raise (Failure ("Node get method error"))
               | "name" -> 
                   if actuals = [] then String else raise (Failure ("Node name method error"))
               | _ -> raise (Failure ("Node has no such method"))
