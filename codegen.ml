@@ -476,7 +476,7 @@ in
       | A.AddAssign (var, e) -> 
           let (var', typ) =  lookup var and (s', t') = expr builder e in
           ((match typ with
-          | A.List _ -> concat_list (L.build_load var' var builder) s' builder 
+          | A.List _ -> L.build_store (concat_list (L.build_load var' var builder) s' builder) (fst (lookup var)) builder
           | A.Int -> let e1' = L.build_load var' var builder
 				and (e2', t2') = expr builder e 
 				in
@@ -521,7 +521,7 @@ in
       		in type_conversion n_type nodeValuePtr, n_type)
       		| "name" -> (getNodeName dname' builder, A.String)
       		| _ -> raise (Failure ("Error! Node has no such method")))
-      (* | A.List ele_type ->
+(*       | A.List ele_type ->
       	(match fname with 
       			"get" -> 
       		  | "pop" ->

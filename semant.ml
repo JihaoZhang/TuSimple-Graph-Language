@@ -318,7 +318,7 @@ let check (globals, functions) =
             (match fname with
                 "get" -> 
                   (match actuals with
-                      [x] when (expr x) = Int -> ele_type
+                      [x] when (expr x) = ele_type -> ele_type
                     | _ -> raise (Failure ("List get method error")))
               | "pop" -> 
                   if actuals = [] then Null_t else raise (Failure ("List pop method error"))
