@@ -1,0 +1,7 @@
+( ) { } [ ]
+if else while for return main
+== != < > <= >= && || !
++ - * / = ++ --
+int float bool void null String true false
+; , :
+hi 99 "hi" 1.0
