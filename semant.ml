@@ -345,6 +345,10 @@ let check (globals, functions) =
                   if actuals = [] then ele_type else raise (Failure ("Set minimum method error"))
               | "maximum" -> 
                   if actuals = [] then ele_type else raise (Failure ("Set minimum method error"))
+              | "put" ->
+                  (match actuals with
+                      [x] when (expr x) = ele_type -> Null_t
+                    | _ -> raise (Failure ("Set put method error")))
               | "length" -> 
                   if actuals = [] then Int else raise (Failure ("Set length method error"))
               | "contain" ->

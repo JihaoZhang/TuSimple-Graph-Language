@@ -262,12 +262,22 @@ let add_set_f = L.declare_function "put_set" add_set_t the_module
 in
 let add_set l_ptr llbuilder data = 
 	let actuals = [|l_ptr; data|] in
-		ignore (L.build_call add_set_f actuals "plus_set" llbuilder)
+		ignore (L.build_call add_set_f actuals "put_set" llbuilder)
 in 
 
 
   let add_all_elements_into_list element_list l_ptr llbuilder = 
     List.iter (add_list l_ptr llbuilder) element_list
+  in
+
+  let get_set_size_t = L.function_type i32_t [| set_t |]
+  in
+  let get_set_size_f = L.declare_function "get_set_size" get_set_size_t the_module
+  in
+  let get_set_size s_ptr llbuilder = 
+  		let actuals = [| s_ptr |] in (
+  			L.build_call get_set_size_f actuals "get_set_size" llbuilder
+  		)
   in
 
 (*
@@ -590,7 +600,9 @@ in
       		    in concat_list (L.build_load dname' dname builder) listPtr builder, ele_type)
       		  | _ -> raise (Failure ("Error! List has no such method"))) 
        | A.Set ele_type ->
-      	(match fname with
+      	    (match fname with
+                "length" -> (get_set_size (L.build_load dname' dname builder) builder, A.Int)
+              | "contain" -> (get_set_size (L.build_load dname' dname builder) builder, A.Int)
       		  | _ -> raise (Failure ("Error! Set has no such method")))
       | A.Map (k_type, v_type) ->
       	(match fname with
