@@ -5,17 +5,16 @@ int main(){
     string str;
 	node@{int} n1;
 	list@{int} l1;
-<<<<<<< HEAD
-=======
 	list@{int} l2;
 	set @{node@{int}} s1;
->>>>>>> 0db6851fcc8b7390d7e6f768e2bcde46a3d47c19
 	map @{int, string} map1;
 	map @{int, int} map2;
 //	graph g;
+
 	new n1;
 	new l1;
 	new map2;
+
 	n1.value();
 	i = n1.value();
 	str = n1.name();
@@ -28,6 +27,9 @@ int main(){
 	print(i);
 	prints("nodeName");
 	prints(str);
+	b = map2.haskey(1);
+	map2.haskey(0);
+
 
 	l1 += @{1, 2, 3, 4, 5, 6};
 	l2 = @{7, 8, 9};

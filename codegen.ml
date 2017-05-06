@@ -221,9 +221,19 @@ let translate (globals, functions) =
 		let actuals = [| m_ptr |] in
 			L.build_call hashmap_length_f actuals "hashmap_length" llbuilder
 	in
+
+	let hashmap_haskey_t = L.var_arg_function_type i1_t [| map_t |]
+	in
+	let hashmap_haskey_f = L.declare_function "hashmap_haskey" hashmap_haskey_t the_module
+	in
+	let hashmap_haskey m_ptr data llbuilder = 
+		let actuals = [| m_ptr; data |] in (
+			L.build_call hashmap_haskey_f actuals "hashmap_haskey" llbuilder
+		)
+	in
 (*
 ================================================================
-  Set
+  Set Methdos
 ================================================================
 *)
 
@@ -599,6 +609,9 @@ in
          	(hashmap_length (L.build_load dname' dname builder) builder, A.Int)
 
          )
+         | "haskey" -> (let arg = List.nth actuals 0
+         	in let mapKey = fst (expr builder arg)
+         	in hashmap_haskey (L.build_load dname' dname builder) mapKey builder, A.Bool)
          | _ -> raise (Failure ("Error! Map has no such method")))
        | A.Graph -> 
       	(match fname with 
