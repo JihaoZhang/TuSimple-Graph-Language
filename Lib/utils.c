@@ -599,6 +599,10 @@ struct hashmap *hashmap_put(struct hashmap *map, ...) {
             valueData = stringTovoid(va_arg(arg_ptr, char*));
             break;
 
+        case NODE:
+            valueData = nodeTovoid(va_arg(arg_ptr, struct Node*));
+            break;
+
         default:
             break;
     }
@@ -866,6 +870,10 @@ bool check_set_element(struct Set *set, ...) {
             exist = check_list_element(set->data, va_arg(args_ptr, char*));
             break;
 
+        case NODE:
+            exist = check_list_element(set->data, va_arg(args_ptr, struct Node*));
+            break;
+
         default:
             break;
     }
@@ -892,6 +900,7 @@ int32_t get_set_element_index(struct Set *set, ...) {
     double floatTemp;
     bool boolTemp;
     char* stringTemp;
+    struct Node* nodeTemp;
 
     va_list args_ptr;
     va_start(args_ptr, set);
@@ -931,6 +940,16 @@ int32_t get_set_element_index(struct Set *set, ...) {
             stringTemp = va_arg(args_ptr, char*);
             while (index < (set->data->currPos)) {
                 if (strcmp(stringTemp, voidTostring(*(set->data->value + index))) == 0) {
+                    return index;
+                }
+                index++;
+            }
+            return -1;
+
+        case NODE:
+            nodeTemp = va_arg(args_ptr, struct Node*);
+            while (index < (set->data->currPos)) {
+                if (strcmp(nodeTemp->name, voidTostring(*(set->data->value + index))) == 0) {
                     return index;
                 }
                 index++;
@@ -1000,6 +1019,17 @@ struct Set *put_set(struct Set *set, ...) {
             }
             break;
 
+        case NODE:
+            addData = nodeTovoid(va_arg(args_ptr, struct Node*));
+            if (!check_set_element(set, voidTonode(addData))) {
+                set->data = plus_list(set->data, voidTonode(addData));
+                set->size++;
+            } else {
+                printf("%s\n", "Error! put_set : Element Already exist.");
+                exit(1);
+            }
+            break;
+
         default:
             break;
     }
@@ -1020,6 +1050,7 @@ struct Set *remove_set_element(struct Set *set, ...) {
     bool boolTemp;
     double floatTemp;
     char *stringTemp;
+    struct Node* nodeTemp;
 
     int index;
 
@@ -1069,6 +1100,18 @@ struct Set *remove_set_element(struct Set *set, ...) {
             index = get_set_element_index(set, stringTemp);
             if (index == -1) {
                 printf("Error! remove_set_element : Element does not exist.\n");
+                exit(1);
+            } else {
+                remove_list_element(set->data, index);
+                set->size--;
+            }
+            break;
+
+        case NODE:
+            nodeTemp = va_arg(args_ptr, struct Node*);
+            index = get_set_element_index(set, nodeTemp);
+            if (index == -1) {
+                printf("%s\n", "Error! remove_set_element : Element does not exist.");
                 exit(1);
             } else {
                 remove_list_element(set->data, index);
@@ -1129,6 +1172,15 @@ struct List *get_set_elements(struct Set *set) {
             list->size = set->size;
             for (i = 0; i < set->size; i++) {
                 list = plus_list(list, voidTostring(get_list_element(set->data, i)));
+            }
+            return list;
+
+        case NODE:
+            list = create_list(NODE);
+            list->type = NODE;
+            list->size = set->size;
+            for (i = 0; i < set->size; i++) {
+                list = plus_list(list, voidTonode(get_list_element(set->data, i)));
             }
             return list;
 

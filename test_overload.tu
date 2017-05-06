@@ -9,6 +9,7 @@ int main(){
   node@{int} n1;
   node@{int} node1;
   node@{int} node2;
+  node@{int} node3;
   string str1;
   string str2;
   map @{int, int} map1;
@@ -16,12 +17,13 @@ int main(){
   new l1;
   new s1;
   new node1;
-  new node2;  
+  new node2;
+  new node3;  
   new map1;
   new map2;
-  node1 -> node2 = 128;
-  node1 -- node2 = 3;
-  node1 -> node2; 
+  //node1 -> node2 = 128;
+  //node1 -- node2 = 3;
+  //node1 -> node2; 
   a = 100;
   print(a);
 // string cannot contain space and special chars 
@@ -56,4 +58,56 @@ int main(){
 //  @{1, 2 ,3} + @{3, 4 ,5};
 
   s1 += @{1, 2, 3};
+  node1 -> @{node2, node3} = @{1, 3};
+
+
+/*
+node @{int} n;
+
+new n;
+
+n.value(); int string bool float
+n.name();
+n.setvalue(int);
+n.setvalue(bool);
+
+///////////////////////////////////////
+
+set @{int} s;
+new s;
+
+s.put(1); //一次一个
+s += @{1,2,3}
+s.length();
+s.contain(1);
+s.gettype(); //type of element
+
+/////////////////////////////////////////
+list @{int} l;
+
+new l;
+l = @{1,2,3};
+
+l.get(int index);
+l[index];
+
+l.pop();
+l.remove(index); no return
+l.length();
+
+l.cancat(list l1) 
+l += l1;
+
+//////////////////////////////////////
+map @{int ,string} m;
+new m;
+map.put(int, string);
+map.get(key) return value;
+map.size();
+map.haskey(key);
+map.remove(key);
+
+*/
+
+
 }
