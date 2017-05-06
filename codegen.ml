@@ -66,6 +66,8 @@ let translate (globals, functions) =
   | A.Float -> L.const_int i32_t 1
   | A.Bool -> L.const_int i32_t 2
   | A.String -> L.const_int i32_t 3
+  | A.Node _ -> L.const_int i32_t 4
+  | A.Graph -> L.const_int i32_t 5
    (* | A.Node_t -> L.const_int i32_t 4
   | A.Graph_t -> L.const_int i32_t 5
   | A.Edge_t -> L.const_int i32_t 8
