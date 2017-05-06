@@ -1324,6 +1324,18 @@ void addNodeEdge(struct Node* node1, struct Node* node2, double weight){
     // printf("%d\n", voidToint(node->nodes->value));
 }
 
+void addReverseEdge(struct Node* node1, struct Node* node2, double weight){
+    if (node2->nodes==NULL){
+        node2->nodes = create_list(NODE);
+        node2->weight = create_list(FLOAT);
+    }
+    // printf("EXECUTED at addNodeEdge");
+    plus_list(node2->nodes, node1);
+    plus_list(node2->weight, weight);
+    // printf("%d\n", voidToint(newEdge->value));
+    // printf("%d\n", voidToint(node->nodes->value));
+}
+
 struct Node* iterNode(struct Node* node, int index){
     // printf("Node %s: %d\n", node->name, index);
     int size = get_list_size(node->nodes);
