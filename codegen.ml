@@ -365,11 +365,11 @@ in
 let setNodeValue n_ptr data llbuilder = 
 	let actuals = [|n_ptr; data|] in
 		L.build_call setNodeValue_f actuals "setNodeValue" llbuilder
-in 
+in
 
 (*
 ================================================================
-  Node Methods
+  Graph Methods
 ================================================================
 *)
 let createGraph_t = L.function_type graph_t [| string_t |]
@@ -380,7 +380,25 @@ let createGraph s_ptr llbuilder =
 	let actuals = [| s_ptr |] in (
 		L.build_call createGraph_f actuals "createGraph" llbuilder
 	)
-in 
+in
+
+
+let addGraphNode_t = L.function_type void_t [| graph_t node_t |]
+in
+let addGraphNode_f = L.declare_function "addGraphNode" addGraphNode_t the_module
+in
+let addGraphNode = g_ptr n_ptr llbuilder =
+	let actuals = [| g_ptr; n_ptr |] in
+		L.build_call addGraphNode_f "addGraphNode" llbuilder
+in
+
+(*
+================================================================
+  built-in functions
+================================================================
+*)
+
+
 
 (*
 ================================================================
