@@ -522,44 +522,18 @@ in
       		in type_conversion n_type nodeValuePtr, n_type)
       		| "name" -> (getNodeName (L.build_load dname' dname builder) builder, A.String)
       		| _ -> raise (Failure ("Error! Node has no such method")))
-        (* | A.List ele_type ->
+        | A.List ele_type ->
       	(match fname with 
-      			"get" -> 
-       		  | "pop" ->
-      		  | "remove" -> 
-      		  | "length" -> 
-      		  | "concat" -> 
       		  | _ -> raise (Failure ("Error! List has no such method"))) 
        | A.Set ele_type ->
       	(match fname with
-      		 	"minimum" ->
-      		  | "maximum" ->
-      		  | "length" ->
-      		  | "contain" ->
-      		  | "gettype" ->
       		  | _ -> raise (Failure ("Error! Set has no such method")))
       | A.Map (k_type, v_type) ->
       	(match fname with
-      			"get" ->
-      		  | "keytype" ->
-      		  | "valuetype" ->
-      		  | "length" -> 
-      		  | "haskey" ->
-      		  | "remove" ->
       		  | _ -> raise (Failure ("Error! Map has no such method")))
-      | A.Graph -> 
+       | A.Graph -> 
       	(match fname with 
-      			"bfs" -> 
-      		  | "dfs" ->
-      		  | "find" ->
-      		  | "find_path" ->
-      		  | "reverse" ->
-      		  | "combine" ->
-      		  | "init_tag" ->
-      		  | "component" ->
-      		  | "reduce" ->
-      		  | "expand" ->
-      		  | _ -> raise (Failure ("Error! Graph has no such method"))) *)
+      		  | _ -> raise (Failure ("Error! Graph has no such method"))) 
       	| _ -> raise (Failure ("Error! Do not support such type")))
       | A.Call ("print", [e]) -> (L.build_call printf_func [| int_format_str ; (fst (expr builder e)) |]
 			   "printf" builder, (snd (expr builder e)))
