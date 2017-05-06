@@ -4,17 +4,23 @@ int main(){
     string str;
 	node@{int} n1;
 	list@{int} l1;
-	set @{node@{int}} s1;
 	map @{int, string} map1;
-	//graph g;
-
+	map @{int, int} map2;
+//	graph g;
 	new n1;
 	new l1;
-
+	new map2;
 	n1.value();
 	i = n1.value();
 	str = n1.name();
+	map2.put(1, 2);
+	prints("mapGet");
+	i = map2.get(1);
 	print(i);
+	prints("mapSize");
+	i = map2.size();
+	print(i);
+	prints("nodeName");
 	prints(str);
 
 	l1 += @{1, 2, 3};

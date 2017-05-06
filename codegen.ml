@@ -153,9 +153,9 @@ List
 	let hashmap_put_f = L.declare_function "hashmap_put" hashmap_put_t the_module
 	in
 
-	let hashmap_put m_ptr llbuilder data = 
-		let actuals = [| m_ptr; data |] in
-			ignore(L.build_call hashmap_put_f actuals "hashmap_put" llbuilder)
+	let hashmap_put m_ptr key value llbuilder  = 
+		let actuals = [| m_ptr; key; value |] in
+			L.build_call hashmap_put_f actuals "hashmap_put" llbuilder
 	in
 
 	let hashmap_remove_t = L.var_arg_function_type map_t [| map_t |]
@@ -180,6 +180,14 @@ List
 			L.build_call hashmap_get_f actuals "hashmap_get" llbuilder
 	in
 
+	let hashmap_length_t = L.function_type i32_t [| map_t |]
+	in
+	let hashmap_length_f = L.declare_function "hashmap_length" hashmap_length_t the_module
+	in
+	let hashmap_length m_ptr llbuilder = 
+		let actuals = [| m_ptr |] in
+			L.build_call hashmap_length_f actuals "hashmap_length" llbuilder
+	in
 (*
 ================================================================
   Set
@@ -534,7 +542,21 @@ in
       		  | _ -> raise (Failure ("Error! Set has no such method")))
       | A.Map (k_type, v_type) ->
       	(match fname with
-      		  | _ -> raise (Failure ("Error! Map has no such method")))
+          "put" -> (hashmap_put 
+      		   	(L.build_load dname' dname builder) 
+      		   	(fst (expr builder (List.nth actuals 0))) 
+      		   	(fst (expr builder (List.nth actuals 1) )) builder, A.Void)
+         | "get" -> (
+         	(let listElementPtr = (hashmap_get       		   	
+         		(L.build_load dname' dname builder) 
+         		(fst (expr builder (List.nth actuals 0))) builder) 
+         	in type_conversion v_type listElementPtr, v_type)
+         )
+         | "size" -> (
+         	(hashmap_length (L.build_load dname' dname builder) builder, A.Int)
+
+         )
+         | _ -> raise (Failure ("Error! Map has no such method")))
        | A.Graph -> 
       	(match fname with 
       		  | _ -> raise (Failure ("Error! Graph has no such method"))) 

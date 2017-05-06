@@ -361,11 +361,13 @@ let check (globals, functions) =
                   (match actuals with
                       [x] when (expr x) = k_type -> v_type
                     | _ -> raise (Failure ("Map get method error")))
-              | "keytype" -> 
-                  if actuals = [] then k_type else raise (Failure ("Map keytype method error"))
-              | "valuetype" -> 
-                  if actuals = [] then v_type else raise (Failure ("Map valuetype method error"))
-              | "length" -> 
+              | "put" -> 
+              (let x = List.nth actuals 0
+                   and y =  List.nth actuals 1
+                    in  if (expr x) = k_type  && (expr y) = v_type 
+                  then Void
+                else raise (Failure ("Map put method error")))
+              | "size" -> 
                   if actuals = [] then Int else raise (Failure ("Map length method error"))
               | "haskey" -> 
                   (match actuals with
@@ -375,7 +377,7 @@ let check (globals, functions) =
                     (match actuals with
                       [x] when (expr x) = k_type -> Null_t
                     | _ -> raise (Failure ("Map remove method error")))
-              | _ -> raise (Failure ("Map has no such method"))
+              | _ -> raise (Failure ("Sermantic ERROR : Map has no such method"))
             )
           | Graph ->
             (match fname with
