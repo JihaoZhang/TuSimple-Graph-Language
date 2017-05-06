@@ -6,7 +6,7 @@ int main(){
 	node@{int} n1;
 	list@{int} l1;
 	list@{int} l2;
-	set @{node@{int}} s1;
+	set @{int} s1;
 	map @{int, string} map1;
 	map @{int, int} map2;
 //	graph g;
@@ -14,6 +14,7 @@ int main(){
 	new n1;
 	new l1;
 	new map2;
+	new s1;
 
 	n1.value();
 	i = n1.value();
@@ -41,6 +42,11 @@ int main(){
 	print(j);
 	l1.cancat(l1);
 	print(l1.length());
+
+	s1.put(1);
+	s1.put(2);
+	print(s1.length());
+	b = s1.contain(1);
 
 	//n1.setvalue(i);
 	//n1.setvalue(b);

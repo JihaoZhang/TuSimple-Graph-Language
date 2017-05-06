@@ -355,8 +355,6 @@ let check (globals, functions) =
                   (match actuals with
                       [x] when (expr x) = ele_type -> Bool
                     | _ -> raise (Failure ("Set contain method error")))
-              | "gettype" -> 
-                  if actuals = [] then ele_type else raise (Failure ("Set gettype method error"))
               | _ -> raise (Failure ("Set has no such method"))
             )
           | Map (k_type, v_type) ->
