@@ -382,14 +382,40 @@ let createGraph s_ptr llbuilder =
 	)
 in
 
-
 let addGraphNode_t = L.function_type void_t [| graph_t node_t |]
 in
 let addGraphNode_f = L.declare_function "addGraphNode" addGraphNode_t the_module
 in
-let addGraphNode = g_ptr n_ptr llbuilder =
+let addGraphNode g_ptr n_ptr llbuilder =
 	let actuals = [| g_ptr; n_ptr |] in
 		L.build_call addGraphNode_f "addGraphNode" llbuilder
+in
+
+let addGraphEdge_t = L.function_type void_t [| graph_t node_t node_t i32_t |]
+in
+let addGraphEdge_f = L.declare_function "addGraphEdge" addGraphEdge_t the_module
+in
+let addGraphEdge g_ptr n1_ptr n2_ptr w lbuilder =
+	let actuals = [| g_ptr; n1_ptr; n2_ptr; w |] in
+		L.build_call addGraphNode_f "addGraphNode" llbuilder
+in
+
+let iterGraph_t = L.function_type node_t [| graph_t i32_t |]
+in
+let iterGraph_f = L.declare_function "iterGraph" iterGraph_t the_module
+in
+let iterGraph g_ptr id llbuilder=
+	let actuals = [| g_ptr; id |] in
+		L.build_call iterGraph_f "iterGraph" llbuilder
+in
+
+let findGraphNode_t = L.function_type node_t [| graph_t string_t |]
+in
+let findGraphNode_f = L.declare_function "findGraphNode" findGraphNode_t the_module
+in
+let findGraphNode g_ptr name llbuilder=
+	let actuals = [| g_ptr; name |] in
+		L.build_call findGraphNode_f "findGraphNode" llbuilder
 in
 
 (*
@@ -397,8 +423,59 @@ in
   built-in functions
 ================================================================
 *)
+let initTag_t = L.function_type node_t [| graph_t |]
+in
+let initTag_f = L.declare_function "init_tag" initTag_t the_module
+in
+let initTag g_ptr llbuilder=
+	let actuals = [| g_ptr |] initTag_t
+		L.build_call initTag_f "init_tag" llbuilder
+in
 
+let reduce_t = L.function_type node_t [| graph_t; node_t |]
+in
+let reduce_f = L.declare_function "reduce" reduce_t the_module
+in
+let reduce g_ptr n_ptr llbuilder=
+	let actuals = [| g_ptr; n_ptr |] in
+		L.build_call reduce_f "reduce" llbuilder
+in
 
+let expand_t = L.function_type node_t [| graph_t; node_t |]
+in
+let expand_f = L.declare_function "expand" expand_t the_module
+in
+let expand g_ptr n_ptr llbuilder=
+	let actuals = [| g_ptr; n_ptr |] in
+		L.build_call expand_f "expand" llbuilder
+in
+
+let combine_t = L.function_type graph_t [| graph_t; graph_t |]
+in
+let combine_f = L.declare_function "combine" combine_t the_module
+in
+let combine g1_ptr g2_ptr llbuilder=
+	let actuals = [| g1_ptr; g2_ptr |] in
+		L.build_call combine_f "combine" llbuilder
+in 
+
+let bfs_t = L.function_type list_t [| graph_t node_t |]
+in 
+let bfs_f = L.declare_function "bfs" bfs_t the_module
+in 
+let bfs g_ptr n_ptr llbuilder=
+	let actuals = [| g_ptr; n_ptr |] in
+		L.build_call bfs_f "bfs" llbuilder
+in 
+
+let dfs_t = L.function_type list_t [| graph_t node_t |]
+in 
+let dfs_f = L.declare_function "dfs" dfs_t the_module
+in 
+let dfs g_ptr n_ptr llbuilder=
+	let actuals = [| g_ptr; n_ptr |] in
+		L.build_call dfs_f "dfs" llbuilder
+in 
 
 (*
 ================================================================
@@ -748,11 +825,48 @@ in
           	in hashmap_remove (L.build_load dname' dname builder) mapKey builder, A.Void)
          | _ -> raise (Failure ("Error! Map has no such method")))
        | A.Graph -> 
-      	(match fname with 
-      			"" ->
-      		  |	"" ->
-      		  | "" ->
-      		  | "" ->
+      	((* match fname with 
+      			"addNode" -> (addGraphNode (L.build_load dname' dname builder)
+      						  			   (List.nth actuals 0)
+      						  			   builder
+      						 , A.Void)
+      		  |	"addEdge" -> (addGraphEdge (L.build_load dname' dname builder)
+      		  							   (List.nth actuals 0)
+      		  							   (List.nth actuals 1)
+      		  							   (List.nth actuals 2)
+      		  							   builder
+      								 , A.Void)
+      		  | "iter" -> (iterGraph (L.build_load dname' dname builder)
+      		  						 (List.nth actuals 0)
+      		  						 builder
+      					  , A.Node)
+      		  | "find" -> (findGraphNode (L.build_load dname' dname builder)
+      		  							 (List.nth actuals 0)
+      		  							 builder
+      					  , A.Node)
+      		  | "init" -> (init_tag (L.build_load dname' dname builder)
+      		  						builder
+      					  , A.Node)
+      		  | "reduce" -> (reduce (L.build_load dname' dname builder)
+      		  						(List.nth actuals 0)
+      		  						builder
+      						, A.Node)
+      		  | "expand" -> (expand (L.build_load dname' dname builder)
+      		  						(List.nth actuals 0)
+      		  						builder
+      						, A.Node)
+      		  | "combine" -> (combine (L.build_load dname' dname builder)
+      		  						  (List.nth actuals 0)
+      		  						  builder
+      						 , A.Graph)
+      		  | "bfs" -> (bfs (L.build_load dname' dname builder)
+      		  				  (List.nth actuals 0)
+      		  				  builder
+      					 , A.List)
+      		  | "dfs" -> (dfs (L.build_load dname' dname builder)
+      		  				  (List.nth actuals 0)
+      		  				  builder
+      					 , A.List *))
       		  | _ -> raise (Failure ("Error! Graph has no such method"))) 
       	| _ -> raise (Failure ("Error! Do not support such type")))
       | A.Call ("print", [e]) -> (L.build_call printf_func [| int_format_str ; (fst (expr builder e)) |]
