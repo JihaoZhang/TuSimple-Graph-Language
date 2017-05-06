@@ -19,6 +19,7 @@ struct Node* setNodeValue(struct Node* node, ...);
 void* getNodeValue(struct Node* node);
 char* getNodeName(struct Node* node);
 void addNodeEdge(struct Node* node1, struct Node* node2, double weight);
+void addReverseEdge(struct Node* node1, struct Node* node2, double weight);
 struct Node* iterNode(struct Node* node, int index);
 double weightIterNode(struct Node* node, int index);
 
