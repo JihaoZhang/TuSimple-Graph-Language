@@ -348,6 +348,15 @@ let getNodeName n_ptr llbuilder =
 	)
 in
 
+let setNodeValue_t = L.var_arg_function_type node_t [| node_t |]
+in
+let setNodeValue_f = L.declare_function "setNodeValue" setNodeValue_t the_module
+in
+let setNodeValue n_ptr data llbuilder = 
+	let actuals = [|n_ptr; data|] in
+		L.build_call setNodeValue_f actuals "setNodeValue" llbuilder
+in 
+
 (*
 ================================================================
   Cast Methods
@@ -594,6 +603,8 @@ in
       		   "value" ->  (let nodeValuePtr = getNodeValue (L.build_load dname' dname builder) builder
       		in type_conversion n_type nodeValuePtr, n_type)
       		| "name" -> (getNodeName (L.build_load dname' dname builder) builder, A.String)
+      		| "setvalue" -> (setNodeValue (L.build_load dname' dname builder) 
+      		   			(fst (expr builder (List.nth actuals 0) )) builder, A.Void)
       		| _ -> raise (Failure ("Error! Node has no such method")))
         | A.List ele_type ->
       	(match fname with 
