@@ -1,2 +1,4 @@
-1. comment 不能嵌套  ／*／* comment */*/
-2. --32 +1 ++3 illegal?
+1	comment 不能嵌套  ／*／* comment */*/
+2 	--32 +1 ++3 illegal?
+3 	./issue1.tu
+	在for或者while循环后面加print list元素，会报错 "Basic Block in function 'main' does not have terminator!"
