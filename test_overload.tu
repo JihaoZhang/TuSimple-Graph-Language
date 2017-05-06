@@ -56,4 +56,54 @@ int main(){
 //  @{1, 2 ,3} + @{3, 4 ,5};
 
   s1 += @{1, 2, 3};
+
+/*
+node @{int} n;
+
+new n;
+
+n.value(); int string bool float
+n.name();
+n.setvalue(int);
+n.setvalue(bool);
+
+///////////////////////////////////////
+
+set @{int} s;
+new s;
+
+s.put(1); //一次一个
+s += @{1,2,3}
+s.length();
+s.contain(1);
+s.gettype(); //type of element
+
+/////////////////////////////////////////
+list @{int} l;
+
+new l;
+l = @{1,2,3};
+
+l.get(int index);
+l[index];
+
+l.pop();
+l.remove(index); no return
+l.length();
+
+l.cancat(list l1) 
+l += l1;
+
+//////////////////////////////////////
+map @{int ,string} m;
+new m;
+map.put(int, string);
+map.get(key) return value;
+map.size();
+map.haskey(key);
+map.remove(key);
+
+*/
+
+
 }
