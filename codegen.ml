@@ -191,17 +191,6 @@ let translate (globals, functions) =
 			L.build_call hashmap_put_f actuals "hashmap_put" llbuilder
 	in
 
-	let hashmap_remove_t = L.var_arg_function_type map_t [| map_t |]
-	in
-
-	let hashmap_remove_f = L.declare_function "hashmap_remove" hashmap_put_t the_module
-	in
-
-	let hashmap_remove m_ptr llbuilder data =
-		let actuals = [| m_ptr; data |] in
-			ignore(L.build_call hashmap_remove_f actuals "hashmap_remove" llbuilder)
-	in
-
 	let hashmap_get_t = L.var_arg_function_type (L.pointer_type i8_t) [| map_t |]
 	in
 
@@ -229,6 +218,16 @@ let translate (globals, functions) =
 	let hashmap_haskey m_ptr data llbuilder = 
 		let actuals = [| m_ptr; data |] in (
 			L.build_call hashmap_haskey_f actuals "hashmap_haskey" llbuilder
+		)
+	in
+
+	let hashmap_remove_t = L.var_arg_function_type map_t [| map_t |]
+	in 
+	let hashmap_remove_f = L.declare_function "hashmap_remove" hashmap_remove_t the_module
+	in 
+	let hashmap_remove m_ptr data llbuilder = 
+		let actuals = [| m_ptr; data |] in (
+			L.build_call hashmap_remove_f actuals "hashmap_remove" llbuilder
 		)
 	in
 (*
@@ -612,6 +611,9 @@ in
          | "haskey" -> (let arg = List.nth actuals 0
          	in let mapKey = fst (expr builder arg)
          	in hashmap_haskey (L.build_load dname' dname builder) mapKey builder, A.Bool)
+         | "remove" -> (let arg = List.nth actuals 0
+          	in let mapKey = fst (expr builder arg)
+          	in hashmap_remove (L.build_load dname' dname builder) mapKey builder, A.Void)
          | _ -> raise (Failure ("Error! Map has no such method")))
        | A.Graph -> 
       	(match fname with 

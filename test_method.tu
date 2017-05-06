@@ -29,6 +29,7 @@ int main(){
 	prints(str);
 	b = map2.haskey(1);
 	map2.haskey(0);
+	map2.remove(1);
 
 
 	l1 += @{1, 2, 3, 4, 5, 6};
