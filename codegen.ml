@@ -280,6 +280,17 @@ in
   		)
   in
 
+  let check_set_element_t = L.var_arg_function_type i1_t [| set_t |]
+  in
+  let check_set_element_f = L.declare_function "check_set_element" check_set_element_t the_module
+  in
+  let check_set_element s_ptr data llbuilder = 
+  		let actuals = [| s_ptr; data |] in (
+  			L.build_call check_set_element_f actuals "check_set_element" llbuilder
+  		)
+  in
+
+
 (*
 ================================================================
   Node Methods
@@ -605,7 +616,8 @@ in
       	    		(add_set (L.build_load dname' dname builder) 
       		   			(fst (expr builder (List.nth actuals 0) )) builder, A.Void)
               | "length" -> (get_set_size (L.build_load dname' dname builder) builder, A.Int)
-              | "contain" -> (get_set_size (L.build_load dname' dname builder) builder, A.Int)
+              | "contain" -> (check_set_element (L.build_load dname' dname builder) 
+          						(fst (expr builder (List.nth actuals 0) )) builder, A.Bool)
       		  | _ -> raise (Failure ("Error! Set has no such method")))
       | A.Map (k_type, v_type) ->
       	(match fname with
