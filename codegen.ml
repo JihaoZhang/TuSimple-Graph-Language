@@ -260,9 +260,9 @@ let add_set_t = L.var_arg_function_type set_t [| set_t |]
 in
 let add_set_f = L.declare_function "put_set" add_set_t the_module
 in
-let add_set l_ptr llbuilder data = 
-	let actuals = [|l_ptr; data|] in
-		ignore (L.build_call add_set_f actuals "put_set" llbuilder)
+let add_set s_ptr data llbuilder = 
+	let actuals = [|s_ptr; data|] in
+		L.build_call add_set_f actuals "put_set" llbuilder
 in 
 
 
@@ -601,7 +601,10 @@ in
       		  | _ -> raise (Failure ("Error! List has no such method"))) 
        | A.Set ele_type ->
       	    (match fname with
-                "length" -> (get_set_size (L.build_load dname' dname builder) builder, A.Int)
+      	    	"put" -> 
+      	    		(add_set (L.build_load dname' dname builder) 
+      		   			(fst (expr builder (List.nth actuals 0) )) builder, A.Void)
+              | "length" -> (get_set_size (L.build_load dname' dname builder) builder, A.Int)
               | "contain" -> (get_set_size (L.build_load dname' dname builder) builder, A.Int)
       		  | _ -> raise (Failure ("Error! Set has no such method")))
       | A.Map (k_type, v_type) ->
