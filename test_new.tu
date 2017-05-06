@@ -5,7 +5,10 @@ int main()
  	set @{int} s;
  	list @{int} l;
  	int i;
+ 	graph g;
 
+
+ 	new g;
  	new n;
  	new s;
  	n.setvalue(1);

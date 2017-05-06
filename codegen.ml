@@ -369,6 +369,21 @@ in
 
 (*
 ================================================================
+  Node Methods
+================================================================
+*)
+let createGraph_t = L.function_type graph_t [| string_t |]
+in
+let createGraph_f = L.declare_function "createGraph" createGraph_t the_module
+in
+let createGraph s_ptr llbuilder =
+	let actuals = [| s_ptr |] in (
+		L.build_call createGraph_f actuals "createGraph" llbuilder
+	)
+in 
+
+(*
+================================================================
   Cast Methods
 ================================================================
 *)
@@ -537,6 +552,8 @@ in
       in L.build_store (createNode nodeName nodeType builder) (fst (lookup id)) builder
       	(* let nodeName = L.const_string builder id in
       	createNode nodeName nodeType builder *)
+      	| A.Graph -> let graphName = L.build_global_stringptr id "" builder
+      in L.build_store (createGraph graphName builder) (fst (lookup id)) builder
       	| _ -> raise (Failure (" Type not found "))), typ)
       | A.AddAdd var -> let (var', typ) = lookup var in
 		  ignore(remove_list_element (L.build_load var' var builder) builder); (var',typ)
