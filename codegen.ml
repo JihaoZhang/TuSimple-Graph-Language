@@ -731,6 +731,10 @@ in
          | _ -> raise (Failure ("Error! Map has no such method")))
        | A.Graph -> 
       	(match fname with 
+      			"" ->
+      		  |	"" ->
+      		  | "" ->
+      		  | "" ->
       		  | _ -> raise (Failure ("Error! Graph has no such method"))) 
       	| _ -> raise (Failure ("Error! Do not support such type")))
       | A.Call ("print", [e]) -> (L.build_call printf_func [| int_format_str ; (fst (expr builder e)) |]
