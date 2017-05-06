@@ -42,11 +42,14 @@ int main(){
 	print(j);
 	l1.cancat(l1);
 	print(l1.length());
-
+	if(b){
+		prints("hello");
+	}
 	s1.put(1);
 	s1.put(2);
 	print(s1.length());
 	b = s1.contain(1);
+
 
 	//n1.setvalue(i);
 	//n1.setvalue(b);
