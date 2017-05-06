@@ -478,7 +478,7 @@ in
 
     let get_llvm_from_llvm_asttype_tuple (ltype,_) = ltype
     in
-    let type_conversion typ elementPtr = match typ with
+    let type_conversion typ elementPtr builder = match typ with
        A.Int -> voidToint elementPtr builder
       | A.Float -> voidTofloat elementPtr builder
       | A.Bool -> voidTobool elementPtr builder
@@ -521,11 +521,11 @@ in
       ((match typ with
       | A.List typeList -> (
       	let elementPtr = get_list_element (L.build_load var' var builder) s' builder
-      in type_conversion typeList elementPtr
+      in type_conversion typeList elementPtr builder
       )
       | A.Map(t1, t2) -> (
       	let elementPtr = hashmap_get (L.build_load var' var builder) s' builder
-      	in type_conversion t2 elementPtr
+      	in type_conversion t2 elementPtr builder
       )
       | _ -> raise (Failure (" undefined operator[] "))), typ)
       | A.New id -> let (id', typ) = lookup id in 
@@ -658,7 +658,7 @@ in
       	A.Node n_type -> 
       	(match fname with
       		   "value" ->  (let nodeValuePtr = getNodeValue (L.build_load dname' dname builder) builder
-      		in type_conversion n_type nodeValuePtr, n_type)
+      		in type_conversion n_type nodeValuePtr builder, n_type)
       		| "name" -> (getNodeName (L.build_load dname' dname builder) builder, A.String)
       		| "setvalue" -> (setNodeValue (L.build_load dname' dname builder) 
       		   			(fst (expr builder (List.nth actuals 0) )) builder, A.Void)
@@ -668,13 +668,13 @@ in
       		    "get" -> (let arg = List.nth actuals 0
       			in let index = fst (expr builder arg) 
       			in let listElementPtr = get_list_element (L.build_load dname' dname builder) index builder
-      			in type_conversion ele_type listElementPtr, ele_type)
+      			in type_conversion ele_type listElementPtr builder, ele_type)
       		  | "pop" -> (let listElementPtr = pop_list_element (L.build_load dname' dname builder) builder
-      			in type_conversion ele_type listElementPtr, ele_type)
+      			in type_conversion ele_type listElementPtr builder, ele_type)
       		  | "remove" -> (let arg = List.nth actuals 0
       		  	in let index = fst (expr builder arg)
       		  	in let listElementPtr = real_remove_list_element (L.build_load dname' dname builder) index builder
-      		  	in type_conversion ele_type listElementPtr, ele_type)
+      		  	in type_conversion ele_type listElementPtr builder, ele_type)
       		  | "length" -> (get_list_size (L.build_load dname' dname builder) builder, A.Int)
       		  | "cancat" -> (let arg = List.nth actuals 0
       		   	in let listPtr = fst (expr builder arg)
@@ -699,7 +699,7 @@ in
          	(let listElementPtr = (hashmap_get       		   	
          		(L.build_load dname' dname builder) 
          		(fst (expr builder (List.nth actuals 0))) builder) 
-         	in type_conversion v_type listElementPtr, v_type)
+         	in type_conversion v_type listElementPtr builder, v_type)
          )
          | "size" -> (
          	(hashmap_length (L.build_load dname' dname builder) builder, A.Int)
