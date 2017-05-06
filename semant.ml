@@ -162,8 +162,9 @@ let check (globals, functions) =
     in
 
     let checkHomogeneous elementType err tp  =
-        if tp != elementType 
-        then raise err
+        match tp with
+          | elementType -> ignore(Int)
+          | _ -> raise err
     in 
 
     (* Return the type of an expression or throw an exception *)
@@ -188,7 +189,7 @@ let check (globals, functions) =
          match List.length el  with 
            0 -> raise (Failure ("can't define empty list in this way in TuSimple "))
          | _ -> let elementType = expr (List.hd el) 
-                in List.iter (checkHomogeneous elementType err) (List.map expr el) ; List(elementType)
+                in ignore(List.iter (checkHomogeneous elementType err) (List.map expr el)) ; List(elementType)
         in
         checkListLit el (Failure ("illegal list definition" ^ " {" ^ String.concat ", " (List.map string_of_expr el) 
           ^ "}. Type Must be homogeneous in a list"))
