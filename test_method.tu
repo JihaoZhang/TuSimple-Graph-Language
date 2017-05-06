@@ -7,14 +7,22 @@ int main(){
 	set @{node@{int}} s1;
 	map @{int, string} map1;
 	//graph g;
+
 	new n1;
+	new l1;
+
 	n1.value();
 	i = n1.value();
 	str = n1.name();
 	print(i);
-	n1.setvalue(i);
-	n1.setvalue(b);
-	n1.setvalue(str);
+	prints(str);
+
+	l1 += @{1, 2, 3};
+	l1.get(0);
+
+	//n1.setvalue(i);
+	//n1.setvalue(b);
+	//n1.setvalue(str);
 	//n1.name();
 
 	//l1.get(i+i);

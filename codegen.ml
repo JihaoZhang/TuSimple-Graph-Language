@@ -524,6 +524,10 @@ in
       		| _ -> raise (Failure ("Error! Node has no such method")))
         | A.List ele_type ->
       	(match fname with 
+      		    "get" -> (let arg = List.nth actuals 0
+      			in let index = fst (expr builder arg) 
+      			in let listElementPtr = get_list_element (L.build_load dname' dname builder) index builder
+      			in type_conversion ele_type listElementPtr, ele_type)
       		  | _ -> raise (Failure ("Error! List has no such method"))) 
        | A.Set ele_type ->
       	(match fname with

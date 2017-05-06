@@ -122,7 +122,6 @@ double getEdgeValue(struct Node* node1, struct Node* node2) {
 	return 0;
 }
 
-
 // int main(){
 
 // 	// Test function: getEdgeValue
@@ -140,6 +139,13 @@ double getEdgeValue(struct Node* node1, struct Node* node2) {
 // 	printf("%s\n", getNodeName(testIntNode2));
 // 	printf("%s\n", getNodeName(testIntNode3));
 
-
+// 	// test part of edge
+// 	addNodeEdge(testIntNode1, testIntNode2, 2.37);
+// 	addNodeEdge(testIntNode2, testIntNode3, 3.76);
+// 	addNodeEdge(testIntNode1, testIntNode3, 5486.09);
+// 	printf("%f\n", getEdgeValue(testIntNode1, testIntNode2));
+// 	printf("%f\n", getEdgeValue(testIntNode2, testIntNode3));
+// 	printf("%f\n", getEdgeValue(testIntNode1, testIntNode3));
+// 	printf("%f\n", getEdgeValue(testIntNode2, testIntNode1));
 // 	return 0;
 // }
