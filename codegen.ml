@@ -328,6 +328,16 @@ let addNodeEdge n1_ptr n2_ptr weight llbuilder =
 	)
 in
 
+let addReverseEdge_t = L.function_type i32_t [| node_t; node_t; i32_t |]
+in 
+let addReverseEdge_f = L.declare_function "addReverseEdge" addReverseEdge_t the_module
+in
+let addReverseEdge n1_ptr n2_ptr weight llbuilder = 
+	let actuals = [| n1_ptr; n2_ptr; weight |] in (
+		ignore(L.build_call addReverseEdge_f actuals "addReverseEdge" llbuilder)
+	)
+in
+
 let getNodeValue_t = L.function_type (L.pointer_type i8_t) [| node_t |]
 in
 let getNodeValue_f = L.declare_function "getNodeValue" getNodeValue_t the_module
@@ -587,6 +597,53 @@ in
        in let(s', t') = expr builder e in 
       ignore((addNodeEdge (L.build_load n1' n1 builder) (L.build_load n2' n2 builder) s' builder)); s'
       | _ -> raise (Failure("illegal edge assignment. "))), A.Int)
+
+      | A.BatchSingleLinkAssign(var, n1, n2) ->
+        (
+        let getListsOfLit n = 
+        (match n with
+        | A.ListLiteral li -> li
+        | _ -> raise (Failure("Error at BatchSingleLinkAssign: match fail")))
+        in
+        let f elem = fst (expr builder elem)
+        in
+        let n1_sequence = List.map f (getListsOfLit n1)
+        in
+        let n2_sequence = List.map f (getListsOfLit n2)
+        in
+        let (var', typ) = lookup var 
+        in
+        let addNodeIter v1 v2 = addNodeEdge (L.build_load var' var builder) v1 v2 builder
+        in
+          ignore(List.iter2 addNodeIter n1_sequence n2_sequence)
+
+        ); 
+        (L.const_int i32_t 0, A.Float)
+       
+      | A.BatchDoubleLinkAssign(var, n1, n2) ->
+        (
+        let getListsOfLit n =
+        (match n with
+        | A.ListLiteral li -> li
+        | _ -> raise (Failure("Error at BatchDoubleLinkAssign : match fail")))
+    	in
+        let f elem = fst (expr builder elem)
+        in
+        let n1_sequence = List.map f (getListsOfLit n1)
+        in
+        let n2_sequence = List.map f (getListsOfLit n2)
+        in
+        let (var', typ) = lookup var
+        in
+        let addNodeIter v1 v2 = addNodeEdge (L.build_load var' var builder) v1 v2 builder
+        in
+        let addReverseIter v1 v2 = addReverseEdge (L.build_load var' var builder) v1 v2 builder
+        in
+          ignore(List.iter2 addNodeIter n1_sequence n2_sequence);
+          ignore(List.iter2 addReverseIter  n1_sequence n2_sequence)
+        );
+        (L.const_int i32_t 0, A.Float)
+
       | A.DotCall (dname, fname, actuals) -> let (dname', dtype) = lookup dname in
       (match dtype with
       	A.Node n_type -> 
