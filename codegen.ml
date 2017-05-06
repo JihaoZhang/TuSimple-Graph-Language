@@ -382,54 +382,49 @@ let createGraph s_ptr llbuilder =
 	)
 in
 
-let addGraphNode_t = L.function_type void_t [| graph_t node_t |]
+let addGraphNode_t = L.function_type void_t [| graph_t; node_t |]
 in
 let addGraphNode_f = L.declare_function "addGraphNode" addGraphNode_t the_module
 in
 let addGraphNode g_ptr n_ptr llbuilder =
 	let actuals = [| g_ptr; n_ptr |] in
-		L.build_call addGraphNode_f "addGraphNode" llbuilder
+		L.build_call addGraphNode_f actuals "addGraphNode" llbuilder
 in
 
-let addGraphEdge_t = L.function_type void_t [| graph_t node_t node_t i32_t |]
+let addGraphEdge_t = L.function_type void_t [| graph_t; node_t; node_t; i32_t |]
 in
 let addGraphEdge_f = L.declare_function "addGraphEdge" addGraphEdge_t the_module
 in
-let addGraphEdge g_ptr n1_ptr n2_ptr w lbuilder =
+let addGraphEdge g_ptr n1_ptr n2_ptr w llbuilder =
 	let actuals = [| g_ptr; n1_ptr; n2_ptr; w |] in
-		L.build_call addGraphNode_f "addGraphNode" llbuilder
+		L.build_call addGraphNode_f actuals "addGraphNode" llbuilder
 in
 
-let iterGraph_t = L.function_type node_t [| graph_t i32_t |]
+let iterGraph_t = L.function_type node_t [| graph_t; i32_t |]
 in
 let iterGraph_f = L.declare_function "iterGraph" iterGraph_t the_module
 in
 let iterGraph g_ptr id llbuilder=
 	let actuals = [| g_ptr; id |] in
-		L.build_call iterGraph_f "iterGraph" llbuilder
+		L.build_call iterGraph_f actuals "iterGraph" llbuilder
 in
 
-let findGraphNode_t = L.function_type node_t [| graph_t string_t |]
+let findGraphNode_t = L.function_type node_t [| graph_t; string_t |]
 in
 let findGraphNode_f = L.declare_function "findGraphNode" findGraphNode_t the_module
 in
 let findGraphNode g_ptr name llbuilder=
 	let actuals = [| g_ptr; name |] in
-		L.build_call findGraphNode_f "findGraphNode" llbuilder
+		L.build_call findGraphNode_f actuals "findGraphNode" llbuilder
 in
 
-(*
-================================================================
-  built-in functions
-================================================================
-*)
 let initTag_t = L.function_type node_t [| graph_t |]
 in
 let initTag_f = L.declare_function "init_tag" initTag_t the_module
 in
 let initTag g_ptr llbuilder=
-	let actuals = [| g_ptr |] initTag_t
-		L.build_call initTag_f "init_tag" llbuilder
+	let actuals = [| g_ptr |] in
+		L.build_call initTag_f actuals "init_tag" llbuilder
 in
 
 let reduce_t = L.function_type node_t [| graph_t; node_t |]
@@ -438,7 +433,7 @@ let reduce_f = L.declare_function "reduce" reduce_t the_module
 in
 let reduce g_ptr n_ptr llbuilder=
 	let actuals = [| g_ptr; n_ptr |] in
-		L.build_call reduce_f "reduce" llbuilder
+		L.build_call reduce_f actuals "reduce" llbuilder
 in
 
 let expand_t = L.function_type node_t [| graph_t; node_t |]
@@ -447,7 +442,7 @@ let expand_f = L.declare_function "expand" expand_t the_module
 in
 let expand g_ptr n_ptr llbuilder=
 	let actuals = [| g_ptr; n_ptr |] in
-		L.build_call expand_f "expand" llbuilder
+		L.build_call expand_f actuals "expand" llbuilder
 in
 
 let combine_t = L.function_type graph_t [| graph_t; graph_t |]
@@ -456,25 +451,25 @@ let combine_f = L.declare_function "combine" combine_t the_module
 in
 let combine g1_ptr g2_ptr llbuilder=
 	let actuals = [| g1_ptr; g2_ptr |] in
-		L.build_call combine_f "combine" llbuilder
+		L.build_call combine_f actuals "combine" llbuilder
 in 
 
-let bfs_t = L.function_type list_t [| graph_t node_t |]
+let bfs_t = L.function_type list_t [| graph_t; node_t |]
 in 
 let bfs_f = L.declare_function "bfs" bfs_t the_module
 in 
 let bfs g_ptr n_ptr llbuilder=
 	let actuals = [| g_ptr; n_ptr |] in
-		L.build_call bfs_f "bfs" llbuilder
+		L.build_call bfs_f actuals "bfs" llbuilder
 in 
 
-let dfs_t = L.function_type list_t [| graph_t node_t |]
+let dfs_t = L.function_type list_t [| graph_t; node_t |]
 in 
 let dfs_f = L.declare_function "dfs" dfs_t the_module
 in 
 let dfs g_ptr n_ptr llbuilder=
 	let actuals = [| g_ptr; n_ptr |] in
-		L.build_call dfs_f "dfs" llbuilder
+		L.build_call dfs_f actuals "dfs" llbuilder
 in 
 
 (*
@@ -499,6 +494,7 @@ let voidTofloat v_ptr llbuilder =
 	let actuals = [|v_ptr|] in  
 	L.build_call voidTofloat_f actuals "voidTofloat" llbuilder
 in
+
 let voidTobool_t = L.function_type i1_t [|L.pointer_type i8_t|]
 in
 let voidTobool_f = L.declare_function "voidTobool" voidTobool_t the_module
@@ -507,6 +503,7 @@ let voidTobool v_ptr llbuilder =
 	let actuals = [|v_ptr|] in  
 	L.build_call voidTobool_f actuals "voidTobool" llbuilder
 in
+
 let voidTostring_t = L.function_type string_t [|L.pointer_type i8_t|]
 in
 let voidTostring_f = L.declare_function "voidTostring" voidTostring_t the_module
@@ -515,6 +512,7 @@ let voidTostring v_ptr llbuilder =
 	let actuals = [|v_ptr|] in  
 	L.build_call voidTostring_f actuals "voidTostring" llbuilder
 in
+
 let voidTonode_t = L.function_type node_t [|L.pointer_type i8_t|]
 in
 let voidTonode_f = L.declare_function "voidTonode" voidTonode_t the_module
@@ -523,6 +521,7 @@ let voidTonode v_ptr llbuilder =
 	let actuals = [|v_ptr|] in  
 	L.build_call voidTonode_f actuals "voidTonode" llbuilder
 in
+
 let voidTograph_t = L.function_type graph_t [|L.pointer_type i8_t|]
 in
 let voidTograph_f = L.declare_function "voidTograph" voidTograph_t the_module
@@ -531,6 +530,7 @@ let voidTograph v_ptr llbuilder =
 	let actuals = [|v_ptr|] in  
 	L.build_call voidTograph_f actuals "voidTograph" llbuilder
 in
+
 	(* Declare each global variable; remember its value in a map *)
 	let global_vars =
 		let global_var m (t, n) =
@@ -825,8 +825,8 @@ in
           	in hashmap_remove (L.build_load dname' dname builder) mapKey builder, A.Void)
          | _ -> raise (Failure ("Error! Map has no such method")))
        | A.Graph -> 
-      	((* match fname with 
-      			"addNode" -> (addGraphNode (L.build_load dname' dname builder)
+      	(match fname with 
+      			(* "addNode" -> (addGraphNode (L.build_load dname' dname builder)
       						  			   (List.nth actuals 0)
       						  			   builder
       						 , A.Void)
@@ -866,7 +866,7 @@ in
       		  | "dfs" -> (dfs (L.build_load dname' dname builder)
       		  				  (List.nth actuals 0)
       		  				  builder
-      					 , A.List *))
+      					 , A.List) *)
       		  | _ -> raise (Failure ("Error! Graph has no such method"))) 
       	| _ -> raise (Failure ("Error! Do not support such type")))
       | A.Call ("print", [e]) -> (L.build_call printf_func [| int_format_str ; (fst (expr builder e)) |]
