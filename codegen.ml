@@ -80,6 +80,17 @@ let translate (globals, functions) =
   List Methods
 ================================================================
 *)
+ 
+  let get_list_size_t = L.function_type i32_t [| list_t |]
+  in
+  let get_list_size_f = L.declare_function "get_list_size" get_list_size_t the_module
+  in
+  let get_list_size list_ptr llbuilder = 
+  		let actuals = [| list_ptr |] in (
+  			L.build_call get_list_size_f actuals "get_list_size" llbuilder
+  		)
+  in
+
   let pop_list_element_t = L.function_type (L.pointer_type i8_t) [| list_t |]
   in
   let pop_list_element_f = L.declare_function "pop_list_element" pop_list_element_t the_module
@@ -88,6 +99,16 @@ let translate (globals, functions) =
   		let actuals = [| list_ptr |] in (
   			L.build_call pop_list_element_f actuals "pop_list_element" llbuilder
   		) 
+  in
+
+  let real_remove_list_element_t = L.function_type (L.pointer_type i8_t) [| list_t; i32_t |]
+  in
+  let real_remove_list_element_f = L.declare_function "remove_list_element" real_remove_list_element_t the_module
+  in
+  let real_remove_list_element list_ptr index llbuilder = 
+  		let actuals = [| list_ptr; index |] in (
+  			L.build_call real_remove_list_element_f actuals "remove_list_element" llbuilder
+  		)
   in
 
   let remove_list_element_t = L.function_type (L.pointer_type i8_t) [|list_t; i32_t|]
@@ -542,6 +563,14 @@ in
       			in type_conversion ele_type listElementPtr, ele_type)
       		  | "pop" -> (let listElementPtr = pop_list_element (L.build_load dname' dname builder) builder
       			in type_conversion ele_type listElementPtr, ele_type)
+      		  | "remove" -> (let arg = List.nth actuals 0
+      		  	in let index = fst (expr builder arg)
+      		  	in let listElementPtr = real_remove_list_element (L.build_load dname' dname builder) index builder
+      		  	in type_conversion ele_type listElementPtr, ele_type)
+      		  | "length" -> (get_list_size (L.build_load dname' dname builder) builder, A.Int)
+      		  | "cancat" -> (let arg = List.nth actuals 0
+      		   	in let listPtr = fst (expr builder arg)
+      		    in concat_list (L.build_load dname' dname builder) listPtr builder, ele_type)
       		  | _ -> raise (Failure ("Error! List has no such method"))) 
        | A.Set ele_type ->
       	(match fname with
