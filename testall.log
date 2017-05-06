@@ -1,0 +1,180 @@
+/usr/bin/lli
+
+###### Testing test-arith1-add
+./tusimple.native < tests/test-arith1-add.tu > test-arith1-add.ll
+llc test-arith1-add.ll > test-arith1-add.s
+cc -o test-arith1-add.exe test-arith1-add.s ./Lib/utils.o printbig.o
+./test-arith1-add.exe
+diff -b test-arith1-add.out tests/test-arith1-add.out > test-arith1-add.diff
+###### SUCCESS
+
+###### Testing test-arith2-sub
+./tusimple.native < tests/test-arith2-sub.tu > test-arith2-sub.ll
+llc test-arith2-sub.ll > test-arith2-sub.s
+cc -o test-arith2-sub.exe test-arith2-sub.s ./Lib/utils.o printbig.o
+./test-arith2-sub.exe
+diff -b test-arith2-sub.out tests/test-arith2-sub.out > test-arith2-sub.diff
+###### SUCCESS
+
+###### Testing test-arith3-mult
+./tusimple.native < tests/test-arith3-mult.tu > test-arith3-mult.ll
+llc test-arith3-mult.ll > test-arith3-mult.s
+cc -o test-arith3-mult.exe test-arith3-mult.s ./Lib/utils.o printbig.o
+./test-arith3-mult.exe
+diff -b test-arith3-mult.out tests/test-arith3-mult.out > test-arith3-mult.diff
+###### SUCCESS
+
+###### Testing test-arith4-division
+./tusimple.native < tests/test-arith4-division.tu > test-arith4-division.ll
+llc test-arith4-division.ll > test-arith4-division.s
+cc -o test-arith4-division.exe test-arith4-division.s ./Lib/utils.o printbig.o
+./test-arith4-division.exe
+diff -b test-arith4-division.out tests/test-arith4-division.out > test-arith4-division.diff
+###### SUCCESS
+
+###### Testing test-bool
+./tusimple.native < tests/test-bool.tu > test-bool.ll
+llc test-bool.ll > test-bool.s
+cc -o test-bool.exe test-bool.s ./Lib/utils.o printbig.o
+./test-bool.exe
+diff -b test-bool.out tests/test-bool.out > test-bool.diff
+###### SUCCESS
+
+###### Testing test-for1
+./tusimple.native < tests/test-for1.tu > test-for1.ll
+llc test-for1.ll > test-for1.s
+cc -o test-for1.exe test-for1.s ./Lib/utils.o printbig.o
+./test-for1.exe
+diff -b test-for1.out tests/test-for1.out > test-for1.diff
+###### SUCCESS
+
+###### Testing test-for2
+./tusimple.native < tests/test-for2.tu > test-for2.ll
+llc test-for2.ll > test-for2.s
+cc -o test-for2.exe test-for2.s ./Lib/utils.o printbig.o
+./test-for2.exe
+diff -b test-for2.out tests/test-for2.out > test-for2.diff
+###### SUCCESS
+
+###### Testing test-for3
+./tusimple.native < tests/test-for3.tu > test-for3.ll
+llc test-for3.ll > test-for3.s
+cc -o test-for3.exe test-for3.s ./Lib/utils.o printbig.o
+./test-for3.exe
+diff -b test-for3.out tests/test-for3.out > test-for3.diff
+###### SUCCESS
+
+###### Testing test-fun1
+./tusimple.native < tests/test-fun1.tu > test-fun1.ll
+llc test-fun1.ll > test-fun1.s
+cc -o test-fun1.exe test-fun1.s ./Lib/utils.o printbig.o
+./test-fun1.exe
+diff -b test-fun1.out tests/test-fun1.out > test-fun1.diff
+###### SUCCESS
+
+###### Testing test-fun2
+./tusimple.native < tests/test-fun2.tu > test-fun2.ll
+llc test-fun2.ll > test-fun2.s
+cc -o test-fun2.exe test-fun2.s ./Lib/utils.o printbig.o
+./test-fun2.exe
+diff -b test-fun2.out tests/test-fun2.out > test-fun2.diff
+###### SUCCESS
+
+###### Testing test-if1
+./tusimple.native < tests/test-if1.tu > test-if1.ll
+llc test-if1.ll > test-if1.s
+cc -o test-if1.exe test-if1.s ./Lib/utils.o printbig.o
+./test-if1.exe
+diff -b test-if1.out tests/test-if1.out > test-if1.diff
+###### SUCCESS
+
+###### Testing test-if2
+./tusimple.native < tests/test-if2.tu > test-if2.ll
+llc test-if2.ll > test-if2.s
+cc -o test-if2.exe test-if2.s ./Lib/utils.o printbig.o
+./test-if2.exe
+diff -b test-if2.out tests/test-if2.out > test-if2.diff
+###### SUCCESS
+
+###### Testing test-int
+./tusimple.native < tests/test-int.tu > test-int.ll
+llc test-int.ll > test-int.s
+cc -o test-int.exe test-int.s ./Lib/utils.o printbig.o
+./test-int.exe
+diff -b test-int.out tests/test-int.out > test-int.diff
+###### SUCCESS
+
+###### Testing test-list1
+./tusimple.native < tests/test-list1.tu > test-list1.ll
+llc test-list1.ll > test-list1.s
+cc -o test-list1.exe test-list1.s ./Lib/utils.o printbig.o
+./test-list1.exe
+diff -b test-list1.out tests/test-list1.out > test-list1.diff
+###### SUCCESS
+
+###### Testing test-ops1
+./tusimple.native < tests/test-ops1.tu > test-ops1.ll
+llc test-ops1.ll > test-ops1.s
+cc -o test-ops1.exe test-ops1.s ./Lib/utils.o printbig.o
+./test-ops1.exe
+diff -b test-ops1.out tests/test-ops1.out > test-ops1.diff
+###### SUCCESS
+
+###### Testing test-ops2
+./tusimple.native < tests/test-ops2.tu > test-ops2.ll
+llc test-ops2.ll > test-ops2.s
+cc -o test-ops2.exe test-ops2.s ./Lib/utils.o printbig.o
+./test-ops2.exe
+diff -b test-ops2.out tests/test-ops2.out > test-ops2.diff
+###### SUCCESS
+
+###### Testing test-while1
+./tusimple.native < tests/test-while1.tu > test-while1.ll
+llc test-while1.ll > test-while1.s
+cc -o test-while1.exe test-while1.s ./Lib/utils.o printbig.o
+./test-while1.exe
+diff -b test-while1.out tests/test-while1.out > test-while1.diff
+###### SUCCESS
+
+###### Testing test-while2
+./tusimple.native < tests/test-while2.tu > test-while2.ll
+llc test-while2.ll > test-while2.s
+cc -o test-while2.exe test-while2.s ./Lib/utils.o printbig.o
+./test-while2.exe
+diff -b test-while2.out tests/test-while2.out > test-while2.diff
+###### SUCCESS
+
+###### Testing fail-add1
+./tusimple.native < tests/fail-add1.tu 2> fail-add1.err >> testall.log
+diff -b fail-add1.err tests/fail-add1.err > fail-add1.diff
+###### SUCCESS
+
+###### Testing fail-fun1
+./tusimple.native < tests/fail-fun1.tu 2> fail-fun1.err >> testall.log
+diff -b fail-fun1.err tests/fail-fun1.err > fail-fun1.diff
+###### SUCCESS
+
+###### Testing fail-fun2
+./tusimple.native < tests/fail-fun2.tu 2> fail-fun2.err >> testall.log
+diff -b fail-fun2.err tests/fail-fun2.err > fail-fun2.diff
+###### SUCCESS
+
+###### Testing fail-fun3
+./tusimple.native < tests/fail-fun3.tu 2> fail-fun3.err >> testall.log
+diff -b fail-fun3.err tests/fail-fun3.err > fail-fun3.diff
+###### SUCCESS
+
+###### Testing fail-fun4
+./tusimple.native < tests/fail-fun4.tu 2> fail-fun4.err >> testall.log
+diff -b fail-fun4.err tests/fail-fun4.err > fail-fun4.diff
+###### SUCCESS
+
+###### Testing fail-nodeclaredfun
+./tusimple.native < tests/fail-nodeclaredfun.tu 2> fail-nodeclaredfun.err >> testall.log
+diff -b fail-nodeclaredfun.err tests/fail-nodeclaredfun.err > fail-nodeclaredfun.diff
+###### SUCCESS
+
+###### Testing fail-test
+./tusimple.native < tests/fail-test.tu 2> fail-test.err >> testall.log
+diff -b fail-test.err tests/fail-test.err > fail-test.diff
+###### SUCCESS

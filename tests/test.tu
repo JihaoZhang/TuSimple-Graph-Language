@@ -1,13 +1,6 @@
-int main()
-{
-  bool i;
-  i = true;
-  if (!i) print(1);
-  else print (0);
-  return 0;
-}
 
-/*int main()
+
+int main()
 {	
 	int i;
  	list @{int} l;
@@ -22,4 +15,4 @@ int main()
  	}
 
   	return 0;
-  } */
+ } 
