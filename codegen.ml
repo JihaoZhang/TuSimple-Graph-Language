@@ -74,9 +74,21 @@ let translate (globals, functions) =
   | _ -> raise (Failure ("[Error] Type Not Found for lconst_of_typ."))
 
   in
+
 (*
-List
+================================================================
+  List Methods
+================================================================
 *)
+  let pop_list_element_t = L.function_type (L.pointer_type i8_t) [| list_t |]
+  in
+  let pop_list_element_f = L.declare_function "pop_list_element" pop_list_element_t the_module
+  in
+  let pop_list_element list_ptr llbuilder = 
+  		let actuals = [| list_ptr |] in (
+  			L.build_call pop_list_element_f actuals "pop_list_element" llbuilder
+  		) 
+  in
 
   let remove_list_element_t = L.function_type (L.pointer_type i8_t) [|list_t; i32_t|]
   in 
@@ -527,6 +539,8 @@ in
       		    "get" -> (let arg = List.nth actuals 0
       			in let index = fst (expr builder arg) 
       			in let listElementPtr = get_list_element (L.build_load dname' dname builder) index builder
+      			in type_conversion ele_type listElementPtr, ele_type)
+      		  | "pop" -> (let listElementPtr = pop_list_element (L.build_load dname' dname builder) builder
       			in type_conversion ele_type listElementPtr, ele_type)
       		  | _ -> raise (Failure ("Error! List has no such method"))) 
        | A.Set ele_type ->

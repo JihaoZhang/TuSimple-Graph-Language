@@ -17,8 +17,9 @@ int main(){
 	print(i);
 	prints(str);
 
-	l1 += @{1, 2, 3};
+	l1 += @{1, 2, 3, 4, 5, 6};
 	l1.get(0);
+	l1.pop();
 
 	//n1.setvalue(i);
 	//n1.setvalue(b);
