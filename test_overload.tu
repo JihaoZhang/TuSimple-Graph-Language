@@ -20,8 +20,8 @@ int main(){
   new map1;
   new map2;
   node1 -> node2 = 128;
-//  node1 -- node2 = 3;
-// node1 -> node2; 
+  node1 -- node2 = 3;
+  node1 -> node2; 
   a = 100;
   print(a);
 // string cannot contain space and special chars 
@@ -50,10 +50,6 @@ int main(){
   print(l1[5]);
   prints("________");
   
-  l1++;
- // a--b = 3;
- // a->b;
- // a->b = 3;
 //  map1[1];
 //  l1[1] = 100;
   print(l1[1]);
