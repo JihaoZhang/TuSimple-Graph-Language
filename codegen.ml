@@ -594,6 +594,7 @@ in
       | A.Bool -> voidTobool elementPtr builder
       | A.Node _ -> voidTonode elementPtr builder
       | A.Graph -> voidTograph elementPtr builder
+      | A.String -> voidTostring elementPtr builder
       | _ -> raise (Failure (" undefined operator[] "))
      in
 		(* Construct code for an expression; return its value/type tuple *)
