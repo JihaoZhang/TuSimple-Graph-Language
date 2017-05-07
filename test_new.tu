@@ -21,7 +21,7 @@ int main()
  	n.name();
 
  	lString += @{"hello", "world"};
- 	prints(lString.get(0));
+ 	prints(lString.get(1));
  	map1.put(1, "hello");
  	map2.put("hello", 1);
  	print(map2.get("hello"));
