@@ -216,6 +216,11 @@ struct hashmap *hashmap_put(struct hashmap *map, ...) {
 
     va_end(arg_ptr);
 
+    // Check if element already exists
+    if (!hashmap_haskey(map, key)) {
+        map->size++;
+    }
+
     // Find where to put
     int index = hashmap_hash(map, key);
     while (index == MAP_FULL) {
@@ -231,7 +236,7 @@ struct hashmap *hashmap_put(struct hashmap *map, ...) {
     map->data[index].data[1] = valueData;
     map->data[index].key = key;
     map->data[index].used = 1;
-    map->size++;
+    //map->size++;
 
     return map;
 }
@@ -445,108 +450,113 @@ int test_inttoint_hashmap_iterate_func(void* key, void* keyData, void* keyValue)
 }
 
 
-int main() {
-    // Test function: create_hashmap
-    printf("%s\n", "TEST: create_hashmap");
-    struct hashmap *intToInt = create_hashmap(INT, INT);
-    struct hashmap *intToString = create_hashmap(INT, STRING);
-    printf("%d\n", intToInt->keyType);
-    printf("%d\n", intToInt->valueType);
-    printf("%d\n", intToString->keyType);
-    printf("%d\n", intToString->valueType);
+// int main() {
+//     // Test function: create_hashmap
+//     printf("%s\n", "TEST: create_hashmap");
+//     struct hashmap *intToInt = create_hashmap(INT, INT);
+//     struct hashmap *intToString = create_hashmap(INT, STRING);
+//     printf("%d\n", intToInt->keyType);
+//     printf("%d\n", intToInt->valueType);
+//     printf("%d\n", intToString->keyType);
+//     printf("%d\n", intToString->valueType);
 
 
-    // Test function: hashmap_hash_int
-    printf("%s\n", "TEST: hashmap_hash_int");
-    struct hashmap *intToIntTwo = create_hashmap(INT, INT);
-    printf("%d\n", hashmap_hash_int(intToIntTwo, "Hello"));
-    printf("%d\n", hashmap_hash_int(intToIntTwo, "World"));
+//     // Test function: hashmap_hash_int
+//     printf("%s\n", "TEST: hashmap_hash_int");
+//     struct hashmap *intToIntTwo = create_hashmap(INT, INT);
+//     printf("%d\n", hashmap_hash_int(intToIntTwo, "Hello"));
+//     printf("%d\n", hashmap_hash_int(intToIntTwo, "World"));
 
 
-    // Test function: hashmap_put
-    printf("%s\n", "TEST: hashmap_put");
-    struct hashmap *intToInt3 = create_hashmap(INT, INT);
-    intToInt3 = hashmap_put(intToInt3, 10, 99);
-    printf("%d\n", intToInt3->size);
+//     // Test function: hashmap_put
+//     printf("%s\n", "TEST: hashmap_put");
+//     struct hashmap *intToInt3 = create_hashmap(INT, INT);
+//     intToInt3 = hashmap_put(intToInt3, 10, 99);
+//     printf("%d\n", intToInt3->size);
 
-    intToInt3 = hashmap_put(intToInt3, 11, 88);
-    printf("%d\n", intToInt3->size);
+//     intToInt3 = hashmap_put(intToInt3, 11, 88);
+//     printf("%d\n", intToInt3->size);
 
-    struct hashmap *stringToInt1 = create_hashmap(STRING, INT);
-    printf("%d\n", stringToInt1->size);
-    stringToInt1 = hashmap_put(stringToInt1, "hello", 10);
-    printf("%d\n", stringToInt1->size);
-    stringToInt1 = hashmap_put(stringToInt1, "world", 11);
-    printf("%d\n", stringToInt1->size);
-
-
-    // Test function: hashmap_length, hashmap_keytype, hashmap_valuetype
-    printf("%s\n", "TEST: hashmap_length, hashmap_keytype, hashmap_valuetype");
-    printf("%d\n", hashmap_length(stringToInt1));
-    printf("%d\n", hashmap_keytype(stringToInt1));
-    printf("%d\n", hashmap_valuetype(stringToInt1));
+//     struct hashmap *stringToInt1 = create_hashmap(STRING, INT);
+//     printf("%d\n", stringToInt1->size);
+//     stringToInt1 = hashmap_put(stringToInt1, "hello", 10);
+//     printf("%d\n", stringToInt1->size);
+//     stringToInt1 = hashmap_put(stringToInt1, "world", 11);
+//     printf("%d\n", stringToInt1->size);
 
 
-    // Test function: hashmap_hashkey
-    printf("%s\n", "TEST: hashmap_haskey");
-    printf("%d\n", hashmap_haskey(stringToInt1, "hello"));
-    printf("%d\n", hashmap_haskey(stringToInt1, "world"));
-    printf("%d\n", hashmap_haskey(stringToInt1, "columbia"));
-    printf("%d\n", hashmap_haskey(intToInt3, 10));
-    printf("%d\n", hashmap_haskey(intToInt3, 11));
-    printf("%d\n", hashmap_haskey(intToInt3, 12));
+//     // Test function: hashmap_length, hashmap_keytype, hashmap_valuetype
+//     printf("%s\n", "TEST: hashmap_length, hashmap_keytype, hashmap_valuetype");
+//     printf("%d\n", hashmap_length(stringToInt1));
+//     printf("%d\n", hashmap_keytype(stringToInt1));
+//     printf("%d\n", hashmap_valuetype(stringToInt1));
 
 
-    // Test function: hashmap_get
-    printf("%s\n", "TEST: hashmap_get");
-    printf("%d\n", voidToint(hashmap_get(stringToInt1, "hello")));
-    printf("%d\n", voidToint(hashmap_get(stringToInt1, "world")));
-    //printf("%d\n", voidToint(hashmap_get(stringToInt1, "columbia")));
-    printf("%d\n", voidToint(hashmap_get(intToInt3, 10)));
-    printf("%d\n", voidToint(hashmap_get(intToInt3, 11)));
-    //printf("%d\n", voidToint(hashmap_get(intToInt3, 12)));
-    struct hashmap* intToStringMap1 = create_hashmap(INT, STRING);
-    intToStringMap1 = hashmap_put(intToStringMap1, 1, "hello");
-    intToStringMap1 = hashmap_put(intToStringMap1, 2, "world");
-    printf("%s\n", voidTostring(hashmap_get(intToStringMap1, 1)));
-    printf("%s\n", voidTostring(hashmap_get(intToStringMap1, 2)));
+//     // Test function: hashmap_hashkey
+//     printf("%s\n", "TEST: hashmap_haskey");
+//     printf("%d\n", hashmap_haskey(stringToInt1, "hello"));
+//     printf("%d\n", hashmap_haskey(stringToInt1, "world"));
+//     printf("%d\n", hashmap_haskey(stringToInt1, "columbia"));
+//     printf("%d\n", hashmap_haskey(intToInt3, 10));
+//     printf("%d\n", hashmap_haskey(intToInt3, 11));
+//     printf("%d\n", hashmap_haskey(intToInt3, 12));
 
 
-    // Test function: hashmap_remove
-    printf("%s\n", "TEST: hashmap_remove");
-    stringToInt1 = hashmap_remove(stringToInt1, "hello");
-    assert(hashmap_length(stringToInt1) == 1);
-    stringToInt1 = hashmap_remove(stringToInt1, "world");
-    assert(hashmap_length(stringToInt1) == 0);
-    stringToInt1 = hashmap_put(stringToInt1, "hello", 10);
-    assert(hashmap_length(stringToInt1) == 1);
-    stringToInt1 = hashmap_put(stringToInt1, "world", 100);
-    assert(hashmap_length(stringToInt1) == 2);
-
-    intToInt3 = hashmap_remove(intToInt3, 10);
-    assert(hashmap_length(intToInt3) == 1);
-    intToInt3 = hashmap_put(intToInt3, 20, 100);
-    assert(hashmap_length(intToInt3) == 2);
+//     // Test function: hashmap_get
+//     printf("%s\n", "TEST: hashmap_get");
+//     printf("%d\n", voidToint(hashmap_get(stringToInt1, "hello")));
+//     printf("%d\n", voidToint(hashmap_get(stringToInt1, "world")));
+//     //printf("%d\n", voidToint(hashmap_get(stringToInt1, "columbia")));
+//     printf("%d\n", voidToint(hashmap_get(intToInt3, 10)));
+//     printf("%d\n", voidToint(hashmap_get(intToInt3, 11)));
+//     //printf("%d\n", voidToint(hashmap_get(intToInt3, 12)));
+//     struct hashmap* intToStringMap1 = create_hashmap(INT, STRING);
+//     intToStringMap1 = hashmap_put(intToStringMap1, 1, "hello");
+//     intToStringMap1 = hashmap_put(intToStringMap1, 2, "world");
+//     printf("%s\n", voidTostring(hashmap_get(intToStringMap1, 1)));
+//     printf("%s\n", voidTostring(hashmap_get(intToStringMap1, 2)));
 
 
-    // Test function: hashmap_keys
-    struct List *stringKeysList = hashmap_keys(stringToInt1);
-    for (int i = 0; i < get_list_size(stringKeysList); i++) {
-        printf("%s\n", voidTostring(get_list_element(stringKeysList, i)));
-    }
-    struct List *intKeysList = hashmap_keys(intToInt3);
-    for (int i = 0; i < get_list_size(intKeysList); i++) {
-        printf("%d\n", voidToint(get_list_element(intKeysList, i)));
-    }
+//     // Test function: hashmap_remove
+//     printf("%s\n", "TEST: hashmap_remove");
+//     stringToInt1 = hashmap_remove(stringToInt1, "hello");
+//     assert(hashmap_length(stringToInt1) == 1);
+//     stringToInt1 = hashmap_remove(stringToInt1, "world");
+//     assert(hashmap_length(stringToInt1) == 0);
+//     stringToInt1 = hashmap_put(stringToInt1, "hello", 10);
+//     assert(hashmap_length(stringToInt1) == 1);
+//     stringToInt1 = hashmap_put(stringToInt1, "world", 100);
+//     assert(hashmap_length(stringToInt1) == 2);
+//     stringToInt1 = hashmap_put(stringToInt1, "hello", 20);
+//     printf("%d\n", hashmap_length(stringToInt1));
+//     stringToInt1 = hashmap_put(stringToInt1, "hello", 30);
+//     printf("%d\n", hashmap_length(stringToInt1));
+//     printf("%d\n", voidToint(hashmap_get(stringToInt1, "hello")));
+
+//     intToInt3 = hashmap_remove(intToInt3, 10);
+//     assert(hashmap_length(intToInt3) == 1);
+//     intToInt3 = hashmap_put(intToInt3, 20, 100);
+//     assert(hashmap_length(intToInt3) == 2);
 
 
-    // Test function: hashmap_iterate
-    struct hashmap* intToInt4 = create_hashmap(INT, INT);
-    intToInt4 = hashmap_put(intToInt4, 1, 10);
-    intToInt4 = hashmap_put(intToInt4, 2, 20);
-    intToInt4 = hashmap_put(intToInt4, 3, 30);
-    intToInt4 = hashmap_put(intToInt4, 4, 40);
-    intToInt4 = hashmap_put(intToInt4, 5, 50);
-    printf("%s\n", "TEST: hashmap_iterate");
-    int status = hashmap_iterate(intToInt4, test_inttoint_hashmap_iterate_func);
-}
+//     // Test function: hashmap_keys
+//     struct List *stringKeysList = hashmap_keys(stringToInt1);
+//     for (int i = 0; i < get_list_size(stringKeysList); i++) {
+//         printf("%s\n", voidTostring(get_list_element(stringKeysList, i)));
+//     }
+//     struct List *intKeysList = hashmap_keys(intToInt3);
+//     for (int i = 0; i < get_list_size(intKeysList); i++) {
+//         printf("%d\n", voidToint(get_list_element(intKeysList, i)));
+//     }
+
+
+//     // Test function: hashmap_iterate
+//     struct hashmap* intToInt4 = create_hashmap(INT, INT);
+//     intToInt4 = hashmap_put(intToInt4, 1, 10);
+//     intToInt4 = hashmap_put(intToInt4, 2, 20);
+//     intToInt4 = hashmap_put(intToInt4, 3, 30);
+//     intToInt4 = hashmap_put(intToInt4, 4, 40);
+//     intToInt4 = hashmap_put(intToInt4, 5, 50);
+//     printf("%s\n", "TEST: hashmap_iterate");
+//     int status = hashmap_iterate(intToInt4, test_inttoint_hashmap_iterate_func);
+// }

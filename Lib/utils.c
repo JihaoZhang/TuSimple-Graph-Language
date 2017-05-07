@@ -599,15 +599,16 @@ struct hashmap *hashmap_put(struct hashmap *map, ...) {
             valueData = stringTovoid(va_arg(arg_ptr, char*));
             break;
 
-        case NODE:
-            valueData = nodeTovoid(va_arg(arg_ptr, struct Node*));
-            break;
-
         default:
             break;
     }
 
     va_end(arg_ptr);
+
+    // Check if element already exists
+    if (!hashmap_haskey(map, key)) {
+        map->size++;
+    }
 
     // Find where to put
     int index = hashmap_hash(map, key);
@@ -624,7 +625,7 @@ struct hashmap *hashmap_put(struct hashmap *map, ...) {
     map->data[index].data[1] = valueData;
     map->data[index].key = key;
     map->data[index].used = 1;
-    map->size++;
+    //map->size++;
 
     return map;
 }
@@ -701,8 +702,9 @@ void *hashmap_get(struct hashmap *map, ...) {
         index = (index + 1) % map->tableSize;
     }
 
-    printf("Error! hashmap_get() : Key does not exist.\n");
-    exit(1);
+    // printf("Error! hashmap_get() : Key does not exist.\n");
+    // exit(1);
+    return NULL;
     //return boolTovoid(false);
 }
 
@@ -824,6 +826,17 @@ int32_t hashmap_valuetype(struct hashmap *map) {
     return map->valueType;
 }
 
+
+int test_inttoint_hashmap_iterate_func(void* key, void* keyData, void* keyValue) {
+    printf("%s ", "MAPKEY:");
+    printf("%s\n", voidTostring(key));
+    printf("%s ", "KEY DATA:");
+    printf("%d\n", voidToint(keyData));
+    printf("%s ", "VALUE DATA");
+    printf("%d\n", voidToint(keyValue));
+
+    return MAP_OK;
+}
 
 /************************************
 	Set Methods
@@ -1483,16 +1496,16 @@ struct Node* findGraphNode(struct Graph* graph, char* nodeName){
 	return iterGraph(graph, index);
 }
 
-int test_inttoint_hashmap_iterate_func(void* key, void* keyData, void* keyValue) {
-    printf("%s ", "MAPKEY:");
-    printf("%s\n", voidTostring(key));
-    printf("%s ", "KEY DATA:");
-    printf("%d\n", voidToint(keyData));
-    printf("%s ", "VALUE DATA");
-    printf("%d\n", voidToint(keyValue));
+// int test_inttoint_hashmap_iterate_func(void* key, void* keyData, void* keyValue) {
+//     printf("%s ", "MAPKEY:");
+//     printf("%s\n", voidTostring(key));
+//     printf("%s ", "KEY DATA:");
+//     printf("%d\n", voidToint(keyData));
+//     printf("%s ", "VALUE DATA");
+//     printf("%d\n", voidToint(keyValue));
 
-    return MAP_OK;
-}
+//     return MAP_OK;
+// }
 
 
 // int main() {
