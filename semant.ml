@@ -385,7 +385,7 @@ let check (globals, functions) =
           | Graph ->
             (match fname with
                 "bfs" -> Bool
-              | "dfs" -> Bool
+(*               | "dfs" -> Bool
               | "find" -> Bool
               | "find_path" -> Bool
               | "reverse" -> Bool
@@ -393,7 +393,7 @@ let check (globals, functions) =
               | "init_tag" -> Bool
               | "component" -> Bool
               | "reduce" -> Bool
-              | "expand" -> Bool
+              | "expand" -> Bool *)
               | _ -> raise (Failure ("Map has no such method"))
             )
           | _ -> raise (Failure ("unsupported type for method call")))
