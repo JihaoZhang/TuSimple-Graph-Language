@@ -384,7 +384,23 @@ let check (globals, functions) =
             )
           | Graph ->
             (match fname with
-                "bfs" -> Bool
+                "bfs" -> 
+                (match actuals with
+                  [x] when (expr x) = Node(Int) -> List(Int)
+                | _ -> raise (Failure ("Error: Graph.bfs()")))
+              | "dfs" ->
+                (match actuals with 
+                  [x] when (expr x) = Node(Int) -> List(Int)
+                  | _ -> raise (Failure ("Error: Graph.dfs()")))
+              | "iterGraph" ->
+                (match actuals with 
+                  [x] when (expr x) = Int -> Node(Int)
+                  | _ -> raise (Failure ("Error: Graph.iterGraph()")))
+              | "findGraphNode" ->
+                (match actuals with
+                  [x] when (expr x) = String -> Node(Int)
+                  | _ -> raise (Failure ("Error: Graph.findGraphNode()")))
+
 (*               | "dfs" -> Bool
               | "find" -> Bool
               | "find_path" -> Bool

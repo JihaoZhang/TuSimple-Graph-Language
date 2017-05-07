@@ -19,6 +19,10 @@ int main()
  	n.setvalue(1);
  	n.value();
  	n.name();
+ 	g.bfs(n);
+ 	g.dfs(n);
+ 	g.iterGraph(0);
+ 	g.findGraphNode("node");
 
  	lString += @{"hello", "world"};
  	prints(lString.get(1));
