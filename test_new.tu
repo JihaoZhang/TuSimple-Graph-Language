@@ -26,6 +26,9 @@ int main()
  	g.init();
  	g.addNode(n);
  	g.addEdge(n, n, 2);
+ 	g.expand(n);
+ 	g.reduce(n);
+ 	g.combine(g);
 
  	lString += @{"hello", "world"};
  	prints(lString.get(1));
