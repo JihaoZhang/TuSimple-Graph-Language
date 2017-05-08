@@ -24,6 +24,8 @@ int main()
  	g.iterGraph(0);
  	g.findGraphNode("node");
  	g.init();
+ 	g.addNode(n);
+ 	g.addEdge(n, n, 2);
 
  	lString += @{"hello", "world"};
  	prints(lString.get(1));

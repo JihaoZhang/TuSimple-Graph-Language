@@ -402,6 +402,16 @@ let check (globals, functions) =
                   | _ -> raise (Failure ("Error: Graph.findGraphNode()")))
               | "init" -> 
                 if actuals = [] then Void else raise (Failure ("Graph init method error"))
+              | "addNode" ->
+                (match actuals with
+                  [x] when Node(Int) = (expr x) -> Void
+                  | _ -> raise (Failure ("Graph add node method error")))
+              | "addEdge" -> 
+                (match actuals with
+                  [x1;x2;x3] when (expr x1) = Node(Int) &&
+                                  (expr x2) = Node(Int) &&
+                                  (expr x3) = Int -> Void
+                  | _ -> raise (Failure ("Graph add edge method error")))
               | _ -> raise (Failure ("Map has no such method"))
             )
           | _ -> raise (Failure ("unsupported type for method call")))
