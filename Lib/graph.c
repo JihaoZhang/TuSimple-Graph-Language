@@ -16,6 +16,7 @@ void print_list(struct List* l){
 void print_graph(struct Graph* g){
 	printf("Printing graph %s :\n", g->name);
 	int size = get_list_size(g->nodes);
+	printf("size : %d\n", size);
 	for (int i=0;i<size;i++){
 		struct Node* n = iterGraph(g, i);
 		// printf("%d: %s -> \n", i+1, n->name);
@@ -249,36 +250,36 @@ struct Graph* reverse(struct Graph* g){
 
 /* please do not use getNodeName() in this .c */
 
-int main(){
-	struct Graph* g = createGraph("g");
-	struct Node* n1 = createNode("n1", FLOAT, 1.1);
-	struct Node* n2 = createNode("n2", FLOAT, 2.1);
-	struct Node* n3 = createNode("n3", FLOAT, 3.1);
-	struct Node* n4 = createNode("n4", FLOAT, 4.1);
-	addGraphNode(g, n1);
-	addGraphNode(g, n2);
-	addGraphNode(g, n3);
-	addGraphNode(g, n4);
-	addNodeEdge(n1, n3, 11.1);
-	addNodeEdge(n3, n4, 12.2);
-	addNodeEdge(n3, n2, 13.3);
-	print_graph(g);
+// int main(){
+// 	struct Graph* g = createGraph("g");
+// 	struct Node* n1 = createNode("n1", FLOAT);
+// 	struct Node* n2 = createNode("n2", FLOAT);
+// 	struct Node* n3 = createNode("n3", FLOAT);
+// 	struct Node* n4 = createNode("n4", FLOAT);
+// 	addGraphNode(g, n1);
+// 	addGraphNode(g, n2);
+// 	addGraphNode(g, n3);
+// 	addGraphNode(g, n4);
+// 	addNodeEdge(n1, n3, 11.1);
+// 	addNodeEdge(n3, n4, 12.2);
+// 	addNodeEdge(n3, n2, 13.3);
+// 	print_graph(g);
 
-	struct Graph* g2 = createGraph("g2");
-	struct Node* n5 = createNode("n5", FLOAT, 5.1);
-	struct Node* n6 = createNode("n6", FLOAT, 6.1);
-	struct Node* n7 = createNode("n7", FLOAT, 7.1);
-	struct Node* n8 = createNode("n8", FLOAT, 8.1);
-	addGraphNode(g2, n5);
-	addGraphNode(g2, n6);
-	addGraphNode(g2, n7);
-	addGraphNode(g2, n8);
-	addNodeEdge(n5, n6, 14.4);
-	addNodeEdge(n6, n7, 15.5);
-	addNodeEdge(n7, n8, 16.6);
-	// print_graph(g2);
-	combine(g, g2);
-	// print_graph(g);
+// 	struct Graph* g2 = createGraph("g2");
+// 	struct Node* n5 = createNode("n5", FLOAT);
+// 	struct Node* n6 = createNode("n6", FLOAT);
+// 	struct Node* n7 = createNode("n7", FLOAT);
+// 	struct Node* n8 = createNode("n8", FLOAT);
+// 	addGraphNode(g2, n5);
+// 	addGraphNode(g2, n6);
+// 	addGraphNode(g2, n7);
+// 	addGraphNode(g2, n8);
+// 	addNodeEdge(n5, n6, 14.4);
+// 	addNodeEdge(n6, n7, 15.5);
+// 	addNodeEdge(n7, n8, 16.6);
+// 	print_graph(g2);
+// 	combine(g, g2);
+// 	print_graph(g);
 
-	return 0;
-}
+// 	return 0;
+// }

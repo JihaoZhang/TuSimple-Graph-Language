@@ -1360,14 +1360,33 @@ struct Node* setNodeValue(struct Node* node, ...) {
     return node;
 }
 
-void* getNodeValue(struct Node* node) {
+char* getNodeValue(struct Node* node, int32_t type, ...) {
     if (node == NULL) {
-        printf("%s\n", "Error! : getNodeValue - Node does not exist!");
+        printf("Node does not exist.\n");
         return NULL;
     }
-    return node->value;
+    va_list ap;
+    va_start(ap, type);
+    switch (type) {
+        case INT:
+            printf("INT\n");
+            (*va_arg(ap, int*)) = voidToint(node->value);
+            break;
+        case FLOAT:
+            (*va_arg(ap, double*)) = voidTofloat(node->value);
+            break;
+        case BOOL:
+            (*va_arg(ap, bool*)) = voidTobool(node->value);
+            break;
+        case STRING:
+            return voidTostring(node->value);
+        default:
+            break;
+    }
+    va_end(ap);
+ 
+    return "";
 }
-
 
 char* getNodeName(struct Node* node) {
     if (node == NULL) {
