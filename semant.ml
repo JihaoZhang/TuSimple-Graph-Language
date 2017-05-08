@@ -400,16 +400,8 @@ let check (globals, functions) =
                 (match actuals with
                   [x] when (expr x) = String -> Node(Int)
                   | _ -> raise (Failure ("Error: Graph.findGraphNode()")))
-
-(*               | "dfs" -> Bool
-              | "find" -> Bool
-              | "find_path" -> Bool
-              | "reverse" -> Bool
-              | "combine" -> Bool
-              | "init_tag" -> Bool
-              | "component" -> Bool
-              | "reduce" -> Bool
-              | "expand" -> Bool *)
+              | "init" -> 
+                if actuals = [] then Void else raise (Failure ("Graph init method error"))
               | _ -> raise (Failure ("Map has no such method"))
             )
           | _ -> raise (Failure ("unsupported type for method call")))

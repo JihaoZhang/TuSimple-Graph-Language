@@ -23,6 +23,7 @@ int main()
  	g.dfs(n);
  	g.iterGraph(0);
  	g.findGraphNode("node");
+ 	g.init();
 
  	lString += @{"hello", "world"};
  	prints(lString.get(1));
