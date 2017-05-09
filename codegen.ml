@@ -827,6 +827,18 @@ in
          | _ -> raise (Failure ("Error! Map has no such method")))
        | A.Graph -> 
       	(match fname with 
+            | "bfs" -> (let arg = List.nth actuals 0
+              in let nodePtr = fst (expr builder arg)
+              in bfs (L.build_load dname' dname builder) nodePtr builder, A.List(A.Node(A.Int)))
+            | "dfs" -> (let arg = List.nth actuals 0
+              in let nodePtr = fst (expr builder arg)
+              in dfs (L.build_load dname' dname builder) nodePtr builder, A.List(A.Node(A.Int)))
+            | "iterGraph" -> (iterGraph
+                        (L.build_load dname' dname builder)
+                        (fst (expr builder (List.nth actuals 0))) builder, A.Node(A.Int))
+            | "findGraphNode" -> (findGraphNode
+                                 (L.build_load dname' dname builder)
+                                 (fst (expr builder (List.nth actuals 0))) builder, A.Node(A.Int))
       			(* "addNode" -> (addGraphNode (L.build_load dname' dname builder)
       						  			   (List.nth actuals 0)
       						  			   builder

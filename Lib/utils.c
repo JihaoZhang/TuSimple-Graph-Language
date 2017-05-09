@@ -599,15 +599,16 @@ struct hashmap *hashmap_put(struct hashmap *map, ...) {
             valueData = stringTovoid(va_arg(arg_ptr, char*));
             break;
 
-        case NODE:
-            valueData = nodeTovoid(va_arg(arg_ptr, struct Node*));
-            break;
-
         default:
             break;
     }
 
     va_end(arg_ptr);
+
+    // Check if element already exists
+    if (!hashmap_haskey(map, key)) {
+        map->size++;
+    }
 
     // Find where to put
     int index = hashmap_hash(map, key);
@@ -624,7 +625,7 @@ struct hashmap *hashmap_put(struct hashmap *map, ...) {
     map->data[index].data[1] = valueData;
     map->data[index].key = key;
     map->data[index].used = 1;
-    map->size++;
+    //map->size++;
 
     return map;
 }
@@ -701,8 +702,9 @@ void *hashmap_get(struct hashmap *map, ...) {
         index = (index + 1) % map->tableSize;
     }
 
-    printf("Error! hashmap_get() : Key does not exist.\n");
-    exit(1);
+    // printf("Error! hashmap_get() : Key does not exist.\n");
+    // exit(1);
+    return NULL;
     //return boolTovoid(false);
 }
 
@@ -824,6 +826,17 @@ int32_t hashmap_valuetype(struct hashmap *map) {
     return map->valueType;
 }
 
+
+int test_inttoint_hashmap_iterate_func(void* key, void* keyData, void* keyValue) {
+    printf("%s ", "MAPKEY:");
+    printf("%s\n", voidTostring(key));
+    printf("%s ", "KEY DATA:");
+    printf("%d\n", voidToint(keyData));
+    printf("%s ", "VALUE DATA");
+    printf("%d\n", voidToint(keyValue));
+
+    return MAP_OK;
+}
 
 /************************************
 	Set Methods
@@ -1347,14 +1360,33 @@ struct Node* setNodeValue(struct Node* node, ...) {
     return node;
 }
 
-void* getNodeValue(struct Node* node) {
+char* getNodeValue(struct Node* node, int32_t type, ...) {
     if (node == NULL) {
-        printf("%s\n", "Error! : getNodeValue - Node does not exist!");
+        printf("Node does not exist.\n");
         return NULL;
     }
-    return node->value;
+    va_list ap;
+    va_start(ap, type);
+    switch (type) {
+        case INT:
+            printf("INT\n");
+            (*va_arg(ap, int*)) = voidToint(node->value);
+            break;
+        case FLOAT:
+            (*va_arg(ap, double*)) = voidTofloat(node->value);
+            break;
+        case BOOL:
+            (*va_arg(ap, bool*)) = voidTobool(node->value);
+            break;
+        case STRING:
+            return voidTostring(node->value);
+        default:
+            break;
+    }
+    va_end(ap);
+ 
+    return "";
 }
-
 
 char* getNodeName(struct Node* node) {
     if (node == NULL) {
@@ -1429,70 +1461,263 @@ double getEdgeValue(struct Node* node1, struct Node* node2) {
 	Graph Methods
 ************************************/
 
+void print_list(struct List* l){
+    if (l==NULL){
+        printf("print_list NULL\n");
+    }
+    int size = get_list_size(l);
+    // printf("size: %d", size);
+    for (int i=0;i<size;i++){
+        struct Node* n = get_list_element(l, i);
+        printf("%s ", n->name);
+    }
+    printf("\n");
+}
+
+void print_graph(struct Graph* g){
+    printf("Printing graph %s :\n", g->name);
+    int size = get_list_size(g->nodes);
+    for (int i=0;i<size;i++){
+        struct Node* n = iterGraph(g, i);
+        // printf("%d: %s -> \n", i+1, n->name);
+        printf("%s : %f ->\n", n->name, voidTofloat(n->value));
+        int w_size = get_list_size(n->nodes);
+        // printf("w_size : %d\n", w_size);
+        for (int j=0;j<w_size;j++){
+            // printf("EXE HERE, j = %d\n", j);
+            // struct Node* m = voidTonode(get_list_element(n->nodes, j));
+            struct Node* m = iterNode(n, j);
+            printf("( %s, %f) ", m->name, weightIterNode(n, j));
+        }
+        printf("\n");
+    }
+}
+
 struct Graph* createGraph(char* name){
-	struct Graph* new = (struct Graph*) malloc(sizeof(struct Graph));
-	new->name = name;
-	new->nodes = NULL;
-	// new->weight = NULL;
-	new->hashmap = create_hashmap(STRING, INT);
-	return new;
+    struct Graph* new = (struct Graph*) malloc(sizeof(struct Graph));
+    new->name = name;
+    new->nodes = NULL;
+    // new->weight = NULL;
+    new->hashmap = create_hashmap(STRING, INT);
+    return new;
 }
 
 void addGraphNode(struct Graph* graph, struct Node* node){
-	if (graph==NULL){
-		printf("Graph does not exist.\n");
-		return;
-	}
-	if (graph->nodes==NULL){
-		graph->nodes = create_list(NODE);
-		// graph->weight = create_list(LIST);
-	}
-	printf("Graph List Type: %d\n", graph->nodes->type);
-	printf("addGraphNode: %s\n", node->name);
-	plus_list(graph->nodes, node);
-	// plus_list(graph->weight, node->weight);
-	printf("%s\n", node->name);
-	printf("%d\n", get_list_size(graph->nodes)-1);
-	graph->hashmap = hashmap_put(graph->hashmap, node->name, get_list_size(graph->nodes)-1);
+    if (graph==NULL){
+        printf("Graph does not exist.\n");
+        return;
+    }
+    if (graph->nodes==NULL){
+        graph->nodes = create_list(NODE);
+        // graph->weight = create_list(LIST);
+    }
+    // printf("Graph List Type: %d\n", graph->nodes->type);
+    // printf("addGraphNode: %s\n", node->name);
+    plus_list(graph->nodes, node);
+    // plus_list(graph->weight, node->weight);
+    // printf("%s\n", node->name);
+    // printf("%d\n", get_list_size(graph->nodes)-1);
+    graph->hashmap = hashmap_put(graph->hashmap, node->name, get_list_size(graph->nodes)-1);
 }
 
 void addGraphEdge(struct Graph* graph, struct Node* node1, struct Node* node2, double weight){
-	if (hashmap_get(graph->hashmap, node1->name)==NULL){
-		addGraphNode(graph, node1);
-	}
-	if (hashmap_get(graph->hashmap, node2->name)==NULL){
-		addGraphNode(graph, node2);
-	}
-	addNodeEdge(node1, node2, weight);
+    if (hashmap_get(graph->hashmap, node1->name)==NULL){
+        addGraphNode(graph, node1);
+    }
+    if (hashmap_get(graph->hashmap, node2->name)==NULL){
+        addGraphNode(graph, node2);
+    }
+    addNodeEdge(node1, node2, weight);
 }
 
 struct Node* iterGraph(struct Graph* graph, int index){
-	int size = get_list_size(graph->nodes);
-	// printf("%d\n", size);
-	if (0<=index && index<size)
-		return (struct Node*)get_list_element(graph->nodes, index);
-	else{
-		printf("Node does not exist.\n");
-		return NULL;
-	}
+    int size = get_list_size(graph->nodes);
+    // printf("%d\n", size);
+    if (0<=index && index<size)
+        return (struct Node*)get_list_element(graph->nodes, index);
+    else{
+        printf("Node does not exist.\n");
+        return NULL;
+    }
 }
+
+// struct List* weightIterGraph(struct Graph* graph, int index){
+//  int size = get_list_size(graph->weight);
+//  // printf("%d\n", size);
+//  if (0<=index && index<size)
+//      return (struct List*)get_list_element(graph->weight, index);
+//  else{
+//      printf("Node does not exist.\n");
+//      return NULL;
+//  }
+// }
 
 struct Node* findGraphNode(struct Graph* graph, char* nodeName){
-	int index = voidToint(hashmap_get(graph->hashmap, nodeName));
-	printf("%d\n", index);
-	return iterGraph(graph, index);
+    void* tmp;
+    if ((tmp=hashmap_get(graph->hashmap, nodeName))!=NULL){
+        int index = voidToint(tmp);
+        return iterGraph(graph, index);
+    } else {
+        return NULL;
+    }
 }
 
-int test_inttoint_hashmap_iterate_func(void* key, void* keyData, void* keyValue) {
-    printf("%s ", "MAPKEY:");
-    printf("%s\n", voidTostring(key));
-    printf("%s ", "KEY DATA:");
-    printf("%d\n", voidToint(keyData));
-    printf("%s ", "VALUE DATA");
-    printf("%d\n", voidToint(keyValue));
+/* --- built-in function --- */
 
-    return MAP_OK;
+struct Node* init_tag(struct Graph* g){
+    int size = get_list_size(g->nodes);
+    for (int i=0;i<size;i++){
+        struct Node* n = iterGraph(g, i);
+        int w_size = get_list_size(n->nodes);
+        for (int j=0;j<w_size;j++){
+            change_list_element(n->weight, j, 0);
+        }
+    }
 }
+
+// the type of nodes must be FLOAT
+struct Node* reduce(struct Graph* g, struct Node* n0){
+    struct Node* n = findGraphNode(g, n0->name);
+    double v_n = 0;
+    getNodeValue(n, n->type, &v_n);
+
+    int size = get_list_size(n->nodes);
+    for (int i=0;i<size;i++){
+        struct Node* m = iterNode(n, i);
+        double v_m = 0, tmp;
+        getNodeValue(m, m->type, &v_m);
+        if ((tmp = v_n + weightIterNode(n, i)) < v_m){
+            m->value = floatTovoid(tmp);
+        }
+    }
+}
+
+// the type of nodes must be FLOAT
+struct Node* expand(struct Graph* g, struct Node* n0){
+    struct Node* n = findGraphNode(g, n0->name);
+    double v_n = 0;
+    getNodeValue(n, n->type, &v_n);
+
+    int size = get_list_size(n->nodes);
+    for (int i=0;i<size;i++){
+        struct Node* m = iterNode(n, i);
+        double v_m = 0, tmp;
+        getNodeValue(m, m->type, &v_m);
+        if ((tmp = v_n + weightIterNode(n, i)) > v_m){
+            m->value = floatTovoid(tmp);
+        }
+    }
+}
+
+struct Graph* combine(struct Graph* g1, struct Graph* g2){
+    int size2 = get_list_size(g2->nodes);
+    for (int i=0;i<size2;i++){
+        struct Node* n = iterGraph(g2, i);
+        if (findGraphNode(g1, n->name)==NULL){
+            addGraphNode(g1, n);
+        }
+    }
+    return g1;
+}
+
+struct List* component(struct Graph* g){
+
+}
+
+struct List* bfs(struct Graph* g, struct Node* n){
+    // printf("g: %s\n", g->name);
+    // printf("n: %s\n", n->name);
+    struct List* l = create_list(NODE);
+    struct List* rec = create_list(NODE);
+    struct Set* visited = create_set(NODE);
+
+    plus_list(l, n);
+    plus_list(rec, n);
+    put_set(visited, n);
+
+    while (get_list_size(l)!=0){
+        struct Node* n = get_list_element(l, 0);
+        int size = get_list_size(n->nodes);
+        for (int i=0;i<size;i++){
+            struct Node* m = iterNode(n, i);
+            if (check_set_element(visited, m)==false){
+                plus_list(l, m);
+                plus_list(rec, m);
+                put_set(visited, m);
+            }
+        }
+        remove_list_element(l, 0);
+    }
+    return rec;
+}
+
+struct List* dfs(struct Graph* g, struct Node* n){
+    struct List* l = create_list(NODE);
+    struct List* rec = create_list(NODE);
+    struct hashmap* m = create_hashmap(STRING, INT);
+
+    plus_list(l, n);
+    plus_list(rec, n);
+    hashmap_put(m, n->name, 0);
+
+    while (get_list_size(l)!=0){
+        // print_list(l);
+        struct Node* n = get_list_element(l, get_list_size(l)-1);
+        // printf("dfs: %s\n", n->name);
+        int size = get_list_size(n->nodes);
+        int now = voidToint(hashmap_get(m, n->name));
+        // printf("%s -- %d\n", n->name, now);
+        if (now<size){
+            struct Node* x = iterNode(n, now);
+            if (hashmap_haskey(m, x->name)==false){
+                plus_list(l, x);
+                plus_list(rec, x);
+                hashmap_put(m, x->name, 0);
+                // printf("ADD NEW ELEMENT %s\n", x->name);
+            }
+            hashmap_remove(m, n->name);
+            hashmap_put(m, n->name, now+1);
+        } else {
+            remove_list_element(l, get_list_size(l)-1);
+        }
+    }
+    return rec;
+}
+
+struct Node* find(struct Graph* g, struct Node* n, char* lambda){
+
+}
+
+struct List* find_path(struct Graph* g, struct Node* n1, struct Node* n2){
+
+}
+
+struct Graph* assign(struct Graph* g, char* lambda){
+}
+
+struct Graph* reverse(struct Graph* g){
+    // struct Graph* r_g = createGraph("reversed");
+    // int size = get_list_size(g->nodes);
+    // for (int i=0;i<size;i++){
+    //  struct Node* n = iterGraph(g, i);
+    //  struct Node* new_n = createNode(n->name, n->type, n->value);
+    //  int size2 = get_list_size(n->nodes);
+    //  for (int j=0;j<size2;j++){
+    //      addNodeEdge(new_n, )
+    //  }
+    // }
+}
+
+// int test_inttoint_hashmap_iterate_func(void* key, void* keyData, void* keyValue) {
+//     printf("%s ", "MAPKEY:");
+//     printf("%s\n", voidTostring(key));
+//     printf("%s ", "KEY DATA:");
+//     printf("%d\n", voidToint(keyData));
+//     printf("%s ", "VALUE DATA");
+//     printf("%d\n", voidToint(keyValue));
+
+//     return MAP_OK;
+// }
 
 
 // int main() {

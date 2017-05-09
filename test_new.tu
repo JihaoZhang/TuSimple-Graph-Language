@@ -19,9 +19,19 @@ int main()
  	n.setvalue(1);
  	n.value();
  	n.name();
+ 	g.bfs(n);
+ 	g.dfs(n);
+ 	g.iterGraph(0);
+ 	g.findGraphNode("node");
+ 	g.init();
+ 	g.addNode(n);
+ 	g.addEdge(n, n, 2);
+ 	g.expand(n);
+ 	g.reduce(n);
+ 	g.combine(g);
 
  	lString += @{"hello", "world"};
- 	prints(lString.get(0));
+ 	prints(lString.get(1));
  	map1.put(1, "hello");
  	map2.put("hello", 1);
  	print(map2.get("hello"));

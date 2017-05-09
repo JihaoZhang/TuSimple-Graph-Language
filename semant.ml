@@ -384,16 +384,46 @@ let check (globals, functions) =
             )
           | Graph ->
             (match fname with
-                "bfs" -> Bool
-              | "dfs" -> Bool
-              | "find" -> Bool
-              | "find_path" -> Bool
-              | "reverse" -> Bool
-              | "combine" -> Bool
-              | "init_tag" -> Bool
-              | "component" -> Bool
-              | "reduce" -> Bool
-              | "expand" -> Bool
+                "bfs" -> 
+                (match actuals with
+                  [x] when (expr x) = Node(Int) -> List(Int)
+                | _ -> raise (Failure ("Graph bfs method error")))
+              | "dfs" ->
+                (match actuals with 
+                  [x] when (expr x) = Node(Int) -> List(Int)
+                  | _ -> raise (Failure ("Graph dfs method error")))
+              | "iterGraph" ->
+                (match actuals with 
+                  [x] when (expr x) = Int -> Node(Int)
+                  | _ -> raise (Failure ("Graph iterGraph method error")))
+              | "findGraphNode" ->
+                (match actuals with
+                  [x] when (expr x) = String -> Node(Int)
+                  | _ -> raise (Failure ("Graph findGraphNode method error")))
+              | "init" -> 
+                if actuals = [] then Void else raise (Failure ("Graph init method error"))
+              | "addNode" ->
+                (match actuals with
+                  [x] when Node(Int) = (expr x) -> Void
+                  | _ -> raise (Failure ("Graph add node method error")))
+              | "addEdge" -> 
+                (match actuals with
+                  [x1;x2;x3] when (expr x1) = Node(Int) &&
+                                  (expr x2) = Node(Int) &&
+                                  (expr x3) = Int -> Void
+                  | _ -> raise (Failure ("Graph add edge method error")))
+              | "combine" -> 
+                    (match actuals with
+                      [x] when (expr x) = Graph -> Graph
+                    | _ -> raise (Failure ("Graph combine method error")))
+              | "reduce" ->                     
+                    (match actuals with
+                      [x] when (expr x) = Node(Int) -> Void
+                    | _ -> raise (Failure ("Graph reduce method error")))
+              | "expand" -> 
+                    (match actuals with
+                      [x] when (expr x) = Node(Int) -> Void
+                    | _ -> raise (Failure ("Graph expand method error")))
               | _ -> raise (Failure ("Map has no such method"))
             )
           | _ -> raise (Failure ("unsupported type for method call")))
