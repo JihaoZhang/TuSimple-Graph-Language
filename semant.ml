@@ -324,6 +324,9 @@ let check (globals, functions) =
                     | _ -> raise (Failure ("Error! Wrong argument in iterNode")))
               | "length" ->
                   if actuals = [] then Int else raise (Failure ("Error! Wrong argument in Node.length()"))
+              | "weightIter" ->
+                  (match actuals with
+                    [x] when (expr x) = Int -> Int)
               | _ -> raise (Failure ("Node has no such method"))
             )
           | List ele_type -> 
@@ -362,6 +365,10 @@ let check (globals, functions) =
                   (match actuals with
                       [x] when (expr x) = ele_type -> Bool
                     | _ -> raise (Failure ("Set contain method error")))
+              | "remove" ->
+                  (match actuals with
+                      [x] when (expr x) = ele_type -> Set ele_type
+                      | _ -> raise (Failure ("Error! Wrong argument in Set.remove()")))
               | _ -> raise (Failure ("Set has no such method"))
             )
           | Map (k_type, v_type) ->

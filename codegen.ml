@@ -292,6 +292,16 @@ in
   		)
   in
 
+  let remove_set_element_t = L.var_arg_function_type set_t [| set_t |]
+  in
+  let remove_set_element_f = L.declare_function "remove_set_element" remove_set_element_t the_module
+  in 
+  let remove_set_element s_ptr data llbuilder =
+      let actuals = [| s_ptr; data |] in (
+          L.build_call remove_set_element_f actuals "remove_set_element" llbuilder
+      )
+  in
+
 
 (*
 ================================================================
@@ -394,6 +404,16 @@ in
 let get_node_value n_ptr llbuilder = 
     let actuals = [| n_ptr |] in (
         L.build_call get_node_value_f actuals "get_node_value" llbuilder
+    )
+in
+
+let weigthIterNode_t = L.function_type i32_t [| node_t; i32_t |]
+in
+let weightIterNode_f = L.declare_function "weightIterNode" weigthIterNode_t the_module
+in
+let weightIterNode n_ptr index llbuilder =
+    let actuals = [|n_ptr; index|] in (
+        L.build_call weightIterNode_f actuals "weightIterNode" llbuilder
     )
 in
 
@@ -810,6 +830,9 @@ in
               in let index = fst (expr builder arg)
               in iterNode (L.build_load dname' dname builder) index builder, A.Node(n_type))
           | "length" -> (getNodeLength (L.build_load dname' dname builder) builder, A.Int)
+          | "weightIter" -> (let arg = List.nth actuals 0
+              in let index = fst (expr builder arg)
+              in weightIterNode (L.build_load dname' dname builder) index builder, A.Int)
       		| _ -> raise (Failure ("Error! Node has no such method")))
         | A.List ele_type ->
       	(match fname with 
@@ -836,6 +859,10 @@ in
               | "length" -> (get_set_size (L.build_load dname' dname builder) builder, A.Int)
               | "contain" -> (check_set_element (L.build_load dname' dname builder) 
           						(fst (expr builder (List.nth actuals 0) )) builder, A.Bool)
+              | "remove" -> (remove_set_element
+                            (L.build_load dname' dname builder)
+                            (fst (expr builder (List.nth actuals 0)))
+                            builder, A.Set(ele_type))
       		  | _ -> raise (Failure ("Error! Set has no such method")))
       | A.Map (k_type, v_type) ->
       	(match fname with

@@ -49,12 +49,6 @@ int main(){
   node2.setvalue(2);
   node3.setvalue(3);
   node4.setvalue(4);
-
-  
-  print(node1.value());
-  print(node2.value());
-  print(node3.value());
-  print(node4.value());
   
 
 	g.addNode(node1);
@@ -101,14 +95,18 @@ int main(){
 
 	node5 = rec.get(0);
 	prints(node5.name());
+  print(node5.value());
 
 	node6 = rec.get(1);
 	prints(node6.name());
+  print(node6.value());
 
 	node7 = rec.get(2);
 	prints(node7.name());
+  print(node7.value());
 
 	node8 = rec.get(3);
 	prints(node8.name());
+  print(node8.value());
 
 }

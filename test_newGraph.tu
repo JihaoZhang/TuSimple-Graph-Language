@@ -35,6 +35,7 @@ int main(){
   new rec;
   new visited;
   new g;
+  node1.weightIter(0);
 	node1 -> node2 = 11;
 	node2 -> node4 = 12;
 	node1 -> node3 = 14;

@@ -1441,7 +1441,7 @@ struct Node* iterNode(struct Node* node, int index){
     }
 }
 
-double weightIterNode(struct Node* node, int index){
+int weightIterNode(struct Node* node, int index){
     int size = get_list_size(node->weight);
     // printf("%d\n", size);
     if (0<=index && index<size)
@@ -1501,7 +1501,7 @@ void print_graph(struct Graph* g){
             // printf("EXE HERE, j = %d\n", j);
             // struct Node* m = voidTonode(get_list_element(n->nodes, j));
             struct Node* m = iterNode(n, j);
-            printf("( %s, %f) ", m->name, weightIterNode(n, j));
+            printf("( %s, %d) ", m->name, weightIterNode(n, j));
         }
         printf("\n");
     }

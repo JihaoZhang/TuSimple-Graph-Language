@@ -144,7 +144,7 @@ char* getNodeValue(struct Node* node, int32_t type, ...);
 void addNodeEdge(struct Node* node1, struct Node* node2, double weight);
 void addReverseEdge(struct Node* node1, struct Node* node2, double weight);
 char* nameIterNode(struct Node* node, int index);
-double weightIterNode(struct Node* node, int index);
+int weightIterNode(struct Node* node, int index);
 int getNodeLength(struct Node* node);
 void* get_node_value(struct Node* node);
 
