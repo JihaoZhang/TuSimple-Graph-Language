@@ -21,28 +21,16 @@ int main(){
   new rec;
   new visited;
   new g;
-  node1.weightIter(0);
+  node1 -> node3 = 14;
 	node1 -> node2 = 11;
-	node1 -> node3 = 14;
+
 	node2 -> node4 = 12;
 	node3 -> node4 = 15;
 	g.addNode(node1);
 	g.addNode(node2);
 	g.addNode(node3);
 	g.addNode(node4);
-  l = g.bfs(node1);	
-
-  node5 = l.get(0);
-  prints(node5.name());
-
-  node6 = l.get(1);
-  prints(node6.name());
-
-  node7 = l.get(2);
-  prints(node7.name());
-
-  node8 = l.get(3);
-  prints(node8.name());
+ 
 
   l2 += @{node1};
   rec += @{node1};
