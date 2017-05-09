@@ -1,3 +1,34 @@
+int main()
+{	
+	map @{string, int} m;
+  	new m;
+
+  	m.put("hello", 1);
+    m.put("hello", 2);
+    m.put("hi", 4);
+    m.put("hello", 3);
+
+
+  	print(m.get("hello"));
+
+  	print(m.size());
+
+  	if (m.haskey("hello")) prints("true");
+  	else prints("false");
+
+  	m.remove("hello");
+
+  	if (m.haskey("hello")) prints("true");
+  	else prints("false");
+  	
+  	print(m.size());
+
+
+ 	return 0;
+} 
+
+
+/*
 int main() {
 	node @{int} n1, n2, n3,n4, n5,n6, n7, n8;
 	graph g;
@@ -25,11 +56,10 @@ int main() {
 	g.addNode(n2);
 	g.addEdge(n1, n2, 33);
 	
-/*	n8 = g.IterGraph(0);
+	n8 = g.IterGraph(0);
 	prints(n8.name());
 	print(n8.value());	
-*/
-/*
+
 	n1->@{n2, n3, n4} = @{22, 33, 44};
 	n5--@{n1, n6, n7} = @{22,66, 77};
 	print(n1.length());	
@@ -40,8 +70,8 @@ int main() {
 		prints(n8.name());
 		print(n8.value());		
 	}
-*/
+
 	
 	return 0;
 }
-
+*/
