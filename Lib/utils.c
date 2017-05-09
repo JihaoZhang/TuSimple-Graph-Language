@@ -1477,6 +1477,7 @@ void print_list(struct List* l){
 void print_graph(struct Graph* g){
     printf("Printing graph %s :\n", g->name);
     int size = get_list_size(g->nodes);
+    printf("size : %d\n", size);
     for (int i=0;i<size;i++){
         struct Node* n = iterGraph(g, i);
         // printf("%d: %s -> \n", i+1, n->name);
@@ -1502,7 +1503,7 @@ struct Graph* createGraph(char* name){
     return new;
 }
 
-void addGraphNode(struct Graph* graph, struct Node* node){
+struct Graph* addGraphNode(struct Graph* graph, struct Node* node){
     if (graph==NULL){
         printf("Graph does not exist.\n");
         return;
@@ -1518,9 +1519,11 @@ void addGraphNode(struct Graph* graph, struct Node* node){
     // printf("%s\n", node->name);
     // printf("%d\n", get_list_size(graph->nodes)-1);
     graph->hashmap = hashmap_put(graph->hashmap, node->name, get_list_size(graph->nodes)-1);
+
+    return graph;
 }
 
-void addGraphEdge(struct Graph* graph, struct Node* node1, struct Node* node2, double weight){
+struct Graph* addGraphEdge(struct Graph* graph, struct Node* node1, struct Node* node2, double weight){
     if (hashmap_get(graph->hashmap, node1->name)==NULL){
         addGraphNode(graph, node1);
     }
@@ -1528,6 +1531,8 @@ void addGraphEdge(struct Graph* graph, struct Node* node1, struct Node* node2, d
         addGraphNode(graph, node2);
     }
     addNodeEdge(node1, node2, weight);
+
+    return graph;
 }
 
 struct Node* iterGraph(struct Graph* graph, int index){
@@ -1613,7 +1618,7 @@ struct Graph* combine(struct Graph* g1, struct Graph* g2){
     int size2 = get_list_size(g2->nodes);
     for (int i=0;i<size2;i++){
         struct Node* n = iterGraph(g2, i);
-        if (findGraphNode(g1, n->name)==NULL){
+        if (findGraphNode(g1, n)==NULL){
             addGraphNode(g1, n);
         }
     }
@@ -1654,7 +1659,7 @@ struct List* bfs(struct Graph* g, struct Node* n){
 struct List* dfs(struct Graph* g, struct Node* n){
     struct List* l = create_list(NODE);
     struct List* rec = create_list(NODE);
-    struct hashmap* m = create_hashmap(STRING, INT);
+    struct Map* m = create_hashmap(STRING, INT);
 
     plus_list(l, n);
     plus_list(rec, n);
@@ -1707,7 +1712,6 @@ struct Graph* reverse(struct Graph* g){
     //  }
     // }
 }
-
 // int test_inttoint_hashmap_iterate_func(void* key, void* keyData, void* keyValue) {
 //     printf("%s ", "MAPKEY:");
 //     printf("%s\n", voidTostring(key));

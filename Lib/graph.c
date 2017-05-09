@@ -42,7 +42,7 @@ struct Graph* createGraph(char* name){
 	return new;
 }
 
-void addGraphNode(struct Graph* graph, struct Node* node){
+struct Graph* addGraphNode(struct Graph* graph, struct Node* node){
 	if (graph==NULL){
 		printf("Graph does not exist.\n");
 		return;
@@ -58,9 +58,11 @@ void addGraphNode(struct Graph* graph, struct Node* node){
 	// printf("%s\n", node->name);
 	// printf("%d\n", get_list_size(graph->nodes)-1);
 	graph->hashmap = hashmap_put(graph->hashmap, node->name, get_list_size(graph->nodes)-1);
+
+	return graph;
 }
 
-void addGraphEdge(struct Graph* graph, struct Node* node1, struct Node* node2, double weight){
+struct Graph* addGraphEdge(struct Graph* graph, struct Node* node1, struct Node* node2, double weight){
 	if (hashmap_get(graph->hashmap, node1->name)==NULL){
 		addGraphNode(graph, node1);
 	}
@@ -68,6 +70,8 @@ void addGraphEdge(struct Graph* graph, struct Node* node1, struct Node* node2, d
 		addGraphNode(graph, node2);
 	}
 	addNodeEdge(node1, node2, weight);
+
+	return graph;
 }
 
 struct Node* iterGraph(struct Graph* graph, int index){
