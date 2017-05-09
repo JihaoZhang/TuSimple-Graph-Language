@@ -322,6 +322,8 @@ let check (globals, functions) =
                   (match actuals with 
                     [x] when (expr x) = Int -> Node typn
                     | _ -> raise (Failure ("Error! Wrong argument in iterNode")))
+              | "length" ->
+                  if actuals = [] then Int else raise (Failure ("Error! Wrong argument in Node.length()"))
               | _ -> raise (Failure ("Node has no such method"))
             )
           | List ele_type -> 

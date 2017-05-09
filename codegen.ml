@@ -377,6 +377,16 @@ let iterNode n_ptr index llbuilder =
     )
 in
 
+let getNodeLength_t = L.function_type i32_t [| node_t |]
+in 
+let getNodeLength_f = L.declare_function "getNodeLength" getNodeLength_t the_module
+in
+let getNodeLength n_ptr llbuilder = 
+    let actuals = [| n_ptr |] in (
+      L.build_call getNodeLength_f actuals "getNodeLength" llbuilder
+    )
+in
+
 
 (*
 ================================================================
@@ -789,6 +799,7 @@ in
           | "iterNode" -> (let arg = List.nth actuals 0
               in let index = fst (expr builder arg)
               in iterNode (L.build_load dname' dname builder) index builder, A.Node(n_type))
+          | "length" -> (getNodeLength (L.build_load dname' dname builder) builder, A.Int)
       		| _ -> raise (Failure ("Error! Node has no such method")))
         | A.List ele_type ->
       	(match fname with 

@@ -24,6 +24,7 @@ int main(){
   //node1 -> node2 = 128;
   //node1 -- node2 = 3;
   //node1 -> node2; 
+  print(node3.length());
   a = 100;
   print(a);
 // string cannot contain space and special chars 

@@ -145,6 +145,7 @@ void addNodeEdge(struct Node* node1, struct Node* node2, double weight);
 void addReverseEdge(struct Node* node1, struct Node* node2, double weight);
 char* nameIterNode(struct Node* node, int index);
 double weightIterNode(struct Node* node, int index);
+int getNodeLength(struct Node* node);
 
 
 /************************************

@@ -1457,6 +1457,10 @@ double getEdgeValue(struct Node* node1, struct Node* node2) {
     return 0;
 }
 
+int getNodeLength(struct Node* node){
+    return get_list_size(node->nodes);
+}
+
 /************************************
 	Graph Methods
 ************************************/

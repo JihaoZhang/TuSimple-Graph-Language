@@ -84,6 +84,10 @@ char* getNodeValue(struct Node* node, int32_t type, ...) {
  	return "";
 }
 
+int getNodeLength(struct Node* node){
+	return get_list_size(node->nodes);
+}
+
 char* getNodeName(struct Node* node) {
 	if (node == NULL) {
 		printf("Node does not exist.\n");
