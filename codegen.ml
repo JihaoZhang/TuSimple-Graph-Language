@@ -387,6 +387,16 @@ let getNodeLength n_ptr llbuilder =
     )
 in
 
+let get_node_value_t = L.function_type (L.pointer_type i8_t) [| node_t |]
+in 
+let get_node_value_f = L.declare_function "get_node_value" get_node_value_t the_module
+in
+let get_node_value n_ptr llbuilder = 
+    let actuals = [| n_ptr |] in (
+        L.build_call get_node_value_f actuals "get_node_value" llbuilder
+    )
+in
+
 
 (*
 ================================================================
@@ -791,7 +801,7 @@ in
       (match dtype with
       	A.Node n_type -> 
       	(match fname with
-      		   "value" ->  (let nodeValuePtr = getNodeValue (L.build_load dname' dname builder) builder
+      		   "value" ->  (let nodeValuePtr = get_node_value (L.build_load dname' dname builder) builder
       		in type_conversion n_type nodeValuePtr builder, n_type)
       		| "name" -> (getNodeName (L.build_load dname' dname builder) builder, A.String)
       		| "setvalue" -> (setNodeValue (L.build_load dname' dname builder) 

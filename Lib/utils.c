@@ -1388,6 +1388,15 @@ char* getNodeValue(struct Node* node, int32_t type, ...) {
     return "";
 }
 
+void* get_node_value(struct Node* node) {
+    if (node == NULL) {
+        printf("%s\n", "Error! - get_node_value : Node does not exist");
+        exit(1);
+    }
+
+    return node->value;
+}
+
 char* getNodeName(struct Node* node) {
     if (node == NULL) {
         printf("Node does not exist.\n");
