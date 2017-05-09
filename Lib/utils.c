@@ -1613,7 +1613,7 @@ struct Graph* combine(struct Graph* g1, struct Graph* g2){
     int size2 = get_list_size(g2->nodes);
     for (int i=0;i<size2;i++){
         struct Node* n = iterGraph(g2, i);
-        if (findGraphNode(g1, n)==NULL){
+        if (findGraphNode(g1, n->name)==NULL){
             addGraphNode(g1, n);
         }
     }
@@ -1654,7 +1654,7 @@ struct List* bfs(struct Graph* g, struct Node* n){
 struct List* dfs(struct Graph* g, struct Node* n){
     struct List* l = create_list(NODE);
     struct List* rec = create_list(NODE);
-    struct Map* m = create_hashmap(STRING, INT);
+    struct hashmap* m = create_hashmap(STRING, INT);
 
     plus_list(l, n);
     plus_list(rec, n);
