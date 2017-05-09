@@ -1,13 +1,13 @@
 int main(){
 	int a;
 	int b;
-  int i;
+  	int i;
 	bool c;
 	bool d;
 	int size;
 	int now;
 	node@{int} node1;
-  node@{int} node2;
+  	node@{int} node2;
 	node@{int} node3;
 	node@{int} node4;
 	node@{int} node5;
@@ -21,7 +21,7 @@ int main(){
 	list@{node@{int}} rec;
 	set@{node@{int}} visited;
 	map@{string,int} hash;
-  graph g;
+  	graph g;
 	new node1;
 	new node2;
 	new node3;
@@ -43,14 +43,12 @@ int main(){
 	node2 -> node4 = 12;
 	node1 -> node3 = 14;
 	node3 -> node4 = 15;
-
   
-  node1.setvalue(1);
-  node2.setvalue(2);
-  node3.setvalue(3);
-  node4.setvalue(4);
+  	node1.setvalue(1);
+  	node2.setvalue(2);
+  	node3.setvalue(3);
+  	node4.setvalue(4);
   
-
 	g.addNode(node1);
 	g.addNode(node2);
 	g.addNode(node3);
@@ -95,18 +93,18 @@ int main(){
 
 	node5 = rec.get(0);
 	prints(node5.name());
-  print(node5.value());
+  	print(node5.value());
 
 	node6 = rec.get(1);
 	prints(node6.name());
-  print(node6.value());
+  	print(node6.value());
 
 	node7 = rec.get(2);
 	prints(node7.name());
-  print(node7.value());
+  	print(node7.value());
 
 	node8 = rec.get(3);
 	prints(node8.name());
-  print(node8.value());
+  	print(node8.value());
 
 }
