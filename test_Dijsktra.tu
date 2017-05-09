@@ -45,7 +45,7 @@ int main(){
     node1 -> node3 = 3;
     node3 -> node4 = 3;
 
-    max = 32767;
+    max = 10000;
 
     queue+=@{node1};
     inList.put(node1.name());
@@ -68,17 +68,20 @@ int main(){
     
     while (queue.length()!=0){
       node9 = queue.get(0);
-      prints(node9.name());
+      // prints(node9.name());
       size = node9.length();
       now = dis.get(node9.name());
       for (i=0;i<size;i+=1){
-        print(i);
+        // print(i);
         node10 = node9.iterNode(i);
+        // print(now);
         tmp = now + node9.weightIter(i);
+        // print(node9.weightIter(i));
         if (!dis.haskey(node10.name())){
           dis.put(node10.name(), max);
         }
         if (tmp<dis.get(node10.name())){
+
           dis.put(node10.name(), tmp);
           if (!inList.contain(node10.name())){
             queue += @{node10};
@@ -88,18 +91,16 @@ int main(){
         }
         // i+=1;
       }
-      print(inList.length());
+      // print(inList.length());
       inList.remove(node9.name());
       queue.remove(0);
+      // print(inList.length());
     }
     
-    name = node1.name();
-    print(dis.get(name));
-    name = node2.name();
-    print(dis.get(name));
-    name = node3.name();
-    print(dis.get(name));
-    name = node4.name();
-    print(dis.get(name));
+    now = dis.get(node1.name());
+    print(now);
+    print(dis.get(node2.name()));
+    print(dis.get(node3.name()));
+    print(dis.get(node4.name()));
     
 }
