@@ -382,7 +382,7 @@ let createGraph s_ptr llbuilder =
 	)
 in
 
-let addGraphNode_t = L.function_type void_t [| graph_t; node_t |]
+let addGraphNode_t = L.function_type graph_t [| graph_t; node_t |]
 in
 let addGraphNode_f = L.declare_function "addGraphNode" addGraphNode_t the_module
 in
@@ -391,13 +391,13 @@ let addGraphNode g_ptr n_ptr llbuilder =
 		L.build_call addGraphNode_f actuals "addGraphNode" llbuilder
 in
 
-let addGraphEdge_t = L.function_type void_t [| graph_t; node_t; node_t; i32_t |]
+let addGraphEdge_t = L.function_type graph_t [| graph_t; node_t; node_t; i32_t |]
 in
 let addGraphEdge_f = L.declare_function "addGraphEdge" addGraphEdge_t the_module
 in
 let addGraphEdge g_ptr n1_ptr n2_ptr w llbuilder =
 	let actuals = [| g_ptr; n1_ptr; n2_ptr; w |] in
-		L.build_call addGraphNode_f actuals "addGraphNode" llbuilder
+		L.build_call addGraphEdge_f actuals "addGraphEdge" llbuilder
 in
 
 let iterGraph_t = L.function_type node_t [| graph_t; i32_t |]
@@ -827,60 +827,46 @@ in
          | _ -> raise (Failure ("Error! Map has no such method")))
        | A.Graph -> 
       	(match fname with 
-            | "bfs" -> (let arg = List.nth actuals 0
+              "bfs" -> (let arg = List.nth actuals 0
               in let nodePtr = fst (expr builder arg)
               in bfs (L.build_load dname' dname builder) nodePtr builder, A.List(A.Node(A.Int)))
             | "dfs" -> (let arg = List.nth actuals 0
               in let nodePtr = fst (expr builder arg)
               in dfs (L.build_load dname' dname builder) nodePtr builder, A.List(A.Node(A.Int)))
             | "iterGraph" -> (iterGraph
-                        (L.build_load dname' dname builder)
-                        (fst (expr builder (List.nth actuals 0))) builder, A.Node(A.Int))
+                        		(L.build_load dname' dname builder)
+                        		(fst (expr builder (List.nth actuals 0))) 
+                        		builder
+                        	, A.Node(A.Int))
             | "findGraphNode" -> (findGraphNode
-                                 (L.build_load dname' dname builder)
-                                 (fst (expr builder (List.nth actuals 0))) builder, A.Node(A.Int))
-      			(* "addNode" -> (addGraphNode (L.build_load dname' dname builder)
-      						  			   (List.nth actuals 0)
+                                 	(L.build_load dname' dname builder)
+                                 	(fst (expr builder (List.nth actuals 0))) 
+                                 	builder
+                            , A.Node(A.Int))
+            | "init" -> (initTag (L.build_load dname' dname builder) builder, A.Void)
+      		| "addNode" -> (addGraphNode (L.build_load dname' dname builder)
+      						  			   (fst (expr builder (List.nth actuals 0)))
       						  			   builder
-      						 , A.Void)
-      		  |	"addEdge" -> (addGraphEdge (L.build_load dname' dname builder)
-      		  							   (List.nth actuals 0)
-      		  							   (List.nth actuals 1)
-      		  							   (List.nth actuals 2)
+      						, A.Void)
+      		| "addEdge" -> (addGraphEdge (L.build_load dname' dname builder)
+      		  							   (fst (expr builder (List.nth actuals 0)))
+      		  							   (fst (expr builder (List.nth actuals 1)))
+      		  							   (fst (expr builder (List.nth actuals 2)))
       		  							   builder
-      								 , A.Void)
-      		  | "iter" -> (iterGraph (L.build_load dname' dname builder)
-      		  						 (List.nth actuals 0)
-      		  						 builder
-      					  , A.Node)
-      		  | "find" -> (findGraphNode (L.build_load dname' dname builder)
-      		  							 (List.nth actuals 0)
-      		  							 builder
-      					  , A.Node)
-      		  | "init" -> (init_tag (L.build_load dname' dname builder)
+      						, A.Void)
+      		| "reduce" -> (reduce (L.build_load dname' dname builder)
+      		  						(fst (expr builder (List.nth actuals 0)))
       		  						builder
-      					  , A.Node)
-      		  | "reduce" -> (reduce (L.build_load dname' dname builder)
-      		  						(List.nth actuals 0)
+      						, A.Node(A.Int))
+      		| "expand" -> (expand (L.build_load dname' dname builder)
+      		  						(fst (expr builder (List.nth actuals 0)))
       		  						builder
-      						, A.Node)
-      		  | "expand" -> (expand (L.build_load dname' dname builder)
-      		  						(List.nth actuals 0)
+      						, A.Node(A.Int))
+      		| "combine" -> (combine (L.build_load dname' dname builder)
+      		  						(fst (expr builder(List.nth actuals 0)))
       		  						builder
-      						, A.Node)
-      		  | "combine" -> (combine (L.build_load dname' dname builder)
-      		  						  (List.nth actuals 0)
-      		  						  builder
-      						 , A.Graph)
-      		  | "bfs" -> (bfs (L.build_load dname' dname builder)
-      		  				  (List.nth actuals 0)
-      		  				  builder
-      					 , A.List)
-      		  | "dfs" -> (dfs (L.build_load dname' dname builder)
-      		  				  (List.nth actuals 0)
-      		  				  builder
-      					 , A.List) *)
-      		  | _ -> raise (Failure ("Error! Graph has no such method"))) 
+      						, A.Graph)
+      		| _ -> raise (Failure ("Error! Graph has no such method"))) 
       	| _ -> raise (Failure ("Error! Do not support such type")))
       | A.Call ("print", [e]) -> (L.build_call printf_func [| int_format_str ; (fst (expr builder e)) |]
 			   "printf" builder, (snd (expr builder e)))
