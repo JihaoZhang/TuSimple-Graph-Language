@@ -46,44 +46,19 @@ int main(){
 	g.addNode(node2);
 	g.addNode(node4);
 
+	l = g.dfs(node1);	
 
-	l2 += @{node1};
-	rec += @{node1};
-	hash.put(node1.name(), 0);
-	
-	while (l2.length()!=0){
-		node9 = l2.get(l2.length()-1);
-		size = node9.length();
-		now = hash.get(node9.name());
-		if (now<size){
-			node10 = node9.iterNode(now);
-			if (!hash.haskey(node10.name())){
-				l2 += @{node10};
-				rec += @{node10};
-				hash.put(node10.name(),0);
-			}
-			hash.put(node9.name(), now+1);
-		} else {
-			l2.remove(l2.length()-1);
-		}
-	}
-
-	print(rec.length());
-
-	node5 = rec.get(0);
+	node5 = l.get(0);
 	prints(node5.name());
-  print(node5.value());
 
-	node6 = rec.get(1);
+	node6 = l.get(1);
 	prints(node6.name());
-  print(node6.value());
 
-	node7 = rec.get(2);
+	node7 = l.get(2);
 	prints(node7.name());
-  print(node7.value());
 
-	node8 = rec.get(3);
+	node8 = l.get(3);
 	prints(node8.name());
-  print(node8.value());
+
 
 }
