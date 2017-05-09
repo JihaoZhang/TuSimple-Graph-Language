@@ -1410,7 +1410,7 @@ char* getNodeName(struct Node* node) {
 void addNodeEdge(struct Node* node1, struct Node* node2, double weight){
     if (node1->nodes==NULL){
         node1->nodes = create_list(NODE);
-        node1->weight = create_list(FLOAT);
+        node1->weight = create_list(INT);
     }
     // printf("EXECUTED at addNodeEdge");
     plus_list(node1->nodes, node2);
@@ -1447,7 +1447,7 @@ int weightIterNode(struct Node* node, int index){
     int size = get_list_size(node->weight);
     // printf("%d\n", size);
     if (0<=index && index<size)
-        return voidTofloat(get_list_element(node->weight, index));
+        return voidToint(get_list_element(node->weight, index));
     else{
         printf("Node does not exist.\n");
         return 0;
