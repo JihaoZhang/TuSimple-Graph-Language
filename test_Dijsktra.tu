@@ -97,8 +97,7 @@ int main(){
       // print(inList.length());
     }
     
-    now = dis.get(node1.name());
-    print(now);
+    print(dis.get(node1.name()));
     print(dis.get(node2.name()));
     print(dis.get(node3.name()));
     print(dis.get(node4.name()));
