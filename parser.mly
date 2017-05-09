@@ -74,9 +74,20 @@ typ:
 vdecl_list:
     /* nothing */    { [] }
   | vdecl_list vdecl { $2 :: $1 }
+  | vdecl_list vdecl_batch { $2 @ $1 }
 
 vdecl:
     typ ID SEMI { ($1, $2) }
+
+vdecl_batch:
+    typ id_list { List.map (fun id -> ($1, id)) $2 }
+
+id_list:
+    id_element SEMI { List.rev $1 }
+
+id_element:
+    ID    { [$1] }
+  | id_element COMMA ID { $3 :: $1 } 
 
 stmt_list:
     /* nothing */  { [] }

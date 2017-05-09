@@ -1,23 +1,9 @@
 int main(){
-	int a;
-	int b;
-  int i;
-	bool c;
-	bool d;
+	int a, b, i;
+	bool c, d;
   int size;
-	node@{int} node1;
-  node@{int} node2;
-	node@{int} node3;
-	node@{int} node4;
-  node@{int} node5;
-  node@{int} node6;
-  node@{int} node7;
-  node@{int} node8;
-  node@{int} node9;
-  node@{int} node10;
-  list@{node@{int}} l;
-  list@{node@{int}} l2;
-  list@{node@{int}} rec;
+	node@{int} node1, node2, node3, node4, node5, node6, node7, node8, node9, node10;
+  list@{node@{int}} l, l2, rec;
   set@{node@{int}} visited;
   graph g;
 	new node1;
