@@ -962,7 +962,9 @@ int32_t get_set_element_index(struct Set *set, ...) {
         case NODE:
             nodeTemp = va_arg(args_ptr, struct Node*);
             while (index < (set->data->currPos)) {
-                if (strcmp(nodeTemp->name, voidTostring(*(set->data->value + index))) == 0) {
+                // printf("%s\n", nodeTemp->name);
+                // printf("%s\n", voidTonode(*(set->data->value + index))->name);
+                if (strcmp(nodeTemp->name, voidTonode(*(set->data->value + index))->name) == 0) {
                     return index;
                 }
                 index++;
@@ -1124,7 +1126,7 @@ struct Set *remove_set_element(struct Set *set, ...) {
             nodeTemp = va_arg(args_ptr, struct Node*);
             index = get_set_element_index(set, nodeTemp);
             if (index == -1) {
-                printf("%s\n", "Error! remove_set_element : Element does not exist.");
+                printf("%s\n", "Error! remove_set_element : Node does not exist.");
                 exit(1);
             } else {
                 remove_list_element(set->data, index);
@@ -2005,6 +2007,12 @@ struct Graph* reverse(struct Graph* g){
 //     printf("%d\n", get_set_element_index(intSet2, 2));
 //     printf("%d\n", get_set_element_index(intSet2, 3));
 //     printf("%d\n", get_set_element_index(intSet2, 4));
+//     // struct Set* nodeSet1 = create_set(NODE);
+//     // struct Node* setTestNode1 = createNode("setTestNode1", INT);
+//     // struct Node* setTestNode2 = createNode("setTestNode2", INT);
+//     // nodeSet1 = put_set(nodeSet1, setTestNode1);
+//     // nodeSet1 = put_set(nodeSet1, setTestNode2);
+//     // printf("%d\n", get_set_element_index(nodeSet1, setTestNode1));
 
 
 //     // Test function: remove_set_element
@@ -2015,6 +2023,14 @@ struct Graph* reverse(struct Graph* g){
 //     intSet2 = remove_set_element(intSet2, 3);
 //     printf("%d\n", get_set_size(intSet2));
 //     printf("%d\n", intSet2->data->currPos);
+//     struct Set* nodeSet1 = create_set(NODE);
+//     struct Node* setTestNode1 = createNode("setTestNode1", INT);
+//     struct Node* setTestNode2 = createNode("setTestNode2", INT);
+//     nodeSet1 = put_set(nodeSet1, setTestNode1);
+//     nodeSet1 = put_set(nodeSet1, setTestNode2);
+//     printf("%d\n", get_set_size(nodeSet1));
+//     nodeSet1 = remove_set_element(nodeSet1, setTestNode1);
+//     printf("%d\n", get_set_size(nodeSet1));
 
 
 //     // Test function: addNodeEdge

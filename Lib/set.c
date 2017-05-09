@@ -121,13 +121,14 @@ int32_t get_set_element_index(struct Set *set, ...) {
         case NODE:
             nodeTemp = va_arg(args_ptr, struct Node*);
             while (index < (set->data->currPos)) {
+                // printf("%s\n", nodeTemp->name);
+                // printf("%s\n", voidTonode(*(set->data->value + index))->name);
                 if (strcmp(nodeTemp->name, voidTonode(*(set->data->value + index))->name) == 0) {
                     return index;
                 }
                 index++;
             }
             return -1;
-
 
         default:
             break;
@@ -198,10 +199,10 @@ struct Set *put_set(struct Set *set, ...) {
                 set->data = plus_list(set->data, voidTonode(addData));
                 set->size++;
             } else {
-                printf("%s\n", "Error! put_set : Element Already exist.\n");
+                printf("%s\n", "Error! put_set : Element Already exist.");
                 exit(1);
             }
-
+            break;
 
         default:
             break;
@@ -284,7 +285,7 @@ struct Set *remove_set_element(struct Set *set, ...) {
             nodeTemp = va_arg(args_ptr, struct Node*);
             index = get_set_element_index(set, nodeTemp);
             if (index == -1) {
-                printf("Error! remove_set_element : Element does not exist.\n");
+                printf("%s\n", "Error! remove_set_element : Node does not exist.");
                 exit(1);
             } else {
                 remove_list_element(set->data, index);
