@@ -1503,6 +1503,7 @@ struct Graph* createGraph(char* name){
     return new;
 }
 
+
 struct Graph* addGraphNode(struct Graph* graph, struct Node* node){
     if (graph==NULL){
         printf("Graph does not exist.\n");
