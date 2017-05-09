@@ -386,11 +386,11 @@ let check (globals, functions) =
             (match fname with
                 "bfs" -> 
                 (match actuals with
-                  [x] when (expr x) = Node(Int) -> List(Int)
+                  [x] when (expr x) = Node(Int) -> List(Node(Int))
                 | _ -> raise (Failure ("Graph bfs method error")))
               | "dfs" ->
                 (match actuals with 
-                  [x] when (expr x) = Node(Int) -> List(Int)
+                  [x] when (expr x) = Node(Int) -> List(Node(Int))
                   | _ -> raise (Failure ("Graph dfs method error")))
               | "iterGraph" ->
                 (match actuals with 
