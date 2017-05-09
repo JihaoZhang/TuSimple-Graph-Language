@@ -9,13 +9,15 @@ int main(){
 	set @{int} s1;
 	map @{int, string} map1;
 	map @{int, int} map2;
-//	graph g;
+	//graph g;
 
 	new n1;
 	new l1;
 	new map2;
 	new s1;
 
+
+	//n1.iterNode(0);
 	n1.value();
 	i = n1.value();
 	str = n1.name();

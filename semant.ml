@@ -318,6 +318,10 @@ let check (globals, functions) =
                       [x] when ((expr x) = Int) || ((expr x) = String) 
                             || ((expr x) = Float) || ((expr x) = Bool) -> Null_t
                     | _ -> raise (Failure ("Set setvalue method error")))
+              | "iterNode" -> 
+                  (match actuals with 
+                    [x] when (expr x) = Int -> Node typn
+                    | _ -> raise (Failure ("Error! Wrong argument in iterNode")))
               | _ -> raise (Failure ("Node has no such method"))
             )
           | List ele_type -> 

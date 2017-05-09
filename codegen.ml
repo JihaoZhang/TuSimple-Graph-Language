@@ -367,6 +367,17 @@ let setNodeValue n_ptr data llbuilder =
 		L.build_call setNodeValue_f actuals "setNodeValue" llbuilder
 in
 
+let iterNode_t = L.function_type node_t [| node_t; i32_t|]
+in
+let iterNode_f = L.declare_function "iterNode" iterNode_t the_module
+in
+let iterNode n_ptr index llbuilder =
+    let actuals = [|n_ptr; index|] in (
+      L.build_call iterNode_f actuals "iterNode" llbuilder
+    )
+in
+
+
 (*
 ================================================================
   Graph Methods
@@ -775,6 +786,9 @@ in
       		| "name" -> (getNodeName (L.build_load dname' dname builder) builder, A.String)
       		| "setvalue" -> (setNodeValue (L.build_load dname' dname builder) 
       		   			(fst (expr builder (List.nth actuals 0) )) builder, A.Void)
+          | "iterNode" -> (let arg = List.nth actuals 0
+              in let index = fst (expr builder arg)
+              in iterNode (L.build_load dname' dname builder) index builder, A.Node(n_type))
       		| _ -> raise (Failure ("Error! Node has no such method")))
         | A.List ele_type ->
       	(match fname with 
