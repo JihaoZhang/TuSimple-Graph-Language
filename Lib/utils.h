@@ -155,4 +155,12 @@ struct Graph* addGraphNode(struct Graph* graph, struct Node* node);
 struct Graph* addGraphEdge(struct Graph* graph, struct Node* node1, struct Node* node2, double weight);
 struct Node* iterGraph(struct Graph* graph, int index);
 struct Node* findGraphNode(struct Graph* graph, char* nodeName);
+
+struct Node* init_tag(struct Graph* g);
+struct Node* reduce(struct Graph* g, struct Node* n0);
+struct Node* expand(struct Graph* g, struct Node* n0);
+struct Graph* combine(struct Graph* g1, struct Graph* g2);
+struct List* bfs(struct Graph* g, struct Node* n);
+struct List* dfs(struct Graph* g, struct Node* n);
+
 #endif
