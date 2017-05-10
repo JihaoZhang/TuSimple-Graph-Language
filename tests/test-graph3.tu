@@ -45,5 +45,5 @@ int main(){
     node7 = g.iterGraph(i);
     prints(node7.name());
   }
-*/
+
 }
