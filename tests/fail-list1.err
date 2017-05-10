@@ -1,1 +1,1 @@
-Fatal error: exception Failure("illegal assignment list@{int} = list@{float} in l = @{0.1, 3, 4}")
+Fatal error: exception Failure("illegal list definition {0.1, 3, 4}. Type Must be homogeneous in a list")

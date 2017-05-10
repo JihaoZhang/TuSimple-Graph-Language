@@ -34,7 +34,7 @@ int main(){
 	g.addNode(node3);
 	g.addNode(node4);
 
-  for (i = 0; i < 4; i+=1) {
+  for (i = 0; i < g.length(); i+=1) {
     node7 = g.iterGraph(i);
     prints(node7.name());
   }
