@@ -162,6 +162,16 @@ let translate (globals, functions) =
 		ignore (L.build_call add_list_f actuals "plus_list" llbuilder)
 	in
 
+	let print_list_t = L.function_type (L.pointer_type i8_t)  [| list_t |]
+	in
+	let print_list_f = L.declare_function "print_list" print_list_t the_module
+	in
+	let print_list l_ptr llbuilder =
+		let actuals = [|l_ptr|] in (
+			L.build_call print_list_f actuals "print_list" llbuilder
+		)
+	in
+
 
 (*
 ================================================================
@@ -520,6 +530,15 @@ let dfs g_ptr n_ptr llbuilder=
 		L.build_call dfs_f actuals "dfs" llbuilder
 in 
 
+let print_graph_t = L.function_type (L.pointer_type i8_t)  [| graph_t |] 
+in 
+let print_graph_f = L.declare_function "print_graph" print_graph_t the_module
+in 
+let print_graph g_ptr llbuilder = 
+	let actuals = [| g_ptr |] in 
+		L.build_call print_graph_f actuals "print_graph" llbuilder
+in
+
 (*
 ================================================================
 	Cast Methods
@@ -837,6 +856,7 @@ in
 							| "cancat" -> (let arg = List.nth actuals 0
 																in let listPtr = fst (expr builder arg)
 																in concat_list (L.build_load dname' dname builder) listPtr builder, ele_type)
+							| "printList" -> (print_list (L.build_load dname' dname builder) builder, A.Void)
 							| _ -> raise (Failure ("Error! List has no such method"))) 
 			 | A.Set ele_type ->
 						(match fname with
@@ -912,8 +932,8 @@ in
 															(fst (expr builder(List.nth actuals 0)))
 															builder
 										, A.Graph)
-						| "length" -> (graphLength (L.build_load dname' dname builder) builder, A.Int
-						)
+						| "length" -> (graphLength (L.build_load dname' dname builder) builder, A.Int)
+						| "printGraph" -> (print_graph (L.build_load dname' dname builder) builder, A.Void)
 						| _ -> raise (Failure ("Error! Graph has no such method"))) 
 				| _ -> raise (Failure ("Error! Do not support such type")))
 			| A.Call ("print", [e]) -> (L.build_call printf_func [| int_format_str ; (fst (expr builder e)) |]

@@ -16,7 +16,7 @@
 
 struct Graph* createGraph(char* name);
 void addGraphNode(struct Graph* graph, struct Node* node);
-void addGraphEdge(struct Graph* graph, struct Node* node1, struct Node* node2, double weight);
+int addGraphEdge(struct Graph* graph, struct Node* node1, struct Node* node2, int weight);
 struct Node* iterGraph(struct Graph* graph, int index);
 struct Node* findGraphNode(struct Graph* graph, char* nodeName);
 

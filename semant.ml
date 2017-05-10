@@ -330,6 +330,8 @@ let check (globals, functions) =
                   (match actuals with
                       [x] when (expr x) = List ele_type -> List ele_type
                     | _ -> raise (Failure ("List cancatenate method error")))
+              | "printList" ->
+                  if actuals = [] then Null_t else raise (Failure ("List print_list method error"))
               | _ -> raise (Failure ("List has no such method"))
             )
           | Set ele_type ->
@@ -418,6 +420,8 @@ let check (globals, functions) =
                     | _ -> raise (Failure ("Graph expand method error")))
               | "length" ->
                     if actuals = [] then Int else raise (Failure ("Graph length method error"))
+              | "printGraph" ->
+                    if actuals = [] then Null_t else raise (Failure ("Graph print_graph method error"))
               | _ -> raise (Failure ("Graph has no such method"))
             )
           | _ -> raise (Failure ("unsupported type for method call")))

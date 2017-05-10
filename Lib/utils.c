@@ -67,6 +67,50 @@ void* graphTovoid(struct Graph* value) {
 	List Methods
 ************************************/
 
+void print_list(struct List* l){
+    if (l==NULL){
+        printf("print_list NULL\n");
+    }
+    int size = get_list_size(l);
+    int i;
+    // printf("size: %d", size);
+
+    //printf("%d\n", size);
+    //printf("%d\n", l->type);
+    switch (l->type) {
+        case INT:
+            for (i = 0; i < size; i++) {
+                printf("%d ", voidToint(get_list_element(l, i)));
+            }
+            printf("\n");
+            break;
+
+        case STRING:
+            for (i = 0; i < size; i++) {
+                printf("%s ", voidTostring(get_list_element(l, i)));
+            }
+            printf("\n");
+            break;
+
+        case NODE:
+            for (i = 0; i < size; i++) {
+                printf("%s ", voidTonode(get_list_element(l, i))->name);
+            }
+            printf("\n");
+            break;
+
+        default:
+            break;
+    }
+
+    // for (int i=0;i<size;i++){
+    //  struct Node* n = get_list_element(l, i);
+    //  printf("%s ", n->name);
+    // }
+    // printf("\n");
+    return;
+}
+
 struct List *create_list(int32_t type) {
     struct List *newList = (struct List *) malloc(sizeof(struct List));
 
@@ -1483,18 +1527,18 @@ int graphLength(struct Graph* g) {
     return get_list_size(g->nodes);
 }
 
-void print_list(struct List* l){
-    if (l==NULL){
-        printf("print_list NULL\n");
-    }
-    int size = get_list_size(l);
-    // printf("size: %d", size);
-    for (int i=0;i<size;i++){
-        struct Node* n = get_list_element(l, i);
-        printf("%s ", n->name);
-    }
-    printf("\n");
-}
+// void print_list(struct List* l){
+//     if (l==NULL){
+//         printf("print_list NULL\n");
+//     }
+//     int size = get_list_size(l);
+//     // printf("size: %d", size);
+//     for (int i=0;i<size;i++){
+//         struct Node* n = get_list_element(l, i);
+//         printf("%s ", n->name);
+//     }
+//     printf("\n");
+// }
 
 void print_graph(struct Graph* g){
     printf("Printing graph %s :\n", g->name);
@@ -1503,7 +1547,7 @@ void print_graph(struct Graph* g){
     for (int i=0;i<size;i++){
         struct Node* n = iterGraph(g, i);
         // printf("%d: %s -> \n", i+1, n->name);
-        printf("%s : %f ->\n", n->name, voidTofloat(n->value));
+        printf("%s : %d ->\n", n->name, voidToint(n->value));
         int w_size = get_list_size(n->nodes);
         // printf("w_size : %d\n", w_size);
         for (int j=0;j<w_size;j++){
@@ -1770,7 +1814,8 @@ struct Graph* reverse(struct Graph* g){
 //     stringListTest = plus_list(stringListTest, str2);
 //     printf("%s\n", voidTostring(pop_list_element(stringListTest)));
 //     printf("%s\n", voidTostring(pop_list_element(stringListTest)));
-
+//     printf("%s\n", "PRINT PRINT_LIST");
+//     print_list(intListTest);
 
 
 //     // Test function: get_list_element, get_list_size

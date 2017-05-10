@@ -36,6 +36,8 @@ int main(){
 
 
 	l1 += @{1, 2, 3, 4, 5, 6};
+	prints("PRINTLIST");
+	l1.printList();
 	l2 = @{7, 8, 9};
 	print(l1.get(0));
 	l1.pop();
