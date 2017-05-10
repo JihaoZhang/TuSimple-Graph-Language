@@ -39,10 +39,10 @@ Usage() {
 
 SignalError() {
     if [ $error -eq 0 ] ; then
-	echo "FAILED"
+	echo "\033[31mFAILED\033[0m"
 	error=1
     fi
-    echo "  $1"
+    # echo "  $1"
 }
 
 # Compare <outfile> <reffile> <difffile>
@@ -51,8 +51,8 @@ Compare() {
     generatedfiles="$generatedfiles $3"
     echo diff -b $1 $2 ">" $3 1>&2
     diff -b "$1" "$2" > "$3" 2>&1 || {
-	SignalError "$1 differs"
-	echo "FAILED $1 differs from $2" 1>&2
+	SignalError #"$1 differs"
+	# echo "FAILED $1 differs from $2" 1>&2
     }
 }
 
@@ -108,7 +108,7 @@ Check() {
 	# echo "###### SUCCESS" 1>&2
     echo  "\033[32mSUCCESS\033[0m" 
     else
-	echo "###### FAILED" 1>&2
+	echo "\033[31m红色字\033[0m" 1>&2
 	globalerror=$error
     fi
 }
@@ -141,7 +141,7 @@ CheckFail() {
     # echo "###### SUCCESS" 1>&2
     echo  "\033[32mSUCCESS\033[0m" 
     else
-    echo "###### FAILED" 1>&2
+    echo "\033[31mFAILED\033[0m" 1>&2
     globalerror=$error
     fi
 }
