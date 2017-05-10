@@ -410,10 +410,10 @@ let check (globals, functions) =
                     (match actuals with
                       [x] when (expr x) = Graph -> Graph
                     | _ -> raise (Failure ("Graph combine method error")))
-              | "reduce" ->                     
+              | "relax" ->                     
                     (match actuals with
                       [x] when (expr x) = Node(Int) -> Void
-                    | _ -> raise (Failure ("Graph reduce method error")))
+                    | _ -> raise (Failure ("Graph relax method error")))
               | "expand" -> 
                     (match actuals with
                       [x] when (expr x) = Node(Int) -> Void

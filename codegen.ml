@@ -920,7 +920,7 @@ in
 															 (fst (expr builder (List.nth actuals 2)))
 															 builder
 										, A.Void)
-						| "reduce" -> (reduce (L.build_load dname' dname builder)
+						| "relax" -> (reduce (L.build_load dname' dname builder)
 														(fst (expr builder (List.nth actuals 0)))
 														builder
 										, A.Node(A.Int))
