@@ -1451,14 +1451,14 @@ char* getNodeName(struct Node* node) {
     return node->name;
 }
 
-void addNodeEdge(struct Node* node1, struct Node* node2, double weight){
+void addNodeEdge(struct Node* node1, struct Node* node2, int weight){
     if (node1->nodes==NULL){
         node1->nodes = create_list(NODE);
         node1->weight = create_list(INT);
     }
     // printf("EXECUTED at addNodeEdge");
-    plus_list(node1->nodes, node2);
-    plus_list(node1->weight, weight);
+    node1->nodes = plus_list(node1->nodes, node2);
+    node1->weight = plus_list(node1->weight, weight);
     // printf("%d\n", voidToint(newEdge->value));
     // printf("%d\n", voidToint(node->nodes->value));
 }
@@ -1649,19 +1649,31 @@ struct Node* init_tag(struct Graph* g){
 
 // the type of nodes must be FLOAT
 struct Node* reduce(struct Graph* g, struct Node* n0){
+    //printf("%s\n", "START");
     struct Node* n = findGraphNode(g, n0->name);
-    double v_n = 0;
-    getNodeValue(n, n->type, &v_n);
+    //printf("%s\n", n->name);
+    int v_n = 0;
+    v_n = voidToint(get_node_value(n));
+    //printf("%d\n", v_n);
+    //getNodeValue(n, n->type, &v_n);
 
     int size = get_list_size(n->nodes);
     for (int i=0;i<size;i++){
         struct Node* m = iterNode(n, i);
-        double v_m = 0, tmp;
-        getNodeValue(m, m->type, &v_m);
+        //printf("%s\n", m->name);
+        int v_m = 0;
+        int tmp;
+        v_m = voidToint(get_node_value(m));
+        //getNodeValue(m, m->type, &v_m); 
+        //printf("weightIterNode: %d\n", weightIterNode(n, i));
+        //printf("plus: %d\n", v_n + weightIterNode(n, i));
+        //printf("v_m: %d\n", v_m);
         if ((tmp = v_n + weightIterNode(n, i)) < v_m){
-            m->value = floatTovoid(tmp);
+            m->value = intTovoid(tmp);
         }
+        //printf("%d\n", voidToint(m->value));
     }
+    //printf("%s\n", "END");
 }
 
 // the type of nodes must be FLOAT
@@ -1790,7 +1802,29 @@ struct Graph* reverse(struct Graph* g){
 //     return MAP_OK;
 // }
 
+// int main() {
+//     struct Graph* g = createGraph("Graph");
+//     struct Node* testNode = createNode("testNode", INT);
+//     struct Node* testNode2 = createNode("testNode2", INT);
+//     struct Node* testNode3 = createNode("testNode3", INT);
+//     testNode = setNodeValue(testNode, 1);
+//     testNode2 = setNodeValue(testNode2, 5);
+//     testNode3 = setNodeValue(testNode3, 6);
 
+//     addNodeEdge(testNode, testNode2, 1);
+//     addNodeEdge(testNode, testNode3, 2);
+//     g = addGraphNode(g, testNode);
+//     g = addGraphNode(g, testNode2);
+//     g = addGraphNode(g, testNode3);    
+
+//     struct Node* tempNode;
+//     tempNode = reduce(g, testNode);
+
+//     printf("%d\n", voidToint(get_node_value(testNode2)));
+//     printf("%d\n", voidToint(get_node_value(testNode3)));
+
+//     return 0;
+// }
 // int main() {
 // 	// Test function: create_list
 //     printf("%s\n", "TEST: create_list");

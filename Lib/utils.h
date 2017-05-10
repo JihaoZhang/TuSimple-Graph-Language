@@ -141,7 +141,7 @@ int32_t get_set_size(struct Set *set);
 struct Node* createNode(char* name, int32_t type);
 struct Node* setNodeValue(struct Node* node, ...);
 char* getNodeValue(struct Node* node, int32_t type, ...);
-void addNodeEdge(struct Node* node1, struct Node* node2, double weight);
+void addNodeEdge(struct Node* node1, struct Node* node2, int weight);
 void addReverseEdge(struct Node* node1, struct Node* node2, double weight);
 char* nameIterNode(struct Node* node, int index);
 int weightIterNode(struct Node* node, int index);
