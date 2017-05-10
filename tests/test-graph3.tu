@@ -24,6 +24,7 @@ int main(){
   new g;
   new g1;
 
+
 	node1 -> node2 = 11;
 	node1 -> node3 = 14;
 	node2 -> node4 = 12;
@@ -40,9 +41,9 @@ int main(){
 
   g1.addEdge(node5, node6, 12);
   g.combine(g1);
-  for (i = 0; i < 6; i+=1) {
+  for (i = 0; i < g.length(); i+=1) {
     node7 = g.iterGraph(i);
     prints(node7.name());
   }
-
+*/
 }
