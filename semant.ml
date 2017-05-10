@@ -418,7 +418,7 @@ let check (globals, functions) =
                     | _ -> raise (Failure ("Graph expand method error")))
               | "length" ->
                     if actuals = [] then Int else raise (Failure ("Graph length method error"))
-              | _ -> raise (Failure ("Map has no such method"))
+              | _ -> raise (Failure ("Graph has no such method"))
             )
           | _ -> raise (Failure ("unsupported type for method call")))
     in
