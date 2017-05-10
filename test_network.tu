@@ -1,28 +1,32 @@
+int func(int in){
+	if (in>0) return in;
+	else return 0;
+}
+
 int main(){
-	int i, j, size, size_j, now;
-	node@{int} node1, node2, node3, node4, node5, node6, node7;
+	
+	int i, j, size, size_j, now, sum, error, de, update, hidden_to_outer, count;
+	node@{int} node1, node2, node3, node4, node5, node6, node7, node8;
 	graph g1, g2, g3;
 	map@{string, int} hash;
+	list@{int} l, update_l, delta_w, update_w;
+	list@{int} w;
 
-	new node1;new node3;new node3;new node4;new node5;new node6;new node7;
+	new node1;new node2;new node3;new node4;new node5;new node6;new node7;new node8;
 	new g1;new g2;new g3;
 	new hash;
-	/*
-	node1 -> node3 = 8;
-	node1 -> node4 = 4;
-	node1 -> node5 = 3;
-	*/
+	new l;new update_l;new delta_w;new update_w;
+	new w;
+	
 	node1 -> @{node3, node4, node5} = @{8, 4, 3};
-	/*
-	node2 -> node3 = 2;
-	node2 -> node4 = 9;
-	node2 -> node5 = 5;
-	*/
+	
 	node2 -> @{node3, node4, node5} = @{2, 9, 5};
 
 	node3 -> node6 = 3;
 	node4 -> node6 = 5;
 	node5 -> node6 = 9;
+	
+	w += @{8, 4, 3, 2, 9, 5, 3, 5, 9};
 
 	g1.addNode(node1);
 	g1.addNode(node2);
@@ -33,23 +37,72 @@ int main(){
 
 	g3.addNode(node6);
 
-	/* hidden value */
+	hidden_to_outer = g1.length() * g2.length();
+
 	size = g1.length();
-	print(size);
 	for (i=0;i<size;i+=1){
 		node7 = g1.iterGraph(i);
 		size_j = node7.length();
 		for (j=0;j<size_j;j+=1){
-			if (hash.haskey(node7.name())){
-				// now = hash.get(node7.name());
-				hash.put(node7.name(), hash.get(node7.name()) + node7.weightIter(j));
-			} else {
-				hash.put(node7.name(), node7.weightIter(j));
+			node8 = node7.iterNode(j);
+			if (hash.haskey(node8.name())){
+				now = i * g2.length() + j;
+				hash.put(node8.name(), hash.get(node8.name()) + w.get(now));	
+			} 
+			else {
+				now = i * g2.length() + j;
+				hash.put(node8.name(), w.get(now));		
 			}
 		}
 	}
-	print(hash.get(node3.name()));
-	print(hash.get(node4.name()));
-	print(hash.get(node5.name()));
+	
+	size = g2.length();
+	for (i=0;i<size;i+=1){
+		node7 = g2.iterGraph(i);
+		now = func(hash.get(node7.name()));
+		l += @{now};
+	}
+	
+	sum = 0;
+	size = g2.length();
+	for (i=0;i<size;i+=1){
+		node7 = g2.iterGraph(i);
+		sum += l.get(i) * w.get(hidden_to_outer+i) / 10;
+		
+	}
 
+	error = 0 - func(sum);
+	de = ((func(sum+1) - func(sum))/1 + (func(sum) - func(sum-1))/1)/2;
+	sum = de * error / 10;
+
+	for(i=0;i<size;i+=1){
+		update = sum * w.get(hidden_to_outer+i) * 1;
+		delta_w += @{update};
+	}
+	delta_w.printList();
+	
+	count = 0;
+	for (i=0;i<hidden_to_outer;i+=1){
+		update = w.get(i) + delta_w.get(count);
+		update_w += @{update};
+
+		count += 1;
+		if (count==g2.length()) count = 0;
+	}
+	update_w.printList();
+
+	
+	size = g2.length();
+	for (i=0;i<size;i+=1){
+		node7 = g2.iterGraph(i);
+		update = w.get(hidden_to_outer+i) + sum * l.get(i) / 10;
+		update_l += @{update};
+	}
+	update_l.printList();
+	update_w.cancat(update_l);
+	update_w.printList();
+
+	w = update_w;
+	w.printList();
+	
 }
