@@ -19,158 +19,153 @@ module StringMap = Map.Make(String)
 
 
 let translate (globals, functions) =
-  let context = L.global_context () in
-  let llctx = L.global_context () in
-  let customM = L.MemoryBuffer.of_file "Lib/utils.bc" in
-  let llm = Llvm_bitreader.parse_bitcode llctx customM in
-  let the_module = L.create_module context "TuSimple"
-  and i32_t  = L.i32_type  context
-  and i8_t   = L.i8_type   context
-  and i1_t   = L.i1_type   context
-  and void_t = L.void_type context 
-  and float_t  = L.double_type context
-  and string_t  = L.pointer_type (L.i8_type context)
-  and list_t = L.pointer_type (match L.type_by_name llm "struct.List" with
-	  None -> raise (Failure "struct.List doesn't defined.")
-  | Some x -> x)
-  and set_t = L.pointer_type (match L.type_by_name llm "struct.Set" with
-    None -> raise (Failure "struct.Set doesn't defined.")
-  | Some x -> x)
-  and map_t = L.pointer_type (match L.type_by_name llm "struct.hashmap" with
-    None -> raise (Failure "struct.hashmap doesn't defined.")
-  | Some x -> x)
-  and node_t = L.pointer_type (match L.type_by_name llm "struct.Node" with
-    None -> raise (Failure "struct.Node doesn't defined.")
-  | Some x -> x)
-  and graph_t = L.pointer_type (match L.type_by_name llm "struct.Graph" with
-    None -> raise (Failure "struct.Graph doesn't defined.")
-  | Some x -> x)
+	let context = L.global_context () in
+	let llctx = L.global_context () in
+	let customM = L.MemoryBuffer.of_file "Lib/utils.bc" in
+	let llm = Llvm_bitreader.parse_bitcode llctx customM in
+	let the_module = L.create_module context "TuSimple"
+	and i32_t  = L.i32_type  context
+	and i8_t   = L.i8_type   context
+	and i1_t   = L.i1_type   context
+	and void_t = L.void_type context 
+	and float_t  = L.double_type context
+	and string_t  = L.pointer_type (L.i8_type context)
+	and list_t = L.pointer_type (match L.type_by_name llm "struct.List" with
+		None -> raise (Failure "struct.List doesn't defined.")
+	| Some x -> x)
+	and set_t = L.pointer_type (match L.type_by_name llm "struct.Set" with
+		None -> raise (Failure "struct.Set doesn't defined.")
+	| Some x -> x)
+	and map_t = L.pointer_type (match L.type_by_name llm "struct.hashmap" with
+		None -> raise (Failure "struct.hashmap doesn't defined.")
+	| Some x -> x)
+	and node_t = L.pointer_type (match L.type_by_name llm "struct.Node" with
+		None -> raise (Failure "struct.Node doesn't defined.")
+	| Some x -> x)
+	and graph_t = L.pointer_type (match L.type_by_name llm "struct.Graph" with
+		None -> raise (Failure "struct.Graph doesn't defined.")
+	| Some x -> x)
 
-  in
+	in
 
-  let ltype_of_typ = function
-	  A.Int -> i32_t
+	let ltype_of_typ = function
+		A.Int -> i32_t
 	| A.Bool -> i1_t
 	| A.Void -> void_t 
 	| A.List(_) -> list_t
-  | A.Set(_) -> set_t
-  | A.Map(_, _) -> map_t
-  | A.String -> string_t
-  | A.Float -> float_t
-  | A.Node(_) -> node_t
-  | A.Graph -> graph_t
-  |  _ -> raise (Failure ("[Error] Type Not Found for ltype_of_typ."))
-  in
+	| A.Set(_) -> set_t
+	| A.Map(_, _) -> map_t
+	| A.String -> string_t
+	| A.Float -> float_t
+	| A.Node(_) -> node_t
+	| A.Graph -> graph_t
+	|  _ -> raise (Failure ("[Error] Type Not Found for ltype_of_typ."))
+	in
 
-  let lconst_of_typ = function
-	  A.Int -> L.const_int i32_t 0
-  | A.Float -> L.const_int i32_t 1
-  | A.Bool -> L.const_int i32_t 2
-  | A.String -> L.const_int i32_t 3
-  | A.Node _ -> L.const_int i32_t 4
-  | A.Graph -> L.const_int i32_t 5
-   (* | A.Node_t -> L.const_int i32_t 4
-  | A.Graph_t -> L.const_int i32_t 5
-  | A.Edge_t -> L.const_int i32_t 8
- | A.List_Int_t -> list_t
-  | A.Dict_String_t -> dict_t *)
-  | _ -> raise (Failure ("[Error] Type Not Found for lconst_of_typ."))
+	let lconst_of_typ = function
+		A.Int -> L.const_int i32_t 0
+	| A.Float -> L.const_int i32_t 1
+	| A.Bool -> L.const_int i32_t 2
+	| A.String -> L.const_int i32_t 3
+	| A.Node _ -> L.const_int i32_t 4
+	| A.Graph -> L.const_int i32_t 5
+	| _ -> raise (Failure ("[Error] Type Not Found for lconst_of_typ."))
 
-  in
+	in
 
 (*
 ================================================================
-  List Methods
+	List Methods
 ================================================================
 *)
  
-  let get_list_size_t = L.function_type i32_t [| list_t |]
-  in
-  let get_list_size_f = L.declare_function "get_list_size" get_list_size_t the_module
-  in
-  let get_list_size list_ptr llbuilder = 
-  		let actuals = [| list_ptr |] in (
-  			L.build_call get_list_size_f actuals "get_list_size" llbuilder
-  		)
-  in
+	let get_list_size_t = L.function_type i32_t [| list_t |]
+	in
+	let get_list_size_f = L.declare_function "get_list_size" get_list_size_t the_module
+	in
+	let get_list_size list_ptr llbuilder = 
+			let actuals = [| list_ptr |] in (
+				L.build_call get_list_size_f actuals "get_list_size" llbuilder
+			)
+	in
 
-  let pop_list_element_t = L.function_type (L.pointer_type i8_t) [| list_t |]
-  in
-  let pop_list_element_f = L.declare_function "pop_list_element" pop_list_element_t the_module
-  in
-  let pop_list_element list_ptr llbuilder = 
-  		let actuals = [| list_ptr |] in (
-  			L.build_call pop_list_element_f actuals "pop_list_element" llbuilder
-  		) 
-  in
+	let pop_list_element_t = L.function_type (L.pointer_type i8_t) [| list_t |]
+	in
+	let pop_list_element_f = L.declare_function "pop_list_element" pop_list_element_t the_module
+	in
+	let pop_list_element list_ptr llbuilder = 
+			let actuals = [| list_ptr |] in (
+				L.build_call pop_list_element_f actuals "pop_list_element" llbuilder
+			) 
+	in
 
-  let real_remove_list_element_t = L.function_type (L.pointer_type i8_t) [| list_t; i32_t |]
-  in
-  let real_remove_list_element_f = L.declare_function "remove_list_element" real_remove_list_element_t the_module
-  in
-  let real_remove_list_element list_ptr index llbuilder = 
-  		let actuals = [| list_ptr; index |] in (
-  			L.build_call real_remove_list_element_f actuals "remove_list_element" llbuilder
-  		)
-  in
+	let real_remove_list_element_t = L.function_type (L.pointer_type i8_t) [| list_t; i32_t |]
+	in
+	let real_remove_list_element_f = L.declare_function "remove_list_element" real_remove_list_element_t the_module
+	in
+	let real_remove_list_element list_ptr index llbuilder = 
+			let actuals = [| list_ptr; index |] in (
+				L.build_call real_remove_list_element_f actuals "remove_list_element" llbuilder
+			)
+	in
 
-  let remove_list_element_t = L.function_type (L.pointer_type i8_t) [|list_t; i32_t|]
-  in 
-  let remove_list_element_f = L.declare_function "remove_list_element" remove_list_element_t the_module
-  in
-  let remove_list_element list_ptr llbuilder = 
-  		let actuals = [|list_ptr; L.const_int i32_t 0|] in(
-  			L.build_call remove_list_element_f actuals "remove_list_element" llbuilder
-  		)
-  in
-  let get_list_element_t = L.function_type (L.pointer_type i8_t) [| list_t ; i32_t |]
-  in 
-  let get_list_element_f = L.declare_function "get_list_element" get_list_element_t the_module
-  in
-  let get_list_element list_ptr i llbuilder = 
-    let actuals =[|list_ptr; i|] in (
-      L.build_call get_list_element_f actuals "get_list_element" llbuilder
-    )
-  in
+	let remove_list_element_t = L.function_type (L.pointer_type i8_t) [|list_t; i32_t|]
+	in 
+	let remove_list_element_f = L.declare_function "remove_list_element" remove_list_element_t the_module
+	in
+	let remove_list_element list_ptr llbuilder = 
+			let actuals = [|list_ptr; L.const_int i32_t 0|] in(
+				L.build_call remove_list_element_f actuals "remove_list_element" llbuilder
+			)
+	in
+	let get_list_element_t = L.function_type (L.pointer_type i8_t) [| list_t ; i32_t |]
+	in 
+	let get_list_element_f = L.declare_function "get_list_element" get_list_element_t the_module
+	in
+	let get_list_element list_ptr i llbuilder = 
+		let actuals =[|list_ptr; i|] in (
+			L.build_call get_list_element_f actuals "get_list_element" llbuilder
+		)
+	in
  
-  let concat_list_t = L.var_arg_function_type list_t [| list_t ; list_t |]
-  in
+	let concat_list_t = L.var_arg_function_type list_t [| list_t ; list_t |]
+	in
 
-  let concat_list_f = L.declare_function "concat_list" concat_list_t the_module
-  in
+	let concat_list_f = L.declare_function "concat_list" concat_list_t the_module
+	in
 
-  let concat_list l1_ptr l2_ptr llbuilder = 
-    let actuals = [|l1_ptr; l2_ptr|] in (
-      L.build_call concat_list_f actuals "concat_list" llbuilder
-    )
+	let concat_list l1_ptr l2_ptr llbuilder = 
+		let actuals = [|l1_ptr; l2_ptr|] in (
+			L.build_call concat_list_f actuals "concat_list" llbuilder
+		)
 
-  in
+	in
 
-  let create_list_t  = L.function_type list_t [| i32_t |]
-  in
-  let create_list_f  = L.declare_function "create_list" create_list_t the_module
-  in
-  let create_list typ llbuilder =
+	let create_list_t  = L.function_type list_t [| i32_t |]
+	in
+	let create_list_f  = L.declare_function "create_list" create_list_t the_module
+	in
+	let create_list typ llbuilder =
 	let actuals = [|lconst_of_typ typ|]in (
-	  L.build_call create_list_f actuals "create_list" llbuilder
+		L.build_call create_list_f actuals "create_list" llbuilder
 	)
-  in
+	in
 
-  let add_list_t  = L.var_arg_function_type list_t [| list_t |]
-  in
+	let add_list_t  = L.var_arg_function_type list_t [| list_t |]
+	in
 
-  let add_list_f  = L.declare_function "plus_list" add_list_t the_module
-  in
+	let add_list_f  = L.declare_function "plus_list" add_list_t the_module
+	in
 
-  let add_list l_ptr llbuilder data =
+	let add_list l_ptr llbuilder data =
 	let actuals = [| l_ptr; data|] in
-	  ignore (L.build_call add_list_f actuals "plus_list" llbuilder)
-  in
+		ignore (L.build_call add_list_f actuals "plus_list" llbuilder)
+	in
 
 
 (*
 ================================================================
-  Hashmap Methods
+	Hashmap Methods
 ================================================================
 *)
 	let create_hashmap_t = L.function_type map_t [| i32_t; i32_t |]
@@ -235,7 +230,7 @@ let translate (globals, functions) =
 	in
 (*
 ================================================================
-  Set Methdos
+	Set Methdos
 ================================================================
 *)
 
@@ -269,44 +264,44 @@ let add_set s_ptr data llbuilder =
 in 
 
 
-  let add_all_elements_into_list element_list l_ptr llbuilder = 
-    List.iter (add_list l_ptr llbuilder) element_list
-  in
+	let add_all_elements_into_list element_list l_ptr llbuilder = 
+		List.iter (add_list l_ptr llbuilder) element_list
+	in
 
-  let get_set_size_t = L.function_type i32_t [| set_t |]
-  in
-  let get_set_size_f = L.declare_function "get_set_size" get_set_size_t the_module
-  in
-  let get_set_size s_ptr llbuilder = 
-  		let actuals = [| s_ptr |] in (
-  			L.build_call get_set_size_f actuals "get_set_size" llbuilder
-  		)
-  in
+	let get_set_size_t = L.function_type i32_t [| set_t |]
+	in
+	let get_set_size_f = L.declare_function "get_set_size" get_set_size_t the_module
+	in
+	let get_set_size s_ptr llbuilder = 
+			let actuals = [| s_ptr |] in (
+				L.build_call get_set_size_f actuals "get_set_size" llbuilder
+			)
+	in
 
-  let check_set_element_t = L.var_arg_function_type i1_t [| set_t |]
-  in
-  let check_set_element_f = L.declare_function "check_set_element" check_set_element_t the_module
-  in
-  let check_set_element s_ptr data llbuilder = 
-  		let actuals = [| s_ptr; data |] in (
-  			L.build_call check_set_element_f actuals "check_set_element" llbuilder
-  		)
-  in
+	let check_set_element_t = L.var_arg_function_type i1_t [| set_t |]
+	in
+	let check_set_element_f = L.declare_function "check_set_element" check_set_element_t the_module
+	in
+	let check_set_element s_ptr data llbuilder = 
+			let actuals = [| s_ptr; data |] in (
+				L.build_call check_set_element_f actuals "check_set_element" llbuilder
+			)
+	in
 
-  let remove_set_element_t = L.var_arg_function_type set_t [| set_t |]
-  in
-  let remove_set_element_f = L.declare_function "remove_set_element" remove_set_element_t the_module
-  in 
-  let remove_set_element s_ptr data llbuilder =
-      let actuals = [| s_ptr; data |] in (
-          L.build_call remove_set_element_f actuals "remove_set_element" llbuilder
-      )
-  in
+	let remove_set_element_t = L.var_arg_function_type set_t [| set_t |]
+	in
+	let remove_set_element_f = L.declare_function "remove_set_element" remove_set_element_t the_module
+	in 
+	let remove_set_element s_ptr data llbuilder =
+			let actuals = [| s_ptr; data |] in (
+					L.build_call remove_set_element_f actuals "remove_set_element" llbuilder
+			)
+	in
 
 
 (*
 ================================================================
-  Node Methods
+	Node Methods
 ================================================================
 *)
 let createNode_t = L.function_type node_t [| string_t; i32_t |]
@@ -373,9 +368,9 @@ in
 let iterNode_f = L.declare_function "iterNode" iterNode_t the_module
 in
 let iterNode n_ptr index llbuilder =
-    let actuals = [|n_ptr; index|] in (
-      L.build_call iterNode_f actuals "iterNode" llbuilder
-    )
+		let actuals = [|n_ptr; index|] in (
+			L.build_call iterNode_f actuals "iterNode" llbuilder
+		)
 in
 
 let getNodeLength_t = L.function_type i32_t [| node_t |]
@@ -383,9 +378,9 @@ in
 let getNodeLength_f = L.declare_function "getNodeLength" getNodeLength_t the_module
 in
 let getNodeLength n_ptr llbuilder = 
-    let actuals = [| n_ptr |] in (
-      L.build_call getNodeLength_f actuals "getNodeLength" llbuilder
-    )
+		let actuals = [| n_ptr |] in (
+			L.build_call getNodeLength_f actuals "getNodeLength" llbuilder
+		)
 in
 
 let get_node_value_t = L.function_type (L.pointer_type i8_t) [| node_t |]
@@ -393,9 +388,9 @@ in
 let get_node_value_f = L.declare_function "get_node_value" get_node_value_t the_module
 in
 let get_node_value n_ptr llbuilder = 
-    let actuals = [| n_ptr |] in (
-        L.build_call get_node_value_f actuals "get_node_value" llbuilder
-    )
+		let actuals = [| n_ptr |] in (
+				L.build_call get_node_value_f actuals "get_node_value" llbuilder
+		)
 in
 
 let weigthIterNode_t = L.function_type i32_t [| node_t; i32_t |]
@@ -403,15 +398,15 @@ in
 let weightIterNode_f = L.declare_function "weightIterNode" weigthIterNode_t the_module
 in
 let weightIterNode n_ptr index llbuilder =
-    let actuals = [|n_ptr; index|] in (
-        L.build_call weightIterNode_f actuals "weightIterNode" llbuilder
-    )
+		let actuals = [|n_ptr; index|] in (
+				L.build_call weightIterNode_f actuals "weightIterNode" llbuilder
+		)
 in
 
 
 (*
 ================================================================
-  Graph Methods
+	Graph Methods
 ================================================================
 *)
 let createGraph_t = L.function_type graph_t [| string_t |]
@@ -516,7 +511,7 @@ in
 
 (*
 ================================================================
-  Cast Methods
+	Cast Methods
 ================================================================
 *)
 let voidToint_t = L.function_type i32_t [|L.pointer_type i8_t|]
@@ -592,8 +587,7 @@ in
 	let function_decls =
 		let function_decl m fdecl =
 			let name = fdecl.A.fname
-			and formal_types =
-	Array.of_list (List.map (fun (t,_) -> ltype_of_typ t) fdecl.A.formals)
+			and formal_types = Array.of_list (List.map (fun (t,_) -> ltype_of_typ t) fdecl.A.formals)
 			in let ftype = L.function_type (ltype_of_typ fdecl.A.typ) formal_types in
 			StringMap.add name (L.define_function name ftype the_module, fdecl) m in
 		List.fold_left function_decl StringMap.empty functions in
@@ -628,309 +622,299 @@ in
 			with Not_found -> StringMap.find n global_vars
 		in
 
-    let get_llvm_from_llvm_asttype_tuple (ltype,_) = ltype
-    in
-    let type_conversion typ elementPtr builder = match typ with
-       A.Int -> voidToint elementPtr builder
-      | A.Float -> voidTofloat elementPtr builder
-      | A.Bool -> voidTobool elementPtr builder
-      | A.Node _ -> voidTonode elementPtr builder
-      | A.Graph -> voidTograph elementPtr builder
-      | A.String -> voidTostring elementPtr builder
-      | _ -> raise (Failure (" undefined operator[] "))
-     in
+		let get_llvm_from_llvm_asttype_tuple (ltype,_) = ltype
+		in
+		let type_conversion typ elementPtr builder = match typ with
+			  A.Int -> voidToint elementPtr builder
+			| A.Float -> voidTofloat elementPtr builder
+			| A.Bool -> voidTobool elementPtr builder
+			| A.Node _ -> voidTonode elementPtr builder
+			| A.Graph -> voidTograph elementPtr builder
+			| A.String -> voidTostring elementPtr builder
+			| _ -> raise (Failure (" undefined operator[] "))
+		 in
 		(* Construct code for an expression; return its value/type tuple *)
 		let rec expr builder = function
-			  A.Literal i -> (L.const_int i32_t i, A.Int)
+				A.Literal i -> (L.const_int i32_t i, A.Int)
 			| A.FloatLit i -> (L.const_float float_t i, A.Float)
 			| A.BoolLit b -> (L.const_int i1_t (if b then 1 else 0), A.Bool)
 			| A.StringLit s -> (L.build_global_stringptr s s builder, A.String)
-		    | A.Null ->  (L.const_null list_t, A.List(A.Int))
+			| A.Null ->  (L.const_null list_t, A.List(A.Int))
 			| A.Noexpr -> (L.const_int i32_t 0, A.Void)
 			| A.Id s -> (L.build_load (fst (lookup s)) s builder, (snd (lookup s)))
-      | A.ListLiteral el -> 
-        let listLiteral_type = snd (expr builder (List.hd el))
-        in
-        let listPtr = create_list listLiteral_type builder
-        in 
-          ignore(add_all_elements_into_list 
-          (List.map get_llvm_from_llvm_asttype_tuple (List.map (expr builder) el)) 
-          listPtr
-          builder)
-          ;(listPtr, listLiteral_type)
-      | A.MinusAssign(var, e) -> 
-          let (var', typ) =  lookup var in
-          ((match typ with
-          | A.Int -> 
-              let e1' = L.build_load var' var builder
-  				    and (e2', _) = expr builder e 
-  				    in
-				      L.build_store (L.build_sub e1' e2' "tmp" builder) var' builder
-          | A.Float -> 
-          		let e1' = L.build_load var' var builder
-				      and (e2', _) = expr builder e 
-				      in
-				      L.build_store (L.build_fsub e1' e2' "tmp" builder) var' builder
-          | _ -> raise (Failure (" minus assign error "))
-      ), typ)
-      | A.Subscript (var, e) -> let (var', typ) = lookup var and (s', _) = expr builder e in
-      ((match typ with
-      | A.List typeList -> (
-      	let elementPtr = get_list_element (L.build_load var' var builder) s' builder
-      in type_conversion typeList elementPtr builder
-      )
-      | A.Map(_, t2) -> (
-      	let elementPtr = hashmap_get (L.build_load var' var builder) s' builder
-      	in type_conversion t2 elementPtr builder
-      )
-      | _ -> raise (Failure (" undefined operator[] "))), typ)
-      | A.New id -> let (_, typ) = lookup id in 
-      	((match typ with 
-      	| A.List listType -> L.build_store (create_list listType builder) (fst (lookup id)) builder
-      	| A.Set setType -> L.build_store (create_set setType builder) (fst (lookup id)) builder
-      	| A.Map(kType, vType) -> L.build_store (create_hashmap kType vType builder) (fst (lookup id)) builder
-      	| A.Node nodeType -> let nodeName = L.build_global_stringptr id "" builder
-      in L.build_store (createNode nodeName nodeType builder) (fst (lookup id)) builder
-      	(* let nodeName = L.const_string builder id in
-      	createNode nodeName nodeType builder *)
-      	| A.Graph -> let graphName = L.build_global_stringptr id "" builder
-      in L.build_store (createGraph graphName builder) (fst (lookup id)) builder
-      	| _ -> raise (Failure (" Type not found "))), typ)
-      | A.AddAdd var -> let (var', typ) = lookup var in
-		  ignore(remove_list_element (L.build_load var' var builder) builder); (var',typ)
+			| A.ListLiteral el -> 
+					let listLiteral_type = snd (expr builder (List.hd el))
+					in
+					let listPtr = create_list listLiteral_type builder
+					in 
+					ignore(add_all_elements_into_list 
+						(List.map get_llvm_from_llvm_asttype_tuple (List.map (expr builder) el)) listPtr builder);
+						(listPtr, listLiteral_type)
+			| A.MinusAssign(var, e) -> 
+					let (var', typ) =  lookup var in
+						((match typ with
+						| A.Int -> 
+								let e1' = L.build_load var' var builder
+								and (e2', _) = expr builder e 
+								in
+								L.build_store (L.build_sub e1' e2' "tmp" builder) var' builder
+						| A.Float -> 
+								let e1' = L.build_load var' var builder
+								and (e2', _) = expr builder e 
+								in
+								L.build_store (L.build_fsub e1' e2' "tmp" builder) var' builder
+						| _ -> raise (Failure (" minus assign error "))), typ)
+			| A.Subscript (var, e) -> let (var', typ) = lookup var and (s', _) = expr builder e in
+						((match typ with
+						| A.List typeList -> (
+							let elementPtr = get_list_element (L.build_load var' var builder) s' builder
+								in type_conversion typeList elementPtr builder
+								)
+						| A.Map(_, t2) -> (
+							let elementPtr = hashmap_get (L.build_load var' var builder) s' builder
+								in type_conversion t2 elementPtr builder
+								)
+						| _ -> raise (Failure (" undefined operator[] "))), typ)
+			| A.New id -> let (_, typ) = lookup id in 
+					((match typ with 
+						| A.List listType -> L.build_store (create_list listType builder) (fst (lookup id)) builder
+						| A.Set setType -> L.build_store (create_set setType builder) (fst (lookup id)) builder
+						| A.Map(kType, vType) -> L.build_store (create_hashmap kType vType builder) (fst (lookup id)) builder
+						| A.Node nodeType -> let nodeName = L.build_global_stringptr id "" builder
+								in L.build_store (createNode nodeName nodeType builder) (fst (lookup id)) builder
+						| A.Graph -> let graphName = L.build_global_stringptr id "" builder
+								in L.build_store (createGraph graphName builder) (fst (lookup id)) builder
+						| _ -> raise (Failure (" Type not found "))), typ)
+			| A.AddAdd var -> let (var', typ) = lookup var in
+					ignore(remove_list_element (L.build_load var' var builder) builder); 
+					(var',typ)
 			| A.Binop (e1, op, e2) ->
-				let (e1', t1') = expr builder e1
-				and (e2', _) = expr builder e2 in
-				((match op with
-					A.Add    -> L.build_add
-				| A.Sub     -> L.build_sub
-				| A.Mult    -> L.build_mul
-				| A.Div     -> L.build_sdiv
-				| A.And     -> L.build_and
-				| A.Or      -> L.build_or
-				| A.Mod -> L.build_srem
-				| A.Equal   -> L.build_icmp L.Icmp.Eq
-				| A.Neq     -> L.build_icmp L.Icmp.Ne
-				| A.Less    -> L.build_icmp L.Icmp.Slt
-				| A.Leq     -> L.build_icmp L.Icmp.Sle
-				| A.Greater -> L.build_icmp L.Icmp.Sgt
-				| A.Geq     -> L.build_icmp L.Icmp.Sge
-				) e1' e2' "tmp" builder, t1')
+					let (e1', t1') = expr builder e1
+					and (e2', _) = expr builder e2 in
+					((match op with
+							A.Add    -> L.build_add
+						| A.Sub     -> L.build_sub
+						| A.Mult    -> L.build_mul
+						| A.Div     -> L.build_sdiv
+						| A.And     -> L.build_and
+						| A.Or      -> L.build_or
+						| A.Mod -> L.build_srem
+						| A.Equal   -> L.build_icmp L.Icmp.Eq
+						| A.Neq     -> L.build_icmp L.Icmp.Ne
+						| A.Less    -> L.build_icmp L.Icmp.Slt
+						| A.Leq     -> L.build_icmp L.Icmp.Sle
+						| A.Greater -> L.build_icmp L.Icmp.Sgt
+						| A.Geq     -> L.build_icmp L.Icmp.Sge
+						) e1' e2' "tmp" builder, t1')
 			| A.Unop(op, e) ->
 					let (e', t') = expr builder e in
 					((match op with
-						A.Neg     -> L.build_neg
-					| A.Not     -> L.build_not) e' "tmp" builder, t')
+							A.Neg     -> L.build_neg
+						| A.Not     -> L.build_not) e' "tmp" builder, t')
 			| A.Assign (s, e) -> 
-          let (e', t') = expr builder e in
-           ignore (L.build_store e' (fst (lookup s)) builder); (e', t')
-      | A.AddAssign (var, e) -> 
-          let (var', typ) =  lookup var and (s', _) = expr builder e in
-          ((match typ with
-          | A.List _ -> L.build_store (concat_list (L.build_load var' var builder) s' builder) (fst (lookup var)) builder
-          | A.Int -> let e1' = L.build_load var' var builder
-				and (e2', _) = expr builder e 
-				in
-				L.build_store (L.build_add e1' e2' "tmp" builder) var' builder
-          | A.Float  -> 
-          		let e1' = L.build_load var' var builder
-				and (e2', _) = expr builder e 
-				in
-				L.build_store (L.build_fadd e1' e2' "tmp" builder) var' builder
-          | A.Set _ -> let s1 = L.build_load var' var builder 
-          		and (l1', _) = expr builder e
-          	in put_set_from_list s1 l1' builder
-          | _ -> raise (Failure (" undefined += "))), typ)
+					let (e', t') = expr builder e in
+					ignore (L.build_store e' (fst (lookup s)) builder); 
+					(e', t')
+			| A.AddAssign (var, e) -> 
+					let (var', typ) =  lookup var and (s', _) = expr builder e in
+					((match typ with
+						| A.List _ -> L.build_store (concat_list (L.build_load var' var builder) s' builder) (fst (lookup var)) builder
+						| A.Int -> 
+								let e1' = L.build_load var' var builder
+									and (e2', _) = expr builder e 
+									in
+									L.build_store (L.build_add e1' e2' "tmp" builder) var' builder
+						| A.Float  -> 
+								let e1' = L.build_load var' var builder
+									and (e2', _) = expr builder e 
+									in
+									L.build_store (L.build_fadd e1' e2' "tmp" builder) var' builder
+						| A.Set _ -> let s1 = L.build_load var' var builder 
+								and (l1', _) = expr builder e
+							in put_set_from_list s1 l1' builder
+						| _ -> raise (Failure (" undefined += "))), typ)
 
-      | A.SingleEdge (n1, n2) -> 
-      		((let (n1', _) = lookup n1 and (n2', _) = lookup n2 in 
-      		getEdgeValue (L.build_load n1' n1 builder) (L.build_load n2' n2 builder) builder), A.Float)
-      | A.DoubleLinkAssign (var1, var2, e) ->
-    		(let (var1', _) = lookup var1 and (var2', _) = lookup var2 in
-    			let (s', _) = expr builder e in
-    		ignore(addNodeEdge (L.build_load var1' var1 builder) (L.build_load var2' var2 builder) s' builder);
-    		ignore(addNodeEdge (L.build_load var2' var2 builder) (L.build_load var1' var1 builder) s' builder)); (L.const_int i32_t 0, A.Float)
-      | A.SingleLinkAssign(e1, e) -> 
-      ((match e1 with
-      | A.SingleEdge(n1, n2) -> let (n1', _) = lookup n1 and (n2', _) = lookup n2 
-       in let(s', _) = expr builder e in 
-      ignore((addNodeEdge (L.build_load n1' n1 builder) (L.build_load n2' n2 builder) s' builder)); s'
-      | _ -> raise (Failure("illegal edge assignment. "))), A.Int)
+			| A.SingleEdge (n1, n2) -> 
+					((let (n1', _) = lookup n1 and (n2', _) = lookup n2 in 
+							getEdgeValue (L.build_load n1' n1 builder) (L.build_load n2' n2 builder) builder), A.Float)
+			| A.DoubleLinkAssign (var1, var2, e) ->
+					(let (var1', _) = lookup var1 and (var2', _) = lookup var2 in
+						let (s', _) = expr builder e in
+							ignore(addNodeEdge (L.build_load var1' var1 builder) (L.build_load var2' var2 builder) s' builder);
+							ignore(addNodeEdge (L.build_load var2' var2 builder) (L.build_load var1' var1 builder) s' builder)); (L.const_int i32_t 0, A.Float)
+			| A.SingleLinkAssign(e1, e) -> 
+					((match e1 with
+							| A.SingleEdge(n1, n2) -> let (n1', _) = lookup n1 and (n2', _) = lookup n2 
+							 	in let(s', _) = expr builder e in 
+								ignore((addNodeEdge (L.build_load n1' n1 builder) (L.build_load n2' n2 builder) s' builder)); s'
+							| _ -> raise (Failure("illegal edge assignment. "))), A.Int)
 
-      | A.BatchSingleLinkAssign(var, n1, n2) ->
-        (
-        let getListsOfLit n = 
-        (match n with
-        | A.ListLiteral li -> li
-        | _ -> raise (Failure("Error at BatchSingleLinkAssign: match fail")))
-        in
-        let f elem = fst (expr builder elem)
-        in
-        let n1_sequence = List.map f (getListsOfLit n1)
-        in
-        let n2_sequence = List.map f (getListsOfLit n2)
-        in
-        let (var', _) = lookup var 
-        in
-        let addNodeIter v1 v2 = addNodeEdge (L.build_load var' var builder) v1 v2 builder
-        in
-          ignore(List.iter2 addNodeIter n1_sequence n2_sequence)
+			| A.BatchSingleLinkAssign(var, n1, n2) ->
+					(let getListsOfLit n = 
+						(match n with
+						| A.ListLiteral li -> li
+						| _ -> raise (Failure("Error at BatchSingleLinkAssign: match fail")))
+					in
+						let f elem = fst (expr builder elem)
+						in
+						let n1_sequence = List.map f (getListsOfLit n1)
+						in
+						let n2_sequence = List.map f (getListsOfLit n2)
+						in
+						let (var', _) = lookup var 
+						in
+						let addNodeIter v1 v2 = addNodeEdge (L.build_load var' var builder) v1 v2 builder
+						in
+							ignore(List.iter2 addNodeIter n1_sequence n2_sequence)
 
-        ); 
-        (L.const_int i32_t 0, A.Float)
-       
-      | A.BatchDoubleLinkAssign(var, n1, n2) ->
-        (
-        let getListsOfLit n =
-        (match n with
-        | A.ListLiteral li -> li
-        | _ -> raise (Failure("Error at BatchDoubleLinkAssign : match fail")))
-    	in
-        let f elem = fst (expr builder elem)
-        in
-        let n1_sequence = List.map f (getListsOfLit n1)
-        in
-        let n2_sequence = List.map f (getListsOfLit n2)
-        in
-        let (var', _) = lookup var
-        in
-        let addNodeIter v1 v2 = addNodeEdge (L.build_load var' var builder) v1 v2 builder
-        in
-        let addReverseIter v1 v2 = addReverseEdge (L.build_load var' var builder) v1 v2 builder
-        in
-          ignore(List.iter2 addNodeIter n1_sequence n2_sequence);
-          ignore(List.iter2 addReverseIter  n1_sequence n2_sequence)
-        );
-        (L.const_int i32_t 0, A.Float)
+						); 
+						(L.const_int i32_t 0, A.Float)
+			 
+			| A.BatchDoubleLinkAssign(var, n1, n2) ->
+					(let getListsOfLit n =
+						(match n with
+						| A.ListLiteral li -> li
+						| _ -> raise (Failure("Error at BatchDoubleLinkAssign : match fail")))
+					in
+						let f elem = fst (expr builder elem)
+						in
+						let n1_sequence = List.map f (getListsOfLit n1)
+						in
+						let n2_sequence = List.map f (getListsOfLit n2)
+						in
+						let (var', _) = lookup var
+						in
+						let addNodeIter v1 v2 = addNodeEdge (L.build_load var' var builder) v1 v2 builder
+						in
+						let addReverseIter v1 v2 = addReverseEdge (L.build_load var' var builder) v1 v2 builder
+						in
+							ignore(List.iter2 addNodeIter n1_sequence n2_sequence);
+							ignore(List.iter2 addReverseIter  n1_sequence n2_sequence)
+						);
+						(L.const_int i32_t 0, A.Float)
 
-      | A.DotCall (dname, fname, actuals) -> let (dname', dtype) = lookup dname in
-      (match dtype with
-      	A.Node n_type -> 
-      	(match fname with
-      		   "value" ->  (let nodeValuePtr = get_node_value (L.build_load dname' dname builder) builder
-      		in type_conversion n_type nodeValuePtr builder, n_type)
-      		| "name" -> (getNodeName (L.build_load dname' dname builder) builder, A.String)
-      		| "setvalue" -> (setNodeValue (L.build_load dname' dname builder) 
-      		   			(fst (expr builder (List.nth actuals 0) )) builder, A.Void)
-          | "iterNode" -> (let arg = List.nth actuals 0
-              in let index = fst (expr builder arg)
-              in iterNode (L.build_load dname' dname builder) index builder, A.Node(n_type))
-          | "length" -> (getNodeLength (L.build_load dname' dname builder) builder, A.Int)
-          | "weightIter" -> (let arg = List.nth actuals 0
-              in let index = fst (expr builder arg)
-              in weightIterNode (L.build_load dname' dname builder) index builder, A.Int)
-      		| _ -> raise (Failure ("Error! Node has no such method")))
-        | A.List ele_type ->
-      	(match fname with 
-      		    "get" -> (let arg = List.nth actuals 0
-      			in let index = fst (expr builder arg) 
-      			in let listElementPtr = get_list_element (L.build_load dname' dname builder) index builder
-      			in type_conversion ele_type listElementPtr builder, ele_type)
-      		  | "pop" -> (let listElementPtr = pop_list_element (L.build_load dname' dname builder) builder
-      			in type_conversion ele_type listElementPtr builder, ele_type)
-      		  | "remove" -> (let arg = List.nth actuals 0
-      		  	in let index = fst (expr builder arg)
-      		  	in let listElementPtr = real_remove_list_element (L.build_load dname' dname builder) index builder
-      		  	in type_conversion ele_type listElementPtr builder, ele_type)
-      		  | "length" -> (get_list_size (L.build_load dname' dname builder) builder, A.Int)
-      		  | "cancat" -> (let arg = List.nth actuals 0
-      		   	in let listPtr = fst (expr builder arg)
-      		    in concat_list (L.build_load dname' dname builder) listPtr builder, ele_type)
-      		  | _ -> raise (Failure ("Error! List has no such method"))) 
-       | A.Set ele_type ->
-      	    (match fname with
-      	    	"put" -> 
-      	    		(add_set (L.build_load dname' dname builder) 
-      		   			(fst (expr builder (List.nth actuals 0) )) builder, A.Void)
-              | "length" -> (get_set_size (L.build_load dname' dname builder) builder, A.Int)
-              | "contain" -> (check_set_element (L.build_load dname' dname builder) 
-          						(fst (expr builder (List.nth actuals 0) )) builder, A.Bool)
-              | "remove" -> (remove_set_element
-                            (L.build_load dname' dname builder)
-                            (fst (expr builder (List.nth actuals 0)))
-                            builder, A.Set(ele_type))
-      		  | _ -> raise (Failure ("Error! Set has no such method")))
-      | A.Map (_, v_type) ->
-      	(match fname with
-          "put" -> (hashmap_put 
-      		   	(L.build_load dname' dname builder) 
-      		   	(fst (expr builder (List.nth actuals 0))) 
-      		   	(fst (expr builder (List.nth actuals 1) )) builder, A.Void)
-         | "get" -> (
-         	(let listElementPtr = (hashmap_get       		   	
-         		(L.build_load dname' dname builder) 
-         		(fst (expr builder (List.nth actuals 0))) builder) 
-         	in type_conversion v_type listElementPtr builder, v_type)
-         )
-         | "size" -> (
-         	(hashmap_length (L.build_load dname' dname builder) builder, A.Int)
-
-         )
-         | "haskey" -> (let arg = List.nth actuals 0
-         	in let mapKey = fst (expr builder arg)
-         	in hashmap_haskey (L.build_load dname' dname builder) mapKey builder, A.Bool)
-         | "remove" -> (let arg = List.nth actuals 0
-          	in let mapKey = fst (expr builder arg)
-          	in hashmap_remove (L.build_load dname' dname builder) mapKey builder, A.Void)
-         | _ -> raise (Failure ("Error! Map has no such method")))
-       | A.Graph -> 
-      	(match fname with 
-              "bfs" -> (let arg = List.nth actuals 0
-              in let nodePtr = fst (expr builder arg)
-              in bfs (L.build_load dname' dname builder) nodePtr builder, A.List(A.Node(A.Int)))
-            | "dfs" -> (let arg = List.nth actuals 0
-              in let nodePtr = fst (expr builder arg)
-              in dfs (L.build_load dname' dname builder) nodePtr builder, A.List(A.Node(A.Int)))
-            | "iterGraph" -> (iterGraph
-                        		(L.build_load dname' dname builder)
-                        		(fst (expr builder (List.nth actuals 0))) 
-                        		builder
-                        	, A.Node(A.Int))
-            | "findGraphNode" -> (findGraphNode
-                                 	(L.build_load dname' dname builder)
-                                 	(fst (expr builder (List.nth actuals 0))) 
-                                 	builder
-                            , A.Node(A.Int))
-            | "init" -> (initTag (L.build_load dname' dname builder) builder, A.Void)
-      		| "addNode" -> (addGraphNode (L.build_load dname' dname builder)
-      						  			   (fst (expr builder (List.nth actuals 0)))
-      						  			   builder
-      						, A.Void)
-      		| "addEdge" -> (addGraphEdge (L.build_load dname' dname builder)
-      		  							   (fst (expr builder (List.nth actuals 0)))
-      		  							   (fst (expr builder (List.nth actuals 1)))
-      		  							   (fst (expr builder (List.nth actuals 2)))
-      		  							   builder
-      						, A.Void)
-      		| "reduce" -> (reduce (L.build_load dname' dname builder)
-      		  						(fst (expr builder (List.nth actuals 0)))
-      		  						builder
-      						, A.Node(A.Int))
-      		| "expand" -> (expand (L.build_load dname' dname builder)
-      		  						(fst (expr builder (List.nth actuals 0)))
-      		  						builder
-      						, A.Node(A.Int))
-      		| "combine" -> (combine (L.build_load dname' dname builder)
-      		  						(fst (expr builder(List.nth actuals 0)))
-      		  						builder
-      						, A.Graph)
-      		| _ -> raise (Failure ("Error! Graph has no such method"))) 
-      	| _ -> raise (Failure ("Error! Do not support such type")))
-      | A.Call ("print", [e]) -> (L.build_call printf_func [| int_format_str ; (fst (expr builder e)) |]
-			   "printf" builder, (snd (expr builder e)))
-      | A.Call ("prints", [e]) ->
+			| A.DotCall (dname, fname, actuals) -> let (dname', dtype) = lookup dname in
+				(match dtype with
+					A.Node n_type -> 
+						(match fname with
+								"value" ->  (let nodeValuePtr = get_node_value (L.build_load dname' dname builder) builder
+																in type_conversion n_type nodeValuePtr builder, n_type)
+							| "name" -> (getNodeName (L.build_load dname' dname builder) builder, A.String)
+							| "setvalue" -> (setNodeValue (L.build_load dname' dname builder) 
+																	(fst (expr builder (List.nth actuals 0) )) builder, A.Void)
+							| "iterNode" -> (let arg = List.nth actuals 0
+																	in let index = fst (expr builder arg)
+																	in iterNode (L.build_load dname' dname builder) index builder, A.Node(n_type))
+							| "length" -> (getNodeLength (L.build_load dname' dname builder) builder, A.Int)
+							| "weightIter" -> (let arg = List.nth actuals 0
+																		in let index = fst (expr builder arg)
+																		in weightIterNode (L.build_load dname' dname builder) index builder, A.Int)
+							| _ -> raise (Failure ("Error! Node has no such method")))
+				| A.List ele_type ->
+						(match fname with 
+								"get" -> (let arg = List.nth actuals 0
+															in let index = fst (expr builder arg) 
+															in let listElementPtr = get_list_element (L.build_load dname' dname builder) index builder
+															in type_conversion ele_type listElementPtr builder, ele_type)
+							| "pop" -> (let listElementPtr = pop_list_element (L.build_load dname' dname builder) builder
+															in type_conversion ele_type listElementPtr builder, ele_type)
+							| "remove" -> (let arg = List.nth actuals 0
+																in let index = fst (expr builder arg)
+																in let listElementPtr = real_remove_list_element (L.build_load dname' dname builder) index builder
+																in type_conversion ele_type listElementPtr builder, ele_type)
+							| "length" -> (get_list_size (L.build_load dname' dname builder) builder, A.Int)
+							| "cancat" -> (let arg = List.nth actuals 0
+																in let listPtr = fst (expr builder arg)
+																in concat_list (L.build_load dname' dname builder) listPtr builder, ele_type)
+							| _ -> raise (Failure ("Error! List has no such method"))) 
+			 | A.Set ele_type ->
+						(match fname with
+								"put" -> (add_set (L.build_load dname' dname builder) 
+													(fst (expr builder (List.nth actuals 0) )) builder, A.Void)
+							| "length" -> (get_set_size (L.build_load dname' dname builder) builder, A.Int)
+							| "contain" -> (check_set_element (L.build_load dname' dname builder) 
+																(fst (expr builder (List.nth actuals 0) )) builder, A.Bool)
+							| "remove" -> (remove_set_element
+																(L.build_load dname' dname builder)
+																(fst (expr builder (List.nth actuals 0)))
+																builder, A.Set(ele_type))
+							| _ -> raise (Failure ("Error! Set has no such method")))
+			| A.Map (_, v_type) ->
+				(match fname with
+					"put" -> (hashmap_put 
+											(L.build_load dname' dname builder) 
+											(fst (expr builder (List.nth actuals 0))) 
+											(fst (expr builder (List.nth actuals 1) )) builder
+										, A.Void)
+				 | "get" -> (let listElementPtr = (hashmap_get       		   	
+												(L.build_load dname' dname builder) 
+												(fst (expr builder (List.nth actuals 0))) builder) 
+												in type_conversion v_type listElementPtr builder, v_type)
+				 | "size" -> (hashmap_length (L.build_load dname' dname builder) builder, A.Int)
+				 | "haskey" -> (let arg = List.nth actuals 0
+													in let mapKey = fst (expr builder arg)
+													in hashmap_haskey (L.build_load dname' dname builder) mapKey builder, A.Bool)
+				 | "remove" -> (let arg = List.nth actuals 0
+													in let mapKey = fst (expr builder arg)
+													in hashmap_remove (L.build_load dname' dname builder) mapKey builder, A.Void)
+				 | _ -> raise (Failure ("Error! Map has no such method")))
+			 | A.Graph -> 
+				(match fname with 
+							"bfs" -> (let arg = List.nth actuals 0
+													in let nodePtr = fst (expr builder arg)
+													in bfs (L.build_load dname' dname builder) nodePtr builder
+													, A.List(A.Node(A.Int)))
+						| "dfs" -> (let arg = List.nth actuals 0
+													in let nodePtr = fst (expr builder arg)
+													in dfs (L.build_load dname' dname builder) nodePtr builder 
+													, A.List(A.Node(A.Int)))
+						| "iterGraph" -> (iterGraph
+																(L.build_load dname' dname builder)
+																(fst (expr builder (List.nth actuals 0))) 
+																builder
+																, A.Node(A.Int))
+						| "findGraphNode" -> (findGraphNode
+																	(L.build_load dname' dname builder)
+																	(fst (expr builder (List.nth actuals 0))) 
+																	builder
+																	, A.Node(A.Int))
+						| "init" -> (initTag (L.build_load dname' dname builder) builder, A.Void)
+						| "addNode" -> (addGraphNode (L.build_load dname' dname builder)
+															 (fst (expr builder (List.nth actuals 0)))
+															 builder
+										, A.Void)
+						| "addEdge" -> (addGraphEdge (L.build_load dname' dname builder)
+															 (fst (expr builder (List.nth actuals 0)))
+															 (fst (expr builder (List.nth actuals 1)))
+															 (fst (expr builder (List.nth actuals 2)))
+															 builder
+										, A.Void)
+						| "reduce" -> (reduce (L.build_load dname' dname builder)
+														(fst (expr builder (List.nth actuals 0)))
+														builder
+										, A.Node(A.Int))
+						| "expand" -> (expand (L.build_load dname' dname builder)
+														(fst (expr builder (List.nth actuals 0)))
+														builder
+										, A.Node(A.Int))
+						| "combine" -> (combine (L.build_load dname' dname builder)
+															(fst (expr builder(List.nth actuals 0)))
+															builder
+										, A.Graph)
+						| _ -> raise (Failure ("Error! Graph has no such method"))) 
+				| _ -> raise (Failure ("Error! Do not support such type")))
+			| A.Call ("print", [e]) -> (L.build_call printf_func [| int_format_str ; (fst (expr builder e)) |]
+				 "printf" builder, (snd (expr builder e)))
+			| A.Call ("prints", [e]) ->
 				 (L.build_call printf_func [| string_format_str ; (fst (expr builder e)) |]
-			   "printf" builder, (snd (expr builder e)))
-(* 		| A.Call("prints",[e]) ->
-				 (L.build_call printf_func [| string_format_str ; (fst (expr builder e)) |]
-			   "printf" builder, (snd (expr builder e))) *)			
+				 "printf" builder, (snd (expr builder e)))		
 			| A.Call ("printbig", [e]) ->
 				 (L.build_call printbig_func [| (fst (expr builder e)) |] 
-         "printbig" builder, (snd (expr builder e)))
+				 "printbig" builder, (snd (expr builder e)))
 			| A.Call (f, act) ->
 				 let (fdef, fdecl) = StringMap.find f function_decls in
-		     let actuals = List.rev (List.map fst (List.map (expr builder) (List.rev act))) in
-		     let result = (match fdecl.A.typ with A.Void -> ""
+				 let actuals = List.rev (List.map fst (List.map (expr builder) (List.rev act))) in
+				 let result = (match fdecl.A.typ with A.Void -> ""
 																						| _ -> f ^ "_result") in
 				 (L.build_call fdef (Array.of_list actuals) result builder, fdecl.A.typ)
 		in
@@ -945,7 +929,7 @@ in
 		(* Build the code for the given statement; return the builder for
 			 the statement's successor *)
 		let rec stmt builder = function
-			  A.Block sl -> List.fold_left stmt builder sl
+				A.Block sl -> List.fold_left stmt builder sl
 			| A.Expr e -> ignore (fst (expr builder e)); builder
 			| A.Return e -> ignore (match fdecl.A.typ with
 				A.Void -> L.build_ret_void builder
