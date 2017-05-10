@@ -33,6 +33,8 @@ int main(){
 	g.addNode(node3);
 	g.addNode(node4);
   g.length();
+  g.printGraph();
+
 /*
   for (i = 0; i < 4; i+=1) {
     node7 = g.iterGraph(i);
