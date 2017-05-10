@@ -104,8 +104,9 @@ Check() {
 	if [ $keep -eq 0 ] ; then
 	    rm -f $generatedfiles
 	fi
-	echo "OK"
-	echo "###### SUCCESS" 1>&2
+	# echo "OK"
+	# echo "###### SUCCESS" 1>&2
+    echo  "\033[32mSUCCESS\033[0m" 
     else
 	echo "###### FAILED" 1>&2
 	globalerror=$error
@@ -136,8 +137,9 @@ CheckFail() {
     if [ $keep -eq 0 ] ; then
         rm -f $generatedfiles
     fi
-    echo "OK"
-    echo "###### SUCCESS" 1>&2
+    # echo "OK"
+    # echo "###### SUCCESS" 1>&2
+    echo  "\033[32mSUCCESS\033[0m" 
     else
     echo "###### FAILED" 1>&2
     globalerror=$error
