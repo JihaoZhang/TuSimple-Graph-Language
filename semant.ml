@@ -416,6 +416,8 @@ let check (globals, functions) =
                     (match actuals with
                       [x] when (expr x) = Node(Int) -> Void
                     | _ -> raise (Failure ("Graph expand method error")))
+              | "length" ->
+                    if actuals = [] then Int else raise (Failure ("Graph length method error"))
               | _ -> raise (Failure ("Map has no such method"))
             )
           | _ -> raise (Failure ("unsupported type for method call")))
