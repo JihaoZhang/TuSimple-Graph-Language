@@ -161,10 +161,7 @@ let check (globals, functions) =
       with Not_found -> raise (Failure ("undeclared identifier " ^ s))
     in
 
-    let checkHomogeneous elementType err tp  =
-        match tp with
-          | elementType -> ignore(Int)
-          | _ -> raise err
+    let checkHomogeneous elementType err tp = if tp = elementType then ignore(Int) else raise err
     in 
 
     (* Return the type of an expression or throw an exception *)
@@ -210,17 +207,7 @@ let check (globals, functions) =
           | Mod when t1 = Int && t2 = Int -> Int
         	| Equal | Neq when t1 = t2 -> Bool 
           | Equal | Neq when t1 = Null_t -> Bool
-                (* match t2 with 
-                  List _ -> Bool
-                | Set _ -> Bool
-                | Node -> Bool
-                |  _ -> raise (Failure ("illegal Equal/Not Equal Comparison with null " ^ string_of_typ t2 ^ " = null")) *)
           | Equal | Neq when t2 = Null_t -> Bool
-                (* match t1 with 
-                  List _ -> Bool
-                | Set _ -> Bool
-                | Node -> Bool
-                |  _ -> raise (Failure ("illegal Equal/Not Equal Comparison with null " ^ string_of_typ t1 ^ " = null")) *)
         	| Less | Leq | Greater | Geq when (t1 = Int || t1 = Float) && (t1 = Float || t2 = Int) -> Bool
         	| And | Or when t1 = Bool && t2 = Bool -> Bool
           | _ -> raise (Failure ("illegal binary operator " ^
@@ -244,12 +231,7 @@ let check (globals, functions) =
                                 and rt = expr e in
         check_assign lt rt (Failure ("illegal assignment " ^ string_of_typ lt ^
 				     " = " ^ string_of_typ rt ^ " in " ^ 
-				     string_of_expr ex))
-(*       | SubscriptAssign(e1, e2) as ex -> let lt = expr e1 
-                                   and rt = expr e2 in
-        check_assign lt rt (Failure ("illegal assignment " ^ string_of_typ lt ^
-             " = " ^ string_of_typ rt ^ " in " ^ 
-             string_of_expr ex))   *)                  
+				     string_of_expr ex))              
       | AddAssign(var, e) as ex -> let lt = type_of_identifier var
                                    and rt = expr e in
         checkAddAssign lt rt
@@ -320,13 +302,14 @@ let check (globals, functions) =
                     | _ -> raise (Failure ("Set setvalue method error")))
               | "iterNode" -> 
                   (match actuals with 
-                    [x] when (expr x) = Int -> Node typn
+                      [x] when (expr x) = Int -> Node typn
                     | _ -> raise (Failure ("Error! Wrong argument in iterNode")))
               | "length" ->
                   if actuals = [] then Int else raise (Failure ("Error! Wrong argument in Node.length()"))
               | "weightIter" ->
                   (match actuals with
-                    [x] when (expr x) = Int -> Int)
+                      [x] when (expr x) = Int -> Int
+                    | _ -> raise (Failure ("Set weightIter method error")))
               | _ -> raise (Failure ("Node has no such method"))
             )
           | List ele_type -> 
@@ -351,11 +334,7 @@ let check (globals, functions) =
             )
           | Set ele_type ->
             (match fname with
-                "minimum" ->                   
-                  if actuals = [] then ele_type else raise (Failure ("Set minimum method error"))
-              | "maximum" -> 
-                  if actuals = [] then ele_type else raise (Failure ("Set minimum method error"))
-              | "put" ->
+                "put" ->
                   (match actuals with
                       [x] when (expr x) = ele_type -> Null_t
                     | _ -> raise (Failure ("Set put method error")))
@@ -368,7 +347,7 @@ let check (globals, functions) =
               | "remove" ->
                   (match actuals with
                       [x] when (expr x) = ele_type -> Set ele_type
-                      | _ -> raise (Failure ("Error! Wrong argument in Set.remove()")))
+                    | _ -> raise (Failure ("Set remove method error")))
               | _ -> raise (Failure ("Set has no such method"))
             )
           | Map (k_type, v_type) ->

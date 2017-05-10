@@ -149,7 +149,8 @@ expr:
   | singleEdge { $1 }
   | subscript { $1 }
 
-   
+
+
 
 singleEdge:
    ID SINGLELINK ID { SingleEdge($1, $3) }

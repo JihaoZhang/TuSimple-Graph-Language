@@ -59,6 +59,7 @@ let translate (globals, functions) =
   | A.Float -> float_t
   | A.Node(_) -> node_t
   | A.Graph -> graph_t
+  |  _ -> raise (Failure ("[Error] Type Not Found for ltype_of_typ."))
   in
 
   let lconst_of_typ = function
@@ -345,16 +346,6 @@ in
 let addReverseEdge n1_ptr n2_ptr weight llbuilder = 
 	let actuals = [| n1_ptr; n2_ptr; weight |] in (
 		ignore(L.build_call addReverseEdge_f actuals "addReverseEdge" llbuilder)
-	)
-in
-
-let getNodeValue_t = L.function_type (L.pointer_type i8_t) [| node_t |]
-in
-let getNodeValue_f = L.declare_function "getNodeValue" getNodeValue_t the_module
-in
-let getNodeValue n_ptr llbuilder =
-	let actuals = [| n_ptr |] in (
-		L.build_call getNodeValue_f actuals "getNodeValue" llbuilder
 	)
 in
 
@@ -668,29 +659,32 @@ in
           builder)
           ;(listPtr, listLiteral_type)
       | A.MinusAssign(var, e) -> 
-                let (var', typ) =  lookup var and (s', t') = expr builder e in
+          let (var', typ) =  lookup var in
           ((match typ with
-          | A.Int -> let e1' = L.build_load var' var builder
-				and (e2', t2') = expr builder e 
-				in
-				L.build_store (L.build_sub e1' e2' "tmp" builder) var' builder
-          | A.Float  -> 
+          | A.Int -> 
+              let e1' = L.build_load var' var builder
+  				    and (e2', _) = expr builder e 
+  				    in
+				      L.build_store (L.build_sub e1' e2' "tmp" builder) var' builder
+          | A.Float -> 
           		let e1' = L.build_load var' var builder
-				and (e2', t2') = expr builder e 
-				in
-				L.build_store (L.build_fsub e1' e2' "tmp" builder) var' builder), typ)
-      | A.Subscript (var, e) -> let (var', typ) = lookup var and (s', t') = expr builder e in
+				      and (e2', _) = expr builder e 
+				      in
+				      L.build_store (L.build_fsub e1' e2' "tmp" builder) var' builder
+          | _ -> raise (Failure (" minus assign error "))
+      ), typ)
+      | A.Subscript (var, e) -> let (var', typ) = lookup var and (s', _) = expr builder e in
       ((match typ with
       | A.List typeList -> (
       	let elementPtr = get_list_element (L.build_load var' var builder) s' builder
       in type_conversion typeList elementPtr builder
       )
-      | A.Map(t1, t2) -> (
+      | A.Map(_, t2) -> (
       	let elementPtr = hashmap_get (L.build_load var' var builder) s' builder
       	in type_conversion t2 elementPtr builder
       )
       | _ -> raise (Failure (" undefined operator[] "))), typ)
-      | A.New id -> let (id', typ) = lookup id in 
+      | A.New id -> let (_, typ) = lookup id in 
       	((match typ with 
       	| A.List listType -> L.build_store (create_list listType builder) (fst (lookup id)) builder
       	| A.Set setType -> L.build_store (create_set setType builder) (fst (lookup id)) builder
@@ -706,7 +700,7 @@ in
 		  ignore(remove_list_element (L.build_load var' var builder) builder); (var',typ)
 			| A.Binop (e1, op, e2) ->
 				let (e1', t1') = expr builder e1
-				and (e2', t2') = expr builder e2 in
+				and (e2', _) = expr builder e2 in
 				((match op with
 					A.Add    -> L.build_add
 				| A.Sub     -> L.build_sub
@@ -731,43 +725,35 @@ in
           let (e', t') = expr builder e in
            ignore (L.build_store e' (fst (lookup s)) builder); (e', t')
       | A.AddAssign (var, e) -> 
-          let (var', typ) =  lookup var and (s', t') = expr builder e in
+          let (var', typ) =  lookup var and (s', _) = expr builder e in
           ((match typ with
           | A.List _ -> L.build_store (concat_list (L.build_load var' var builder) s' builder) (fst (lookup var)) builder
           | A.Int -> let e1' = L.build_load var' var builder
-				and (e2', t2') = expr builder e 
+				and (e2', _) = expr builder e 
 				in
 				L.build_store (L.build_add e1' e2' "tmp" builder) var' builder
           | A.Float  -> 
           		let e1' = L.build_load var' var builder
-				and (e2', t2') = expr builder e 
+				and (e2', _) = expr builder e 
 				in
 				L.build_store (L.build_fadd e1' e2' "tmp" builder) var' builder
-          | A.Set typeSet -> let s1 = L.build_load var' var builder 
-          		and (l1', t1') = expr builder e
+          | A.Set _ -> let s1 = L.build_load var' var builder 
+          		and (l1', _) = expr builder e
           	in put_set_from_list s1 l1' builder
           | _ -> raise (Failure (" undefined += "))), typ)
-(* 	 | A.SubscriptAssign(e1, e2) -> 
-	 (match e1 with
-	  A.Subscript(var, e) -> let (e1', t1') = expr builder e1 and (e2', t2') = expr builder e2 in
-           ignore (L.build_store e2' e1' builder); (e1', t1')) 
-	 | _ -> raise ((Failure ("illegal Subscript assignment"))) *)
-
 
       | A.SingleEdge (n1, n2) -> 
-      		((let (n1', typ1) = lookup n1 and (n2', typ2) = lookup n2 in 
+      		((let (n1', _) = lookup n1 and (n2', _) = lookup n2 in 
       		getEdgeValue (L.build_load n1' n1 builder) (L.build_load n2' n2 builder) builder), A.Float)
       | A.DoubleLinkAssign (var1, var2, e) ->
-    		(let (var1', typ1) = lookup var1 and (var2', typ2) = lookup var2 in
-    			let (s', t') = expr builder e in
-    			(* let node1 = (L.build_load var1' var1 builder) and node2 = (L.build_load var2' var2 builder)
-    		in addNodeEdge node1 node2 s'; addNodeEdge node2 node1 s'), A.Float) *)
+    		(let (var1', _) = lookup var1 and (var2', _) = lookup var2 in
+    			let (s', _) = expr builder e in
     		ignore(addNodeEdge (L.build_load var1' var1 builder) (L.build_load var2' var2 builder) s' builder);
     		ignore(addNodeEdge (L.build_load var2' var2 builder) (L.build_load var1' var1 builder) s' builder)); (L.const_int i32_t 0, A.Float)
-      | SingleLinkAssign(e1, e) -> 
+      | A.SingleLinkAssign(e1, e) -> 
       ((match e1 with
-      | A.SingleEdge(n1, n2) -> let (n1', typ1) = lookup n1 and (n2', typ2) = lookup n2 
-       in let(s', t') = expr builder e in 
+      | A.SingleEdge(n1, n2) -> let (n1', _) = lookup n1 and (n2', _) = lookup n2 
+       in let(s', _) = expr builder e in 
       ignore((addNodeEdge (L.build_load n1' n1 builder) (L.build_load n2' n2 builder) s' builder)); s'
       | _ -> raise (Failure("illegal edge assignment. "))), A.Int)
 
@@ -784,7 +770,7 @@ in
         in
         let n2_sequence = List.map f (getListsOfLit n2)
         in
-        let (var', typ) = lookup var 
+        let (var', _) = lookup var 
         in
         let addNodeIter v1 v2 = addNodeEdge (L.build_load var' var builder) v1 v2 builder
         in
@@ -806,7 +792,7 @@ in
         in
         let n2_sequence = List.map f (getListsOfLit n2)
         in
-        let (var', typ) = lookup var
+        let (var', _) = lookup var
         in
         let addNodeIter v1 v2 = addNodeEdge (L.build_load var' var builder) v1 v2 builder
         in
@@ -864,7 +850,7 @@ in
                             (fst (expr builder (List.nth actuals 0)))
                             builder, A.Set(ele_type))
       		  | _ -> raise (Failure ("Error! Set has no such method")))
-      | A.Map (k_type, v_type) ->
+      | A.Map (_, v_type) ->
       	(match fname with
           "put" -> (hashmap_put 
       		   	(L.build_load dname' dname builder) 
