@@ -409,6 +409,17 @@ in
 	Graph Methods
 ================================================================
 *)
+
+let graphLength_t = L.function_type i32_t [| graph_t |]
+in
+let graphLength_f = L.declare_function "graphLength" graphLength_t the_module
+in
+let graphLength g_ptr llbuilder =
+	let actuals = [| g_ptr |] in (
+		L.build_call graphLength_f actuals "graphLength" llbuilder
+	)
+in
+
 let createGraph_t = L.function_type graph_t [| string_t |]
 in
 let createGraph_f = L.declare_function "createGraph" createGraph_t the_module
@@ -901,6 +912,8 @@ in
 															(fst (expr builder(List.nth actuals 0)))
 															builder
 										, A.Graph)
+						| "length" -> (graphLength (L.build_load dname' dname builder) builder, A.Int
+						)
 						| _ -> raise (Failure ("Error! Graph has no such method"))) 
 				| _ -> raise (Failure ("Error! Do not support such type")))
 			| A.Call ("print", [e]) -> (L.build_call printf_func [| int_format_str ; (fst (expr builder e)) |]

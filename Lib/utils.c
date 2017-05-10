@@ -1476,6 +1476,13 @@ int getNodeLength(struct Node* node){
 	Graph Methods
 ************************************/
 
+int graphLength(struct Graph* g) {
+    if (g == NULL) {
+        printf("%s\n", "Error! graphLength: Graph node not found!");
+    }
+    return get_list_size(g->nodes);
+}
+
 void print_list(struct List* l){
     if (l==NULL){
         printf("print_list NULL\n");

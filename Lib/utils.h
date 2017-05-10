@@ -163,6 +163,6 @@ struct Node* expand(struct Graph* g, struct Node* n0);
 struct Graph* combine(struct Graph* g1, struct Graph* g2);
 struct List* bfs(struct Graph* g, struct Node* n);
 struct List* dfs(struct Graph* g, struct Node* n);
-
+int graphLength(struct Graph* g);
 
 #endif
