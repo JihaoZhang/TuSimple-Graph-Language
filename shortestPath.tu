@@ -16,6 +16,9 @@ int main(){
     node3 -> node4 = 3;
     node1 -> node4 = 1;
     max = 10000;
+
+
+    /* Implementation of Shortest Path */
     queue+=@{node1};
     inList.put(node1.name());
     dis.put(node1.name(), 0);

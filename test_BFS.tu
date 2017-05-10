@@ -19,8 +19,9 @@ int main(){
   g.addNode(node2);
   g.addNode(node3);
   g.addNode(node4);
-  l = g.bfs(node1);	
-  l.printList();
+
+
+  /* Implementation of BFS in TuSimple */
   l2 += @{node1};
   rec += @{node1};
   visited.put(node1);
@@ -40,8 +41,10 @@ int main(){
     }
     l2.remove(0);
   }
-
   rec.printList();
 
 
+  /* Implementation of BFS using built-in function */
+  l = g.bfs(node1); 
+  l.printList();
 }
