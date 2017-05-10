@@ -44,40 +44,4 @@ int main(){
   node8 = l.get(3);
   prints(node8.name());
 
-  l2 += @{node1};
-  rec += @{node1};
-  visited.put(node1);
-
-  while (l2.length()!=0){
-    node9 = l2.get(0);
-    size = node9.length();
-
-    print(size);
-    for (i=0;i<size;){      
-      node10 = node9.iterNode(i);
-      if (!visited.contain(node10)){
-          prints("EXECUTED");
-          l2 += @{node10};
-          rec += @{node10};
-          visited.put(node10);
-      }
-      i+=1;
-    }
-    l2.remove(0);
-  }
-
-  print(rec.length());
-
-  node5 = rec.get(0);
-  prints(node5.name());
-  
-  node6 = rec.get(1);
-  prints(node6.name());
-  
-  node7 = rec.get(2);
-  prints(node7.name());
-
-  node8 = rec.get(3);
-  prints(node8.name());
-
 }
